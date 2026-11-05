@@ -18,7 +18,7 @@ export function HeroActions() {
         <Image
           src={primaryLogo}
           alt="dailymattr"
-          className="h-3.5 w-auto brightness-0 invert"
+          className="h-[18px] w-auto brightness-0 invert"
         />
         <span className="flex size-5 items-center justify-center rounded-[5px] bg-primary-foreground/20">
           <ArrowUpRight className="size-3" />

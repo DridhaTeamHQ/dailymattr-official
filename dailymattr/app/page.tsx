@@ -1,4 +1,3 @@
-import { AppFeaturesSection } from "@/components/app-features";
 import { AppPreviewSection } from "@/components/app-preview";
 import { BriefingBentoSection } from "@/components/briefing-bento";
 import { DailyRoutineSection } from "@/components/daily-routine";
@@ -19,7 +18,6 @@ export default function Home() {
       <LearnFormatsSection />
       <ExplainersSection />
       <DailyRoutineSection />
-      <AppFeaturesSection />
       <BriefingBentoSection />
       <TemplatesSection />
       <NewsletterSection image={dummyImage(600, 1600, 860)} />
