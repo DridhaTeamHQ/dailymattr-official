@@ -1,3 +1,5 @@
+import { dummyVideo } from "@/lib/dummy-media"
+
 export type Format = {
   value: string
   title: string
@@ -7,10 +9,10 @@ export type Format = {
 }
 
 export const formats: Format[] = [
-  { value: "pix", title: "Pix", subtitle: "Read visual stories" },
-  { value: "qix", title: "Qix", subtitle: "Watch short explainers" },
-  { value: "trax", title: "Trax", subtitle: "Listen to stories" },
-  { value: "xplaind", title: "Xplaind", subtitle: "Understand topics better" },
-  { value: "articles", title: "Articles", subtitle: "Read detailed news" },
-  { value: "polls", title: "Polls", subtitle: "Share your opinion" },
+  { videoSrc: dummyVideo(0), value: "pix", title: "Pix", subtitle: "Read visual stories" },
+  { videoSrc: dummyVideo(1), value: "qix", title: "Qix", subtitle: "Watch short explainers" },
+  { videoSrc: dummyVideo(2), value: "trax", title: "Trax", subtitle: "Listen to stories" },
+  { videoSrc: dummyVideo(3), value: "xplaind", title: "Xplaind", subtitle: "Understand topics better" },
+  { videoSrc: dummyVideo(4), value: "articles", title: "Articles", subtitle: "Read detailed news" },
+  { videoSrc: dummyVideo(5), value: "polls", title: "Polls", subtitle: "Share your opinion" },
 ]

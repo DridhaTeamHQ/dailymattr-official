@@ -1,5 +1,7 @@
 import { CONTENT_WIDTH } from "@/components/shared/layout"
+import { dummyImage } from "@/lib/dummy-media"
 import { HighlightCell, ImageCell, LogoCell, NumberCell, StatCell } from "./bento-cells"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: max width 1540, gap 10, padding 16 × 80. Dark rounded panel with the heading
 // and a 4-column bento (3 rows) in the shared content column. Rows have a minimum height that
@@ -8,7 +10,7 @@ export function BriefingBentoSection() {
   return (
     <section className="mx-auto w-full max-w-[1540px] px-4 py-20">
       <div className="rounded-3xl bg-foreground px-4 pt-20 pb-5 sm:px-6">
-        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <FadeIn className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <p className="mb-4 text-xs font-medium tracking-wide text-primary uppercase">
             Less to sift through. More to take away.
           </p>
@@ -17,13 +19,13 @@ export function BriefingBentoSection() {
             <br />
             with a clear purpose.
           </h2>
-        </div>
+        </FadeIn>
 
-        <div className={`${CONTENT_WIDTH} @container mt-16 lg:mt-28`}>
+        <FadeIn className={`${CONTENT_WIDTH} @container mt-16 lg:mt-28`}>
           <div className="grid auto-rows-[minmax(max(12rem,23.5cqw),auto)] grid-cols-2 gap-3 md:grid-cols-4">
             {/* Row 1 */}
             <NumberCell value="100" caption="Stories selected for your daily catch-up." />
-            <ImageCell />
+            <ImageCell src={dummyImage(400, 600, 600)} />
             <StatCell
               className="col-span-2"
               label="Training costs saved by"
@@ -39,11 +41,11 @@ export function BriefingBentoSection() {
               caption="Your updates and deeper explainers, together."
             />
             <LogoCell name="Wiki Wiki Poke" caption="5 locations across Austria and Germany" />
-            <ImageCell />
+            <ImageCell src={dummyImage(410, 600, 600)} />
 
             {/* Row 3 */}
             <LogoCell name="Kaimug" caption="15 locations across Germany" />
-            <ImageCell />
+            <ImageCell src={dummyImage(420, 600, 600)} />
             <StatCell
               className="col-span-2"
               tone="success"
@@ -53,7 +55,7 @@ export function BriefingBentoSection() {
               description="at locations with high Bounti usage rates"
             />
           </div>
-        </div>
+        </FadeIn>
       </div>
     </section>
   )

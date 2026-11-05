@@ -32,6 +32,8 @@ export type CarouselCard = {
   cta?: string;
   /** Shown in the expanded modal. */
   content: React.ReactNode;
+  /** Optional vertical (9:16) media; the modal then shows it edge to edge beside the text. */
+  media?: React.ReactNode;
 };
 
 
@@ -120,7 +122,7 @@ export const Card = ({
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Centred, sized to the screen: up to 672px wide and 85% of the viewport height */}
+            {/* Centred, at most 85% of the viewport height; scrolls (scrollbar hidden) only if it must */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -133,29 +135,45 @@ export const Card = ({
               exit={{ opacity: 0 }}
               ref={containerRef}
               layoutId={layout ? `card-${card.title}` : undefined}
-              className="relative z-[60] max-h-[85svh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-background p-5 md:p-7"
+              className={cn(
+                "relative z-[60] max-h-[85svh] w-full overflow-y-auto rounded-2xl bg-background [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                card.media ? "flex max-w-3xl flex-col sm:w-auto sm:flex-row" : "max-w-2xl p-5 md:p-7"
+              )}
             >
-              <Button
-                size="icon-sm"
-                className="sticky top-4 right-0 ml-auto flex rounded-full bg-foreground text-background hover:bg-foreground/85"
-                onClick={handleClose}
-                aria-label="Close"
-              >
-                <X />
-              </Button>
-              <motion.p
-                layoutId={layout ? `category-${card.title}` : undefined}
-                className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
-              >
-                {card.category}
-              </motion.p>
-              <motion.p
-                layoutId={layout ? `title-${card.title}` : undefined}
-                className="mt-2 text-xl font-semibold text-foreground md:text-3xl"
-              >
-                {card.title}
-              </motion.p>
-              <div className="pt-5">{card.content}</div>
+              {card.media && (
+                // Inset with rounded corners, like a phone screen, rather than edge to edge.
+                <div className="shrink-0 p-3 pb-0 sm:pr-0 sm:pb-3">
+                  <div className="mx-auto aspect-[9/16] h-[50svh] overflow-hidden rounded-[20px] bg-placeholder sm:h-[min(78svh,620px)]">
+                    {card.media}
+                  </div>
+                </div>
+              )}
+              <div className={cn(card.media && "flex flex-col p-5 sm:w-80 md:p-7")}>
+                <Button
+                  size="icon-sm"
+                  className={cn(
+                    "flex shrink-0 rounded-full bg-foreground text-background hover:bg-foreground/85",
+                    card.media ? "absolute top-3 right-3 z-10" : "sticky top-4 right-0 ml-auto"
+                  )}
+                  onClick={handleClose}
+                  aria-label="Close"
+                >
+                  <X />
+                </Button>
+                <motion.p
+                  layoutId={layout ? `category-${card.title}` : undefined}
+                  className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
+                >
+                  {card.category}
+                </motion.p>
+                <motion.p
+                  layoutId={layout ? `title-${card.title}` : undefined}
+                  className="mt-2 text-xl font-semibold text-foreground md:text-3xl"
+                >
+                  {card.title}
+                </motion.p>
+                <div className={cn("pt-5", card.media && "flex flex-1 flex-col")}>{card.content}</div>
+              </div>
             </motion.div>
           </div>
         )}
@@ -220,6 +238,10 @@ export const BlurImage = ({
         className,
       )}
       onLoad={() => setLoading(false)}
+      // A cached image can finish before hydration attaches onLoad, so check on mount too.
+      ref={(img) => {
+        if (img?.complete && img.naturalWidth > 0) setLoading(false);
+      }}
       src={src}
       loading="lazy"
       decoding="async"

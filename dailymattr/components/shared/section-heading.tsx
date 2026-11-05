@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { FadeIn } from "./fade-in"
 
 type SectionHeadingProps = {
   eyebrow?: string
@@ -16,7 +17,7 @@ export function SectionHeading({
   children,
 }: SectionHeadingProps) {
   return (
-    <div className={cn("flex max-w-3xl flex-col items-center text-center", className)}>
+    <FadeIn className={cn("flex max-w-3xl flex-col items-center text-center", className)}>
       {eyebrow && (
         <p className="mb-4 text-xs font-medium tracking-wide text-primary uppercase">
           {eyebrow}
@@ -29,6 +30,6 @@ export function SectionHeading({
         <p className="mt-4 max-w-md text-sm text-muted-foreground sm:text-base">{description}</p>
       )}
       {children && <div className="mt-6">{children}</div>}
-    </div>
+    </FadeIn>
   )
 }

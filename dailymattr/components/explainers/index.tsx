@@ -6,6 +6,7 @@ import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { AccordionGallery } from "./accordion-gallery"
 import { explainers } from "./content"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function ExplainersSection() {
@@ -35,7 +36,9 @@ export function ExplainersSection() {
       </SectionHeading>
 
       {/* Same column as the app preview and format cards above */}
-      <AccordionGallery items={explainers} className={CONTENT_WIDTH} />
+      <FadeIn className={CONTENT_WIDTH}>
+        <AccordionGallery items={explainers} />
+      </FadeIn>
     </section>
   )
 }

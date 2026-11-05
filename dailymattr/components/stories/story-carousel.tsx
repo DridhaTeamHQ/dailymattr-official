@@ -1,10 +1,12 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import AutoScroll from "embla-carousel-auto-scroll"
 
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { StoryCard } from "./story-card"
+import { dummyImage } from "@/lib/dummy-media"
 
 const PLACEHOLDER_COUNT = 10
 
@@ -30,7 +32,9 @@ export function StoryCarousel() {
       <CarouselContent>
         {Array.from({ length: PLACEHOLDER_COUNT }, (_, i) => (
           <CarouselItem key={i} className="basis-[216px] sm:basis-[256px] lg:basis-[283px]">
-            <StoryCard />
+            <StoryCard>
+              <Image src={dummyImage(10 + i * 7, 534, 576)} alt="" fill sizes="283px" className="object-cover" />
+            </StoryCard>
           </CarouselItem>
         ))}
       </CarouselContent>
