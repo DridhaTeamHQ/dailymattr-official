@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/shared/section-heading"
 import { StoryCarousel } from "./story-carousel"
+import { FadeIn } from "@/components/shared/fade-in"
 
 export function StoriesSection() {
   return (
@@ -16,9 +17,9 @@ export function StoriesSection() {
         description="From decisions that shape the country to discoveries that change everyday life."
       />
 
-      <div className="mt-10 sm:mt-12">
+      <FadeIn className="mt-10 sm:mt-12">
         <StoryCarousel />
-      </div>
+      </FadeIn>
     </section>
   )
 }

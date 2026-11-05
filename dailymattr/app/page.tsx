@@ -8,6 +8,7 @@ import { LearnFormatsSection } from "@/components/learn-formats";
 import { NewsletterSection } from "@/components/newsletter";
 import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
+import { dummyImage } from "@/lib/dummy-media";
 
 export default function Home() {
   return (
@@ -21,7 +22,7 @@ export default function Home() {
       <AppFeaturesSection />
       <BriefingBentoSection />
       <TemplatesSection />
-      <NewsletterSection />
+      <NewsletterSection image={dummyImage(600, 1600, 860)} />
     </main>
   );
 }

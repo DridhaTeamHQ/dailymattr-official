@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FeatureTabs } from "./feature-tabs"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: max width 1540, vertical auto layout, gap 63, padding 48 × 100.
 export function AppFeaturesSection() {
@@ -16,7 +17,9 @@ export function AppFeaturesSection() {
         }
       />
 
-      <FeatureTabs />
+      <FadeIn className="w-full">
+        <FeatureTabs />
+      </FadeIn>
     </section>
   )
 }

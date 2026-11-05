@@ -5,6 +5,7 @@ import { ArrowUpRight, SquareCheck } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CONTENT_WIDTH } from "@/components/shared/layout"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Copy from the Figma frame.
 const points = [
@@ -18,13 +19,13 @@ export function NewsletterSection({ image }: { image?: string }) {
   return (
     <section className="w-full px-4 py-20">
       <div className={cn(CONTENT_WIDTH, "grid gap-3 lg:grid-cols-[2fr_1fr]")}>
-        <div className="relative aspect-[1.87] overflow-hidden rounded-2xl bg-placeholder lg:aspect-auto lg:min-h-[360px]">
+        <FadeIn className="relative aspect-[1.87] overflow-hidden rounded-2xl bg-placeholder lg:aspect-auto lg:min-h-[360px]">
           {image && (
             <Image src={image} alt="" fill sizes="(min-width: 1024px) 42vw, 100vw" className="object-cover" />
           )}
-        </div>
+        </FadeIn>
 
-        <div className="flex flex-col rounded-2xl bg-primary p-6 text-primary-foreground">
+        <FadeIn className="flex flex-col rounded-2xl bg-primary p-6 text-primary-foreground" delay={0.1}>
           <span className="w-fit rounded-md bg-foreground px-2 py-1 text-[10px] font-semibold tracking-wider text-background uppercase">
             Get the newsletter
           </span>
@@ -55,7 +56,7 @@ export function NewsletterSection({ image }: { image?: string }) {
               <ArrowUpRight className="size-3" />
             </span>
           </Button>
-        </div>
+        </FadeIn>
       </div>
     </section>
   )

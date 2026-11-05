@@ -5,6 +5,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
+import { FadeIn } from "@/components/shared/fade-in"
+import { dummyVideo } from "@/lib/dummy-media"
 
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
@@ -45,9 +47,11 @@ export function DailyRoutineSection() {
       </SectionHeading>
 
       {/* Media placeholder — same column as the sections above; swap in an image or video */}
-      <div className={CONTENT_WIDTH}>
-        <AspectRatio ratio={2.2} className="overflow-hidden rounded-xl bg-placeholder" />
-      </div>
+      <FadeIn className={CONTENT_WIDTH}>
+        <AspectRatio ratio={2.2} className="overflow-hidden rounded-xl bg-placeholder">
+          <video src={dummyVideo(1)} autoPlay muted loop playsInline className="size-full object-cover" />
+        </AspectRatio>
+      </FadeIn>
     </section>
   )
 }

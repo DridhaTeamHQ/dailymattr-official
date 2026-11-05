@@ -16,6 +16,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react"
+import { dummyImage, dummyVideo } from "@/lib/dummy-media"
 
 export type Feature = {
   icon: LucideIcon
@@ -60,16 +61,19 @@ export const learnFormats: LearnFormat[] = [
         icon: ListChecks,
         title: "Catch the essentials",
         description: "Understand the main development without working through a long article.",
+        image: dummyImage(100, 1200, 1400),
       },
       {
         icon: Compass,
         title: "Find the context",
         description: "See why the story matters beyond its headline.",
+        video: dummyVideo(1),
       },
       {
         icon: Footprints,
         title: "Keep moving",
         description: "Go from one story to the next in a clean, easy-to-follow format.",
+        image: dummyImage(106, 1200, 1400),
       },
     ],
   },
@@ -90,16 +94,19 @@ export const learnFormats: LearnFormat[] = [
         icon: Eye,
         title: "See it clearly",
         description: "Visuals help bring unfamiliar topics into focus.",
+        video: dummyVideo(3),
       },
       {
         icon: PlayCircle,
         title: "Follow the explanation",
         description: "Clear storytelling makes the details easier to follow.",
+        image: dummyImage(112, 1200, 1400),
       },
       {
         icon: Search,
         title: "Explore your curiosity",
         description: "Discover something beyond the day’s biggest headlines.",
+        video: dummyVideo(5),
       },
     ],
   },
@@ -120,16 +127,19 @@ export const learnFormats: LearnFormat[] = [
         icon: Headphones,
         title: "Press play and settle in",
         description: "Give an interesting subject a little more attention.",
+        image: dummyImage(118, 1200, 1400),
       },
       {
         icon: Layers,
         title: "Follow the details",
         description: "Listen as complex ideas unfold step by step.",
+        video: dummyVideo(7),
       },
       {
         icon: Route,
         title: "Take the story with you",
         description: "Fit learning into the moments already in your day.",
+        image: dummyImage(124, 1200, 1400),
       },
     ],
   },
@@ -150,16 +160,19 @@ export const learnFormats: LearnFormat[] = [
         icon: Lightbulb,
         title: "Start with the basics",
         description: "Get familiar with the people, events and ideas involved.",
+        video: dummyVideo(9),
       },
       {
         icon: Network,
         title: "Connect the dots",
         description: "Understand how the pieces relate to one another.",
+        image: dummyImage(130, 1200, 1400),
       },
       {
         icon: Sparkles,
         title: "See why it matters",
         description: "Explore what the bigger picture could mean.",
+        video: dummyVideo(11),
       },
     ],
   },

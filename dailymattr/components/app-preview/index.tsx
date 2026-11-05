@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FormatTabs } from "./format-tabs"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: vertical auto layout, gap 48, padding 16 × 100, centered.
 export function AppPreviewSection() {
@@ -32,7 +33,9 @@ export function AppPreviewSection() {
         </Button>
       </SectionHeading>
 
-      <FormatTabs />
+      <FadeIn className="w-full">
+        <FormatTabs />
+      </FadeIn>
     </section>
   )
 }

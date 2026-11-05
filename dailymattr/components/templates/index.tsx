@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/button"
 import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { Card, Carousel } from "@/components/ui/apple-cards-carousel"
 import { templateCards } from "./templates"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: max width 1540, vertical auto layout, gap 80, padding 0 × 80. The card row
 // uses the shared content column so it lines up with the sections above.
 export function TemplatesSection() {
   return (
     <section className="mx-auto flex w-full max-w-[1540px] flex-col items-center gap-20 px-4 py-20">
-      <div className="flex max-w-3xl flex-col items-center text-center">
+      <FadeIn className="flex max-w-3xl flex-col items-center text-center">
         <p className="mb-4 inline-flex items-center gap-1.5 text-xs font-medium tracking-wide text-destructive uppercase">
           <LayoutTemplate className="size-3.5" />
           Templates
@@ -34,14 +35,15 @@ export function TemplatesSection() {
             <ArrowUpRight className="size-3" />
           </span>
         </Button>
-      </div>
+      </FadeIn>
 
-      <Carousel
-        className={CONTENT_WIDTH}
-        items={templateCards.map((card, index) => (
-          <Card key={card.title} card={card} index={index} layout />
-        ))}
-      />
+      <FadeIn className={CONTENT_WIDTH}>
+        <Carousel
+          items={templateCards.map((card, index) => (
+            <Card key={card.title} card={card} index={index} layout />
+          ))}
+        />
+      </FadeIn>
     </section>
   )
 }

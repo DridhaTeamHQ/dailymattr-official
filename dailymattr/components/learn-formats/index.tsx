@@ -1,6 +1,7 @@
 import { SectionHeading } from "@/components/shared/section-heading"
 import { learnFormats } from "./content"
 import { FormatCard } from "./format-card"
+import { FadeIn } from "@/components/shared/fade-in"
 
 // Figma frame: max width 1540, vertical auto layout, gap 80, padding 16 × 100.
 export function LearnFormatsSection() {
@@ -19,7 +20,9 @@ export function LearnFormatsSection() {
       />
 
       {learnFormats.map((format) => (
-        <FormatCard key={format.id} format={format} />
+        <FadeIn key={format.id}>
+          <FormatCard format={format} />
+        </FadeIn>
       ))}
     </section>
   )
