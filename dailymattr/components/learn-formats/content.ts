@@ -17,7 +17,14 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-export type Feature = { icon: LucideIcon; title: string; description: string }
+export type Feature = {
+  icon: LucideIcon
+  title: string
+  description: string
+  /** Shown in the media box while this feature's tab is active. Leave both empty for the placeholder. */
+  image?: string
+  video?: string
+}
 
 export type LearnFormat = {
   id: string
@@ -47,7 +54,7 @@ export const learnFormats: LearnFormat[] = [
     title: ["Small read.", "Bigger picture."],
     description: "Swipe through visual news cards that bring the key facts into focus.",
     cta: { label: "Explore Pix", href: "/formats/pix" },
-    mediaClassName: "bg-linear-to-b from-muted to-placeholder",
+    mediaClassName: "bg-placeholder",
     features: [
       {
         icon: ListChecks,
@@ -77,7 +84,7 @@ export const learnFormats: LearnFormat[] = [
     description:
       "Explore short video explainers that unpack ideas, events and questions worth your attention.",
     cta: { label: "Discover Qix", href: "/formats/qix" },
-    mediaClassName: "bg-linear-to-b from-muted to-placeholder",
+    mediaClassName: "bg-placeholder",
     features: [
       {
         icon: Eye,
@@ -107,7 +114,7 @@ export const learnFormats: LearnFormat[] = [
     description:
       "Make room for an audio explainer on your commute, your walk or while you get things done.",
     cta: { label: "Listen to Trax", href: "/formats/trax" },
-    mediaClassName: "bg-linear-to-b from-primary/15 to-primary",
+    mediaClassName: "bg-placeholder",
     features: [
       {
         icon: Headphones,
@@ -137,7 +144,7 @@ export const learnFormats: LearnFormat[] = [
     description:
       "Explore the background, connections and questions that help a topic make sense.",
     cta: { label: "Explore Xplaind", href: "/formats/xplaind" },
-    mediaClassName: "bg-linear-to-b from-placeholder to-muted-foreground",
+    mediaClassName: "bg-placeholder",
     features: [
       {
         icon: Lightbulb,
