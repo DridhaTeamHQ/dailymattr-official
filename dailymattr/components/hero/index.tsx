@@ -1,12 +1,13 @@
 import { HeroActions } from "./hero-actions"
-import { HeroShowcase } from "./hero-showcase"
+import { HeroVideoExpand } from "./hero-video-expand"
 import { FadeIn } from "@/components/shared/fade-in"
 import { WordsReveal } from "@/components/shared/words-reveal"
 import { dummyVideo } from "@/lib/dummy-media"
 
 export function Hero() {
   return (
-    <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pt-16 pb-12 text-center sm:px-6 sm:pt-20 lg:px-8">
+    <>
+    <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pt-16 text-center sm:px-6 sm:pt-20 lg:px-8">
       <WordsReveal
         as="p"
         className="text-xs font-medium tracking-wide text-primary uppercase sm:text-sm"
@@ -34,17 +35,18 @@ export function Hero() {
         <HeroActions />
       </FadeIn>
 
-      <FadeIn className="mt-14 w-full" delay={0.32}>
-        <HeroShowcase>
-          <video src={dummyVideo(0)} autoPlay muted loop playsInline className="size-full object-cover" />
-        </HeroShowcase>
-      </FadeIn>
+    </section>
 
+    {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
+    <HeroVideoExpand src={dummyVideo(0)} />
+
+    <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-12 text-center sm:px-6 lg:px-8">
       <FadeIn className="mt-10">
         <p className="text-base font-medium text-foreground sm:text-lg">
           Your daily catch-up. With a clear place to stop.
         </p>
       </FadeIn>
     </section>
+    </>
   )
 }

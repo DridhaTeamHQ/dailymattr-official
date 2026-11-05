@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { Separator } from "@/components/ui/separator"
 import { AnnouncementBar } from "./announcement-bar"
+import { AutoHideHeader } from "./auto-hide-header"
 import { DownloadButton } from "./download-button"
 import { LanguageSwitcher } from "./language-switcher"
 import { Logo } from "./logo"
@@ -14,7 +15,7 @@ export function Navbar() {
     <>
       {/* Scrolls away with the page; only the nav row below stays pinned */}
       <AnnouncementBar />
-      <header className="sticky top-0 z-50 w-full bg-background">
+      <AutoHideHeader>
         <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
           <NavLinks links={leftLinks} className="hidden justify-self-start md:flex" />
           <div className="md:hidden" />
@@ -42,7 +43,7 @@ export function Navbar() {
           </div>
         </div>
         <Separator />
-      </header>
+      </AutoHideHeader>
     </>
   )
 }
