@@ -30,21 +30,39 @@ export const heroChat = {
 export type HowItWorksStep = {
   number: string
   question: string
-  /** "sent" rows are already answered; "active" is the next one to send. */
-  state: "sent" | "active" | "idle"
+  /** NIA's canned reply, shown in the chat panel once the question is sent. */
+  answer: string
 }
 
-export const howItWorksSteps: HowItWorksStep[] = [
-  { number: "01", question: "What happened?", state: "sent" },
-  { number: "02", question: "Why does it matter?", state: "sent" },
-  { number: "03", question: "How did we get here?", state: "active" },
-  { number: "04", question: "What should I understand next?", state: "idle" },
-]
+/** The message NIA greets with before any question is sent. */
+export const howItWorksGreeting =
+  "Hi, I'm NIA. Pick a question on the left and I'll walk you through today's story."
 
-/** Reply skeleton bar widths, straight from the Figma mock. */
-export const howItWorksThread = [
-  { id: "what-happened", question: "What happened?", bars: [466.922, 428.016, 340.469] },
-  { id: "why-matter", question: "Why does it matter?", bars: [447.469, 311.281] },
+export const howItWorksSteps: HowItWorksStep[] = [
+  {
+    number: "01",
+    question: "What happened?",
+    answer:
+      "Reports surfaced overnight of new strikes in the region. Officials haven't confirmed details yet, so treat early numbers and claims with caution.",
+  },
+  {
+    number: "02",
+    question: "Why does it matter?",
+    answer:
+      "Any escalation can ripple outward: oil prices, shipping routes, and diplomatic ties between major powers all react quickly to moves like this.",
+  },
+  {
+    number: "03",
+    question: "How did we get here?",
+    answer:
+      "Tensions have been building for months through sanctions, proxy conflicts, and stalled talks. This is the latest step in a long chain of events.",
+  },
+  {
+    number: "04",
+    question: "What should I understand next?",
+    answer:
+      "Watch for official statements, independent verification from trusted outlets, and how neighbouring countries respond over the next 48 hours.",
+  },
 ]
 
 export const capabilities = [

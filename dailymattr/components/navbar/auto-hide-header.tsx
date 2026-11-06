@@ -5,7 +5,7 @@ import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion
 
 // How far the page must travel in one direction before the bar reacts. Smooth scrolling
 // moves a few pixels per frame, so this looks at the whole stroke, not frame-to-frame jitter.
-const HIDE_AFTER = 48
+const HIDE_AFTER = 120
 const SHOW_AFTER = 24
 // Always show the bar near the top of the page.
 const TOP_ZONE = 80
@@ -45,9 +45,14 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
         reduceMotion
           ? { duration: 0 }
           : {
-              // A soft ease-out glide; the fade trails the slide slightly so it never pops.
-              y: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-              opacity: { duration: hidden ? 0.5 : 0.6, ease: "easeInOut", delay: hidden ? 0.1 : 0 },
+              // Hiding is a slow, even glide (ease-in-out) so the bar drifts away rather than
+              // snapping off; showing again uses a quicker ease-out so it is there when wanted.
+              y: hidden
+                ? { duration: 1.1, ease: [0.45, 0, 0.25, 1] }
+                : { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+              opacity: hidden
+                ? { duration: 0.9, ease: "easeInOut", delay: 0.2 }
+                : { duration: 0.5, ease: "easeOut" },
             }
       }
     >

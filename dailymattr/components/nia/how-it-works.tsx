@@ -1,8 +1,12 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { FadeIn } from "@/components/shared/fade-in";
 import { cn } from "cn";
-import { howItWorksSteps, howItWorksThread } from "./content";
+import { howItWorksGreeting, howItWorksSteps } from "./content";
 import { NiaMark } from "./nia-mark";
 
 /** Ambient blue glow bleeding off the right of the section. Figma node 8856:9959. */
@@ -20,7 +24,7 @@ function StepBadge({
   state,
   children,
 }: {
-  state: string;
+  state: "sent" | "active" | "idle";
   children: React.ReactNode;
 }) {
   if (state === "sent") {
@@ -42,56 +46,116 @@ function StepBadge({
     );
   }
 
+  // Same round send button as the chat panel's input, dimmed while NIA is typing.
   const active = state === "active";
   return (
     <span
       className={cn(
-        "flex h-9 shrink-0 items-center gap-2 rounded-[10px] border pr-3 pl-3.5",
+        "grid size-9 shrink-0 -rotate-90 place-items-center rounded-full bg-[#3979ff] transition-opacity duration-200",
         active
-          ? "border-[rgba(120,150,255,0.6)] bg-gradient-to-r from-[#3979ff] to-[#5b6bff] drop-shadow-[0px_6px_9px_rgba(57,121,255,0.4)]"
-          : "border-[rgba(57,121,255,0.35)] bg-[rgba(57,121,255,0.1)]",
+          ? "drop-shadow-[0px_0px_7px_rgba(57,121,255,0.5)]"
+          : "opacity-40",
       )}
     >
-      <span
-        className={cn(
-          "text-[14px] leading-4 font-medium",
-          active ? "text-white" : "text-[#d6e2ff]",
-        )}
-      >
+      <span className="sr-only">{children}</span>
+      <Image
+        src="/nia/send-14.svg"
+        alt=""
+        width={16}
+        height={16}
+        className="block"
+      />
+    </span>
+  );
+}
+
+type Turn = { index: number; status: "typing" | "done" };
+
+/** How long NIA "types" before its canned reply appears. */
+const TYPING_MS = 1100;
+
+function NiaBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-2.5">
+      <NiaMark size={26} iconSize={14} />
+      <div className="max-w-[486px] flex-1 rounded-[16px] rounded-tl-[4px] border border-white/8 bg-[#1c1c20] p-3.5">
         {children}
-      </span>
-      <span
-        className={cn(
-          "grid size-4 shrink-0 -rotate-90 place-items-center rounded-full",
-          active
-            ? "bg-white drop-shadow-[0px_0px_4px_rgba(57,121,255,0.5)]"
-            : "bg-[rgba(57,121,255,0.1)]",
-        )}
-      >
-        <Image
-          src="/nia/send-small.svg"
-          alt=""
-          width={8}
-          height={8}
-          className="block"
+      </div>
+    </div>
+  );
+}
+
+function TypingDots() {
+  return (
+    <span className="flex h-5 items-center gap-1.5" aria-label="NIA is typing">
+      {[0, 1, 2].map((i) => (
+        <motion.span
+          key={i}
+          className="size-1.5 rounded-full bg-white/50"
+          animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
+          transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
         />
-      </span>
+      ))}
     </span>
   );
 }
 
 export function NiaHowItWorks() {
-  return (
-    // Figma 8856:9958: 120 top, 160 bottom, and the 1401px block leaves ~260px
-    // gutters on the 1920 frame, so on desktop it is sized as 73% of the width.
-    <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-0 lg:pt-[120px] lg:pb-[160px]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-[300px] -right-[200px] h-[700px] w-[900px]"
-        style={{ backgroundImage: glow }}
-      />
+  const reduceMotion = useReducedMotion();
+  const [turns, setTurns] = useState<Turn[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const timers = useRef<number[]>([]);
 
-      <div className="relative mx-auto flex max-w-[1401px] flex-col font-tight lg:w-[73%]">
+  const busy = turns.some((t) => t.status === "typing");
+  const sent = new Set(turns.map((t) => t.index));
+  const allSent = sent.size === howItWorksSteps.length && !busy;
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" });
+  }, [turns, reduceMotion]);
+
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach((id) => window.clearTimeout(id));
+  }, []);
+
+  function send(index: number) {
+    if (busy || sent.has(index)) return;
+    setTurns((prev) => [...prev, { index, status: "typing" }]);
+    const id = window.setTimeout(() => {
+      setTurns((prev) =>
+        prev.map((t) => (t.index === index ? { ...t, status: "done" } : t)),
+      );
+    }, TYPING_MS);
+    timers.current.push(id);
+  }
+
+  function reset() {
+    timers.current.forEach((id) => window.clearTimeout(id));
+    timers.current.length = 0;
+    setTurns([]);
+  }
+
+  const enter = reduceMotion
+    ? { initial: false as const }
+    : {
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as const },
+      };
+
+  return (
+    // Figma 8856:9958: 120 top, 160 bottom. Capped at the same 1200px as the sections
+    // below so it lines up with the rest of the page on very wide screens.
+    <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8 lg:pt-[120px] lg:pb-[160px]">
+      <div className="relative isolate mx-auto flex max-w-[1200px] flex-col font-tight">
+        {/* Glow is anchored to the content, not the screen edge, so it stays behind the panel */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -z-10 top-[180px] -right-[350px] h-[700px] w-[900px]"
+          style={{ backgroundImage: glow }}
+        />
         <FadeIn className="flex flex-col items-center gap-3 text-center lg:gap-4">
           <p className="text-sm leading-[18px] font-medium tracking-[-0.16px] text-[#5b8cff] uppercase lg:text-[18px]">
             How NIA works
@@ -106,69 +170,134 @@ export function NiaHowItWorks() {
           {/* Figma: a 659.5px half-column holding 440px rows, so the gap is built in */}
           <FadeIn className="w-full lg:flex-[659.5_1_0%]">
             <div className="mx-auto flex w-full max-w-[440px] flex-col lg:mx-0">
-              {howItWorksSteps.map((step) => (
-                <div
-                  key={step.number}
-                  className="flex items-center gap-3 border-b border-white/8 py-3 sm:gap-5 lg:py-4"
-                >
-                  <span
+              {howItWorksSteps.map((step, index) => {
+                const isSent = sent.has(index);
+                const state = isSent ? "sent" : busy ? "idle" : "active";
+                return (
+                  <button
+                    key={step.number}
+                    type="button"
+                    onClick={() => send(index)}
+                    disabled={isSent || busy}
+                    aria-label={isSent ? `${step.question} (sent)` : `Send: ${step.question}`}
                     className={cn(
-                      "grid size-9 shrink-0 place-items-center rounded-[10px] border text-[14px] font-medium lg:size-10 lg:text-[15px] tracking-[0.3px] text-white",
-                      step.state === "sent"
-                        ? "border-[#3979ff] bg-[#3979ff]"
-                        : "border-white/10 bg-white/10",
+                      "group flex items-center gap-3 border-b border-white/8 py-3 text-left sm:gap-5 lg:py-4",
+                      !isSent && !busy && "cursor-pointer",
                     )}
                   >
-                    {step.number}
-                  </span>
-                  <p
-                    className={cn(
-                      "flex-1 text-base leading-6 font-medium tracking-[-0.2px] lg:text-[18px]",
-                      step.state === "sent" ? "text-white/60" : "text-white",
-                    )}
+                    <span
+                      className={cn(
+                        "grid size-9 shrink-0 place-items-center rounded-[10px] border text-[14px] font-medium tracking-[0.3px] text-white transition-colors duration-300 lg:size-10 lg:text-[15px]",
+                        isSent
+                          ? "border-[#3979ff] bg-[#3979ff]"
+                          : "border-white/10 bg-white/10",
+                      )}
+                    >
+                      {step.number}
+                    </span>
+                    <span
+                      className={cn(
+                        "flex-1 text-base leading-6 font-medium tracking-[-0.2px] transition-colors duration-300 lg:text-[18px]",
+                        isSent ? "text-white/60" : "text-white",
+                      )}
+                    >
+                      {step.question}
+                    </span>
+                    <span className="transition-transform duration-200 group-enabled:group-hover:-translate-y-0.5 group-enabled:group-active:scale-95">
+                      <StepBadge state={state}>Send</StepBadge>
+                    </span>
+                  </button>
+                );
+              })}
+
+              <AnimatePresence>
+                {allSent && (
+                  <motion.button
+                    type="button"
+                    onClick={reset}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="mt-5 cursor-pointer self-start text-[14px] font-medium text-[#5b8cff] hover:text-[#7fa6ff]"
                   >
-                    {step.question}
-                  </p>
-                  <StepBadge state={step.state}>Send</StepBadge>
-                </div>
-              ))}
+                    Start over
+                  </motion.button>
+                )}
+              </AnimatePresence>
             </div>
           </FadeIn>
 
-          {/* Chat panel */}
+          {/* Chat panel. On desktop it is 754px tall (the Figma size) but never taller than
+              the screen minus the header, so it still fits when the browser is zoomed in.
+              The page is zoomed by --nia-scale, so viewport units are divided back out. */}
           <FadeIn delay={0.15} className="w-full lg:flex-[741.5_1_0%]">
             <div
-              className="flex min-h-[420px] flex-col gap-4 overflow-hidden rounded-[20px] border border-white/8 p-4 font-sans sm:p-10 lg:h-[754px] lg:rounded-[24px]"
+              className="relative flex h-[480px] flex-col gap-4 overflow-hidden rounded-[20px] border border-white/8 px-4 pb-4 font-sans sm:h-[560px] sm:px-10 sm:pb-10 lg:h-[clamp(420px,calc((100svh-112px)/var(--nia-scale,1)),754px)] lg:rounded-[24px]"
               style={{ backgroundImage: panelBackground }}
             >
-              <div className="flex flex-1 flex-col justify-end gap-4">
-                {howItWorksThread.map((turn) => (
-                  <div key={turn.id} className="flex flex-col gap-4">
-                    <div className="flex justify-end">
-                      <div className="rounded-[16px] rounded-br-[4px] bg-gradient-to-r from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
-                        <p className="text-[14px] leading-5 font-medium text-white">
-                          {turn.question}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2.5">
-                      <NiaMark size={26} iconSize={14} />
-                      <div className="flex max-w-[486px] flex-1 flex-col gap-2 rounded-[16px] rounded-tl-[4px] border border-white/8 bg-[#1c1c20] p-3.5">
-                        {turn.bars.map((w, i) => (
-                          <span
-                            key={i}
-                            className="h-2.5 max-w-full rounded-[5px] bg-white/12"
-                            style={{ width: w }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {/* Colourless NIA mark sitting behind the conversation as a watermark */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-[38%] flex -translate-y-1/2 justify-center"
+              >
+                <span className="grid size-[120px] place-items-center rounded-full border border-white/6 bg-white/[0.03] sm:size-[160px]">
+                  <svg viewBox="0 0 18 18" className="size-14 text-white/10 sm:size-20" aria-hidden>
+                    <path
+                      fill="currentColor"
+                      d="M9 1.5L10.725 6.3C10.7977 6.52865 10.9242 6.73652 11.0938 6.90617C11.2635 7.07582 11.4714 7.2023 11.7 7.275L16.5 9L11.7 10.725C11.4714 10.7977 11.2635 10.9242 11.0938 11.0938C10.9242 11.2635 10.7977 11.4714 10.725 11.7L9 16.5L7.275 11.7C7.2023 11.4714 7.07582 11.2635 6.90617 11.0938C6.73652 10.9242 6.52865 10.7977 6.3 10.725L1.5 9L6.3 7.275C6.52865 7.2023 6.73652 7.07582 6.90617 6.90617C7.07582 6.73652 7.2023 6.52865 7.275 6.3L9 1.5Z"
+                    />
+                  </svg>
+                </span>
               </div>
 
-              <div className="flex h-12 items-center justify-between rounded-[12px] border border-white/8 bg-[#1c1c20] px-3.5">
+              <div
+                ref={scrollRef}
+                aria-live="polite"
+                className="relative flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {/* Top padding lives inside the scroller so messages run up to the panel edge */}
+                <div className="mt-auto flex flex-col gap-4 pt-4 sm:pt-10">
+                  <NiaBubble>
+                    <p className="text-[14px] leading-5 text-white/80">
+                      {howItWorksGreeting}
+                    </p>
+                  </NiaBubble>
+
+                  {turns.map((turn) => {
+                    const step = howItWorksSteps[turn.index];
+                    return (
+                      <div key={step.number} className="flex flex-col gap-4">
+                        <motion.div {...enter} className="flex justify-end">
+                          <div className="rounded-[16px] rounded-br-[4px] bg-gradient-to-r from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
+                            <p className="text-[14px] leading-5 font-medium text-white">
+                              {step.question}
+                            </p>
+                          </div>
+                        </motion.div>
+
+                        <motion.div {...enter}>
+                          <NiaBubble>
+                            {turn.status === "typing" ? (
+                              <TypingDots />
+                            ) : (
+                              <motion.p
+                                initial={reduceMotion ? false : { opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                                className="text-[14px] leading-5 text-white/80"
+                              >
+                                {step.answer}
+                              </motion.p>
+                            )}
+                          </NiaBubble>
+                        </motion.div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="relative flex h-12 shrink-0 items-center justify-between rounded-[12px] border border-white/8 bg-[#1c1c20] px-3.5">
                 <p className="text-[14px] leading-5 text-white/40">
                   Ask a follow-up question
                 </p>
