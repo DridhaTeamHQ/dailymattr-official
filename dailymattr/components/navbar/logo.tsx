@@ -10,7 +10,9 @@ export function Logo({ className }: { className?: string }) {
       <Image
         src={primaryLogo}
         alt="dailymattr"
-        priority
+        // Above the fold on every page: fetch it straight away (`priority` is deprecated in Next 16).
+        preload
+        loading="eager"
         className={cn("h-6 w-auto", className)}
       />
     </Link>

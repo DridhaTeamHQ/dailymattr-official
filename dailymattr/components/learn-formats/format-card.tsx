@@ -40,7 +40,7 @@ function Media({ format, className }: { format: LearnFormat; className?: string 
           {f.video ? (
             <video src={f.video} poster={f.image} autoPlay muted loop playsInline className="size-full object-cover" />
           ) : (
-            f.image && <Image src={f.image} alt={f.title} fill className="object-cover" />
+            f.image && <Image src={f.image} alt={f.title} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           )}
         </TabsContent>
       ))}

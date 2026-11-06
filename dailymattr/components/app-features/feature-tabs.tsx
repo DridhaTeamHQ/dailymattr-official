@@ -33,7 +33,14 @@ export function FeatureTabs() {
             value={f.value}
             className="absolute inset-0 animate-in duration-300 fade-in"
           >
-            {f.image && <Image src={f.image} alt={f.label} fill className="object-cover" />}
+            {f.image && <Image
+                src={f.image}
+                alt={f.label}
+                fill
+                // Matches the frame: up to 448px wide on small screens, ~452px at lg, ~537px at 2xl.
+                sizes="(min-width: 1536px) 540px, (min-width: 1024px) 460px, min(100vw, 448px)"
+                className="object-cover"
+              />}
           </TabsContent>
         ))}
       </div>
