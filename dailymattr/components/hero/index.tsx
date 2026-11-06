@@ -38,7 +38,7 @@ export function Hero() {
     </section>
 
     {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
-    <HeroVideoExpand src={dummyVideo(0)} />
+    <HeroVideoExpand src={dummyVideo(1)} />
 
     <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-12 text-center sm:px-6 lg:px-8">
       <FadeIn className="mt-10">
