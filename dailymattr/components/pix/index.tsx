@@ -1,0 +1,5 @@
+export { PixHero } from "./hero"
+export { PixHowItWorks } from "./how-it-works"
+export { PixWhyPix } from "./why-pix"
+export { PixStories } from "./stories"
+export { PixGetStarted } from "./get-started"
