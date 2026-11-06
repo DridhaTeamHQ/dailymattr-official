@@ -19,25 +19,25 @@ const rightCardBackground = [
 
 export function NiaResponsible() {
   return (
-    <section className="px-4 py-24 sm:px-6 lg:px-8 lg:py-[160px]">
-      <div className="mx-auto grid max-w-[1200px] gap-6 lg:grid-cols-2">
+    <section className="px-4 py-16 sm:px-6 lg:px-8 lg:py-[160px]">
+      <div className="mx-auto grid max-w-[1200px] gap-4 font-tight lg:grid-cols-2 lg:gap-6">
         <FadeIn>
           <div
-            className="flex h-full flex-col gap-8 overflow-hidden rounded-[24px] border border-white/8 p-10 lg:p-16"
+            className="flex h-full flex-col gap-6 overflow-hidden rounded-[20px] border border-white/8 p-6 sm:p-10 lg:gap-8 lg:rounded-[24px] lg:p-16"
             style={{ backgroundImage: leftCardBackground }}
           >
-            <span className="grid size-20 shrink-0 place-items-center overflow-hidden rounded-[20px] border border-white/28 bg-white/12">
+            <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-[16px] border lg:size-20 lg:rounded-[20px] border-white/28 bg-white/12">
               <Image src="/nia/shield.svg" alt="" width={34} height={34} className="block" />
             </span>
 
-            <div className="flex flex-col gap-4">
-              <p className="text-[18px] leading-[18px] font-medium text-[#5b8cff] uppercase">
+            <div className="flex flex-col gap-3 lg:gap-4">
+              <p className="text-sm leading-[18px] font-medium text-[#5b8cff] uppercase lg:text-[18px]">
                 Responsible answers
               </p>
-              <h2 className="max-w-[458px] text-[32px] leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+              <h2 className="max-w-[458px] text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
                 Curiosity deserves clarity.
               </h2>
-              <p className="max-w-[458px] text-[20px] leading-[30px] text-white/60">
+              <p className="max-w-[458px] text-base leading-relaxed text-white/60 lg:text-[20px] lg:leading-[30px]">
                 NIA is designed to help you explore information, not replace your judgement.
                 AI-generated answers can make mistakes, so important claims should be checked
                 against reliable sources.
@@ -48,13 +48,13 @@ export function NiaResponsible() {
 
         <FadeIn delay={0.1}>
           <div
-            className="flex h-full flex-col items-center justify-center gap-5 overflow-hidden rounded-[24px] border border-white/8 px-10 py-16"
+            className="flex h-full flex-col items-center justify-center gap-4 overflow-hidden rounded-[20px] border border-white/8 px-6 py-12 sm:px-10 lg:gap-5 lg:rounded-[24px] lg:py-16"
             style={{ backgroundImage: rightCardBackground }}
           >
-            <h2 className="max-w-[506px] text-center text-[32px] leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+            <h2 className="max-w-[506px] text-center text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
               Don&apos;t stop at the headline.
             </h2>
-            <p className="text-center text-[20px] leading-[30px] text-white/60">
+            <p className="text-center text-base leading-relaxed text-white/60 lg:text-[20px] lg:leading-[30px]">
               Ask NIA. Get the context. Make up your own mind.
             </p>
             <Link

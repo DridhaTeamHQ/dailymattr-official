@@ -10,6 +10,11 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  /* NIA page fonts (Figma 8856:9052). --nf-* are set by next/font in app/nia/page.tsx. */
+  --font-tight: var(--nf-inter-tight), var(--font-sans);
+  --font-roboto: var(--nf-roboto), var(--font-sans);
+  /* Helvetica Neue isn't a web font: shows on macOS, falls back to Inter elsewhere. */
+  --font-helvetica: "Helvetica Neue", Helvetica, var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -145,6 +150,15 @@
   --popover-foreground: #ffffff;
   --border: rgb(255 255 255 / 0.08);
   --input: rgb(255 255 255 / 0.12);
+}
+
+/* <html>/<body> sit outside RouteTheme, so paint them dark too. Otherwise the
+   page's white base shows through while the auto-hiding header slides away and
+   on overscroll. color-scheme also gives the scrollbar a dark track. */
+html:has(.theme-nia),
+html:has(.theme-nia) body {
+  background-color: #0e0e0e;
+  color-scheme: dark;
 }
 
 @layer base {

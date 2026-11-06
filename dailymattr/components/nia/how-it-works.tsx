@@ -82,24 +82,26 @@ function StepBadge({
 
 export function NiaHowItWorks() {
   return (
-    <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-[120px]">
+    // Figma 8856:9958: 120 top, 160 bottom, and the 1401px block leaves ~260px
+    // gutters on the 1920 frame, so on desktop it is sized as 73% of the width.
+    <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-0 lg:pt-[120px] lg:pb-[160px]">
       <div
         aria-hidden
         className="pointer-events-none absolute top-[300px] -right-[200px] h-[700px] w-[900px]"
         style={{ backgroundImage: glow }}
       />
 
-      <div className="relative mx-auto flex max-w-[1401px] flex-col">
-        <FadeIn className="flex flex-col items-center gap-4 text-center">
-          <p className="text-[18px] leading-[18px] font-medium tracking-[-0.16px] text-[#5b8cff] uppercase">
+      <div className="relative mx-auto flex max-w-[1401px] flex-col font-tight lg:w-[73%]">
+        <FadeIn className="flex flex-col items-center gap-3 text-center lg:gap-4">
+          <p className="text-sm leading-[18px] font-medium tracking-[-0.16px] text-[#5b8cff] uppercase lg:text-[18px]">
             How NIA works
           </p>
-          <h2 className="text-[32px] leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+          <h2 className="text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
             One question can take you further.
           </h2>
         </FadeIn>
 
-        <div className="mt-16 flex flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-0">
+        <div className="mt-10 flex flex-col items-center gap-8 lg:mt-16 lg:flex-row lg:items-center lg:gap-0">
           {/* Question ladder */}
           {/* Figma: a 659.5px half-column holding 440px rows, so the gap is built in */}
           <FadeIn className="w-full lg:flex-[659.5_1_0%]">
@@ -107,11 +109,11 @@ export function NiaHowItWorks() {
               {howItWorksSteps.map((step) => (
                 <div
                   key={step.number}
-                  className="flex items-center gap-5 border-b border-white/8 py-4"
+                  className="flex items-center gap-3 border-b border-white/8 py-3 sm:gap-5 lg:py-4"
                 >
                   <span
                     className={cn(
-                      "grid size-10 shrink-0 place-items-center rounded-[10px] border text-[15px] font-medium tracking-[0.3px] text-white",
+                      "grid size-9 shrink-0 place-items-center rounded-[10px] border text-[14px] font-medium lg:size-10 lg:text-[15px] tracking-[0.3px] text-white",
                       step.state === "sent"
                         ? "border-[#3979ff] bg-[#3979ff]"
                         : "border-white/10 bg-white/10",
@@ -121,7 +123,7 @@ export function NiaHowItWorks() {
                   </span>
                   <p
                     className={cn(
-                      "flex-1 text-[18px] leading-6 font-medium tracking-[-0.2px]",
+                      "flex-1 text-base leading-6 font-medium tracking-[-0.2px] lg:text-[18px]",
                       step.state === "sent" ? "text-white/60" : "text-white",
                     )}
                   >
@@ -136,7 +138,7 @@ export function NiaHowItWorks() {
           {/* Chat panel */}
           <FadeIn delay={0.15} className="w-full lg:flex-[741.5_1_0%]">
             <div
-              className="flex min-h-[560px] flex-col gap-4 overflow-hidden rounded-[24px] border border-white/8 p-6 sm:p-10 lg:h-[754px]"
+              className="flex min-h-[420px] flex-col gap-4 overflow-hidden rounded-[20px] border border-white/8 p-4 font-sans sm:p-10 lg:h-[754px] lg:rounded-[24px]"
               style={{ backgroundImage: panelBackground }}
             >
               <div className="flex flex-1 flex-col justify-end gap-4">

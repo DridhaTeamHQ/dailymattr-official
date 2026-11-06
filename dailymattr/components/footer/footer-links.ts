@@ -2,41 +2,47 @@ export type FooterGroup = { title: string; links: { label: string; href: string 
 
 const toLinks = (labels: string[]) => labels.map((label) => ({ label, href: "#" }))
 
-// Link groups from the Figma frame. Replace "#" with real routes as pages are added.
+// Link groups from the Figma footer (node 8856:9310). Replace "#" with real routes as pages are added.
 export const footerGroups: FooterGroup[] = [
   {
-    title: "Product",
-    links: toLinks(["Training Platform", "Skill Management", "Audits", "Integrations", "FAQ"]),
-  },
-  {
-    title: "Features",
+    title: "Latest Stories",
     links: toLinks([
-      "AI Course Builder",
-      "AI Search",
-      "Checklists",
-      "Manager Dashboard",
-      "Document Storage",
-      "Translations",
-      "Communication",
-      "Custom Branding",
+      "Top",
+      "India",
+      "World",
+      "Business",
+      "Technology",
+      "Sports",
+      "Entertainment",
+      "Lifestyle",
     ]),
   },
   {
-    title: "Use Cases",
-    links: toLinks([
-      "Onboarding",
-      "Staff Development",
-      "Employee Assessment",
-      "Employee Training",
-      "Training Management",
-    ]),
+    title: "Inside DailyMattr",
+    links: toLinks(["About", "Editorial", "Newsroom", "Careers", "Contact"]),
   },
-  { title: "Company", links: toLinks(["Careers", "Pricing", "Guides", "Templates"]) },
-  {
-    title: "Industries",
-    links: toLinks(["Hospitality & Leisure", "Food production", "Retail & Service"]),
-  },
-  { title: "Security", links: toLinks(["Trust Center", "Status"]) },
+  { title: "Legal", links: toLinks(["Privacy", "Terms", "Cookies"]) },
+  { title: "Support", links: toLinks(["Help Center", "Advertise", "Press"]) },
 ]
 
 export const legalLinks = toLinks(["Privacy Policy", "Terms & Conditions"])
+
+// Badge artwork is exported at 3× (132px tall); shown at the design's 44px height.
+export const storeBadges = [
+  {
+    id: "app-store",
+    href: "#",
+    image: "/downlods/apple.png",
+    width: 416,
+    height: 132,
+    alt: "Download on the App Store",
+  },
+  {
+    id: "google-play",
+    href: "#",
+    image: "/downlods/Text.png",
+    width: 441,
+    height: 132,
+    alt: "Get it on Google Play",
+  },
+]

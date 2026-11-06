@@ -13,16 +13,16 @@ const askButtonBackground = [
 
 export function NiaHero() {
   return (
-    <section className="relative overflow-hidden bg-[#0e0e0e] px-4 py-24 sm:px-6 lg:px-8 lg:pt-[185px] lg:pb-[204px]">
+    <section className="relative overflow-hidden bg-[#0e0e0e] px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-[140px] lg:pb-[204px]">
       {/* Figma 8856:9100: copy (540) + 133 gap + chat card (430) = a 1103px column */}
-      <div className="mx-auto flex max-w-[1103px] flex-col items-center gap-16 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+      <div className="mx-auto flex max-w-[1103px] flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         {/* Copy */}
-        <FadeIn className="flex w-full max-w-[540px] flex-col gap-6">
+        <FadeIn className="flex w-full max-w-[540px] flex-col gap-5 font-helvetica lg:gap-6">
           <span className="w-fit rounded-[6px] bg-[rgba(28,104,255,0.1)] px-2 py-1 text-[13px] leading-4 font-medium tracking-[0.78px] text-[#3979ff] uppercase shadow-[0px_3px_3px_0px_rgba(39,39,42,0.3),inset_0px_0px_3px_0px_rgba(255,255,255,0.25)]">
             NIA · Ask
           </span>
 
-          <h1 className="flex flex-col text-[44px] leading-[1] font-medium tracking-[-2px] text-white sm:text-[56px] lg:text-[64px] lg:leading-[64px] lg:tracking-[-3px]">
+          <h1 className="flex flex-col text-4xl leading-[1.05] font-medium tracking-[-1.5px] text-white sm:text-[52px] sm:leading-none lg:text-[64px] lg:leading-[64px] lg:tracking-[-3px]">
             <span>Know more.</span>
             <span className="flex gap-3">
               <span className="bg-[linear-gradient(90.4deg,rgb(125,41,169)_28.7%,rgb(57,121,255)_90%)] bg-clip-text text-transparent">
@@ -32,7 +32,7 @@ export function NiaHero() {
             </span>
           </h1>
 
-          <p className="max-w-[500px] text-[18px] leading-7 tracking-[-0.2px] text-[#696969]">
+          <p className="max-w-[500px] text-base leading-6 tracking-[-0.2px] text-[#696969] lg:text-[18px] lg:leading-7">
             The news is only the beginning. Ask NIA to explain a story, simplify a complex
             topic, or help you connect the dots.
           </p>
@@ -75,17 +75,17 @@ export function NiaHero() {
 
           <div className="relative flex flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_13.11%,rgba(255,255,255,0)_100%),linear-gradient(90deg,rgb(14,14,15)_0%,rgb(14,14,15)_100%)] shadow-[0px_7px_8px_-4px_rgba(0,0,0,0.2),0px_11px_28px_-4px_rgba(0,0,0,0.2),0px_0px_0px_0.5px_rgba(255,255,255,0.16),inset_0px_0px_11px_0px_rgba(255,255,255,0.1)]">
             {/* Card header */}
-            <div className="flex h-[90px] shrink-0 items-center gap-3 pr-4 pl-7">
+            <div className="flex h-[72px] shrink-0 items-center gap-3 pr-4 pl-5 font-roboto lg:h-[90px] lg:pl-7">
               <NiaMark size={34} iconSize={18} />
-              <p className="text-[20px] leading-[26px] font-semibold tracking-[-0.3px] text-white">
+              <p className="text-[17px] leading-[22px] font-semibold tracking-[-0.3px] text-white lg:text-[20px] lg:leading-[26px]">
                 {heroChat.title}
               </p>
             </div>
 
             {/* Conversation */}
-            <div className="flex flex-col items-end gap-4 px-7 pb-2">
-              <div className="w-[201px] rounded-[22px] bg-white/8 px-5 py-3">
-                <p className="text-[15px] leading-[22px] text-white/90">{heroChat.question}</p>
+            <div className="flex flex-col items-end gap-4 px-5 pb-2 font-roboto lg:px-7">
+              <div className="w-[185px] rounded-[20px] bg-white/8 px-4 py-2.5 lg:w-[201px] lg:rounded-[22px] lg:px-5 lg:py-3">
+                <p className="text-[14px] leading-5 text-white/90 lg:text-[15px] lg:leading-[22px]">{heroChat.question}</p>
               </div>
 
               <div className="flex w-full flex-col gap-3">
@@ -94,23 +94,23 @@ export function NiaHero() {
                   <p className="text-[14px] leading-[18px] font-semibold text-white/70">Nia</p>
                 </div>
 
-                <p className="max-w-[350px] text-[18px] leading-[27px] tracking-[-0.1px] text-white/95">
+                <p className="max-w-[350px] text-[15px] leading-[23px] tracking-[-0.1px] text-white/95 lg:text-[18px] lg:leading-[27px]">
                   {heroChat.intro}
                 </p>
 
                 <ul className="flex flex-col gap-2.5">
                   {heroChat.bullets.map((b) => (
                     <li key={b.id} className="flex gap-2.5">
-                      <span className="text-[18px] leading-[27px] text-white/50">•</span>
+                      <span className="font-sans text-[15px] leading-[23px] text-white/50 lg:text-[18px] lg:leading-[27px]">•</span>
                       <span
-                        className={`max-w-[330px] text-[18px] leading-[27px] tracking-[-0.1px] ${
+                        className={`max-w-[330px] text-[15px] leading-[23px] tracking-[-0.1px] lg:text-[18px] lg:leading-[27px] ${
                           b.muted ? "text-white/32" : "text-white/95"
                         }`}
                       >
                         {"highlight" in b ? (
                           <>
                             {b.lead}{" "}
-                            <span className="inline-block rounded-[5px] bg-[#3979ff] px-1.5 align-baseline text-white drop-shadow-[0px_0px_6px_rgba(91,140,255,0.45)]">
+                            <span className="inline-block rounded-[5px] bg-[#3979ff] px-1.5 font-sans align-baseline text-white drop-shadow-[0px_0px_6px_rgba(91,140,255,0.45)]">
                               {b.highlight}
                             </span>{" "}
                             {b.trail}
@@ -126,7 +126,7 @@ export function NiaHero() {
             </div>
 
             {/* Composer */}
-            <div className="mt-auto flex flex-col bg-gradient-to-b from-[rgba(39,39,42,0)] via-[rgba(26,26,28,0.98)] via-[76.9%] to-[#27272a] to-[124.6%] px-2 py-7">
+            <div className="mt-auto flex flex-col bg-gradient-to-b from-[rgba(39,39,42,0)] via-[rgba(26,26,28,0.98)] via-[76.9%] to-[#27272a] to-[124.6%] px-2 py-5 lg:py-7">
               <div className="relative flex h-16 items-start rounded-[16px] bg-[linear-gradient(180deg,rgba(0,0,0,0.34)_22.4%,rgba(0,0,0,0.067)_100%),linear-gradient(90deg,rgb(38,38,42)_0%,rgb(38,38,42)_100%)] py-2.5 pr-[50px] pl-4 shadow-[0px_0px_0px_0.75px_rgba(255,255,255,0.08),0px_2px_5px_0px_rgba(0,0,0,0.04)]">
                 <p className="text-[13px] leading-5 tracking-[-0.065px] text-[#606169]">
                   {heroChat.placeholder}
