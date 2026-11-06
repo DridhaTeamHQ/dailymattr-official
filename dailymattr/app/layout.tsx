@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { RouteTheme } from "@/components/shared/route-theme";
 import { SmoothScroll } from "@/components/shared/smooth-scroll";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
@@ -21,9 +22,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <SmoothScroll>
-          <Navbar />
-          {children}
-          <Footer />
+          <RouteTheme>
+            <Navbar />
+            {children}
+            <Footer />
+          </RouteTheme>
         </SmoothScroll>
       </body>
     </html>

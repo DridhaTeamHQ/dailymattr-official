@@ -10,7 +10,7 @@ import { footerGroups, legalLinks } from "./footer-links"
 
 export function Footer() {
   return (
-    <footer className="w-full px-4 pt-8 pb-10">
+    <footer className="w-full bg-background px-4 pt-8 pb-10">
       <div className={cn(CONTENT_WIDTH, "flex flex-col gap-12")}>
         <div className="grid gap-12 lg:grid-cols-[1fr_auto]">
           {/* Sign-up sits right under the tagline (Figma), not pinned to the bottom */}
