@@ -129,6 +129,24 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/*
+ * NIA page chrome. The shared navbar and footer read these tokens, so wrapping them in
+ * .theme-nia (see components/shared/route-theme.tsx) turns them dark on /nia only.
+ * Values from Figma: navigation 8856:9064, footer 8856:9310.
+ */
+.theme-nia {
+  --background: #0e0e0e;
+  --foreground: #ffffff;
+  --muted: rgb(255 255 255 / 0.08);
+  --muted-foreground: rgb(255 255 255 / 0.62);
+  --accent: rgb(255 255 255 / 0.08);
+  --accent-foreground: #ffffff;
+  --popover: #18181b;
+  --popover-foreground: #ffffff;
+  --border: rgb(255 255 255 / 0.08);
+  --input: rgb(255 255 255 / 0.12);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

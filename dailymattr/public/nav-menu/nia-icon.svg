@@ -1,0 +1,29 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="NIA - Icon">
+<g clip-path="url(#clip0_0_27)">
+<circle id="Ellipse 93" cx="16" cy="16" r="16" fill="#3979FF"/>
+<g id="Ellipse 94" filter="url(#filter0_f_0_27)">
+<path d="M6.41456 5.63128C1.95305 9.59928 2.2318 16.8953 2.92891 27.1353C-2.53814 27.1353 -1.11422 16.7944 -1.11422 11.7753C-1.11422 6.75612 9.87053 -1.53672 15.3376 -1.53672C20.8046 -1.53672 12.828 1.02328 6.41456 5.63128Z" fill="#91B4FF"/>
+</g>
+<g id="Ellipse 95" filter="url(#filter1_f_0_27)">
+<path d="M23.1961 27.3921C28.8942 22.5738 28.5382 13.7144 27.6479 1.28009C34.6303 1.28009 32.8117 13.8368 32.8117 19.9315C32.8117 26.0262 18.7822 36.0961 11.7997 36.0961C4.81734 36.0961 15.005 32.9875 23.1961 27.3921Z" fill="#8239BA"/>
+</g>
+<path id="Star 6" d="M15.6202 7.76663C15.6717 7.48714 16.0723 7.48714 16.1238 7.76663L17.3135 14.2251C17.3328 14.3295 17.4145 14.4112 17.5189 14.4305L23.9774 15.6202C24.2569 15.6717 24.2569 16.0723 23.9774 16.1238L17.5189 17.3135C17.4145 17.3328 17.3328 17.4145 17.3135 17.5189L16.1238 23.9774C16.0723 24.2569 15.6717 24.2569 15.6202 23.9774L14.4305 17.5189C14.4112 17.4145 14.3295 17.3328 14.2251 17.3135L7.76663 16.1238C7.48714 16.0723 7.48714 15.6717 7.76663 15.6202L14.2251 14.4305C14.3295 14.4112 14.4112 14.3295 14.4305 14.2251L15.6202 7.76663Z" fill="white"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_27" x="-26.8813" y="-27.1367" width="69.6406" height="79.872" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="12.8" result="effect1_foregroundBlur_0_27"/>
+</filter>
+<filter id="filter1_f_0_27" x="-16.127" y="-24.3199" width="74.752" height="86.016" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="12.8" result="effect1_foregroundBlur_0_27"/>
+</filter>
+<clipPath id="clip0_0_27">
+<rect width="32" height="32" rx="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>
