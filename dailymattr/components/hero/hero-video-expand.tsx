@@ -51,6 +51,8 @@ const SHRINK = 0.7 // full screen → card
 const TOTAL = GROW + HOLD + SHRINK
 const GROW_END = GROW / TOTAL
 const SHRINK_START = (GROW + HOLD) / TOTAL
+// Where the shrunk card ends: this far below the top of the screen (px at a 16px root).
+const END_TOP = 80
 
 /**
  * The hero video. On desktop it starts as the contained 2:1 card and, as the page scrolls,
@@ -139,11 +141,17 @@ function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; ch
   // card sitting 80% down the screen (0) to the moment the pin releases (1).
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end end"] })
 
+  // The shrink ends with the card near the top of the screen (END_TOP below the top edge,
+  // clear of the navbar), not at the bottom: the pinned stage is a full screen tall, so a
+  // bottom-aligned card left an empty band above it. The content after the stage is pulled up
+  // by the stage's unused height (see marginBottom below) so it sits right under the card.
+  const endTop = END_TOP * size.r
+  const endBox: Box = { ...cardBox(size, "top"), y: endTop }
   const boxAt = (p: number): Box => {
     const full = fullBox(size, ratio)
     if (p <= GROW_END) return mixBox(cardBox(size, "top"), full, ease(clamp01(p / GROW_END)))
     if (p < SHRINK_START) return full
-    return mixBox(full, cardBox(size, "bottom"), ease(clamp01((p - SHRINK_START) / (1 - SHRINK_START))))
+    return mixBox(full, endBox, ease(clamp01((p - SHRINK_START) / (1 - SHRINK_START))))
   }
   /** 0 when full-screen, 1 when a card: drives the corner radius and the briefing card. */
   const cardness = (p: number) =>
@@ -172,16 +180,21 @@ function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; ch
 
   return (
     // Pinned for the hold and the shrink; the grow happens while the card rises to the top.
-    <div ref={ref} className="relative mt-14" style={{ height: h * (1 + HOLD + SHRINK) }}>
-      <div className="sticky top-0 overflow-hidden" style={{ height: h }}>
+    <div
+      ref={ref}
+      className="relative mt-14"
+      style={{ height: h * (1 + HOLD + SHRINK), marginBottom: -Math.max(0, h - endTop - endBox.height) }}
+    >
+      {/* The empty part of the stage overlaps the next content, so it lets clicks through. */}
+      <div className="pointer-events-none sticky top-0 overflow-hidden" style={{ height: h }}>
         <motion.div
-          className="absolute top-0 left-0 overflow-hidden bg-placeholder"
+          className="pointer-events-auto absolute top-0 left-0 overflow-hidden bg-placeholder"
           style={{ x, y, width, height, borderRadius: radius }}
         >
           {children}
         </motion.div>
         <motion.div
-          className="absolute"
+          className="pointer-events-auto absolute"
           style={{ top: cardTop, right: cardRight, opacity: cardOpacity }}
         >
           <BriefingCard />
