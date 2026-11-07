@@ -12,3 +12,17 @@ export const dummyVideos = [
 ]
 
 export const dummyVideo = (i: number) => dummyVideos[i % dummyVideos.length]
+
+/**
+ * Hero clip: aerial flyover of a busy city at sunset, 25s, 1920×1080. Mixkit free stock
+ * video #49837 (mixkit.co/free-stock-video/landscape-from-an-aerial-view-of-a-big-city-49837),
+ * Mixkit License. Swap for the real hero video when it is ready.
+ */
+export const heroVideo = "https://assets.mixkit.co/videos/49837/49837-1080.mp4"
+
+/**
+ * "Make staying informed part of your routine": hands leafing through the day's newspaper,
+ * 9s, 1920×1080. Mixkit free stock video #41192
+ * (mixkit.co/free-stock-video/pov-flipping-through-a-newspaper-41192).
+ */
+export const routineVideo = "https://assets.mixkit.co/videos/41192/41192-1080.mp4"

@@ -2,7 +2,7 @@ import { HeroActions } from "./hero-actions"
 import { HeroVideoExpand } from "./hero-video-expand"
 import { FadeIn } from "@/components/shared/fade-in"
 import { WordsReveal } from "@/components/shared/words-reveal"
-import { dummyVideo } from "@/lib/dummy-media"
+import { heroVideo } from "@/lib/dummy-media"
 
 export function Hero() {
   return (
@@ -31,7 +31,7 @@ export function Hero() {
     </section>
 
     {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
-    <HeroVideoExpand src={dummyVideo(1)} />
+    <HeroVideoExpand src={heroVideo} />
 
     <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-12 text-center sm:px-6 lg:px-8">
       <FadeIn className="mt-10">
