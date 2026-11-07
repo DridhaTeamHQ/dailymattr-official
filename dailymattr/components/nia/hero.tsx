@@ -13,7 +13,7 @@ const askButtonBackground = [
 
 export function NiaHero() {
   return (
-    <section className="relative overflow-hidden bg-[#0e0e0e] px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-[140px] lg:pb-[204px]">
+    <section className="relative overflow-hidden bg-[linear-gradient(90deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.1)_100%),linear-gradient(90deg,rgb(15,15,15)_0%,rgb(15,15,15)_100%)] px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-[140px] lg:pb-[204px]">
       {/* Figma 8856:9100: copy (540) + 133 gap + chat card (430) = a 1103px column */}
       <div className="mx-auto flex max-w-[1103px] flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         {/* Copy */}
@@ -66,11 +66,11 @@ export function NiaHero() {
           {/* Glows sitting behind the card */}
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-9 left-1/2 h-[168px] w-[360px] max-w-full -translate-x-1/2 rounded-full bg-gradient-to-r from-[rgba(175,117,255,0.4)] to-[rgba(77,144,253,0.4)] opacity-90 blur-[72px]"
+            className="pointer-events-none absolute -top-9 left-1/2 h-[168px] w-[360px] max-w-full -translate-x-1/2 rounded-[122.963px] bg-linear-to-r/srgb from-[rgba(175,117,255,0.4)] from-[2.404%] to-[rgba(77,144,253,0.4)] to-[97.5%] opacity-90 blur-[72px]"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-1 left-1/2 h-[78px] w-[320px] max-w-full -translate-x-1/2 rounded-full bg-gradient-to-r from-[rgba(175,117,255,0.08)] to-[rgba(77,144,253,0.08)] blur-[36px]"
+            className="pointer-events-none absolute -top-[5px] left-1/2 h-[78px] w-[320px] max-w-full -translate-x-1/2 rounded-full bg-linear-to-r/srgb from-[rgba(175,117,255,0.08)] from-[2.404%] to-[rgba(77,144,253,0.08)] to-[97.5%] blur-[36px]"
           />
 
           <div className="relative flex flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_13.11%,rgba(255,255,255,0)_100%),linear-gradient(90deg,rgb(14,14,15)_0%,rgb(14,14,15)_100%)] shadow-[0px_7px_8px_-4px_rgba(0,0,0,0.2),0px_11px_28px_-4px_rgba(0,0,0,0.2),0px_0px_0px_0.5px_rgba(255,255,255,0.16),inset_0px_0px_11px_0px_rgba(255,255,255,0.1)]">
@@ -126,7 +126,7 @@ export function NiaHero() {
             </div>
 
             {/* Composer */}
-            <div className="mt-auto flex flex-col bg-gradient-to-b from-[rgba(39,39,42,0)] via-[rgba(26,26,28,0.98)] via-[76.9%] to-[#27272a] to-[124.6%] px-2 py-5 lg:py-7">
+            <div className="mt-auto flex flex-col bg-linear-to-b/srgb from-[rgba(39,39,42,0)] via-[rgba(26,26,28,0.98)] via-[76.9%] to-[#27272a] to-[124.6%] px-2 py-5 lg:py-7">
               <div className="relative flex h-16 items-start rounded-[16px] bg-[linear-gradient(180deg,rgba(0,0,0,0.34)_22.4%,rgba(0,0,0,0.067)_100%),linear-gradient(90deg,rgb(38,38,42)_0%,rgb(38,38,42)_100%)] py-2.5 pr-[50px] pl-4 shadow-[0px_0px_0px_0.75px_rgba(255,255,255,0.08),0px_2px_5px_0px_rgba(0,0,0,0.04)]">
                 <p className="text-sm leading-5 tracking-[-0.065px] text-[#606169]">
                   {heroChat.placeholder}

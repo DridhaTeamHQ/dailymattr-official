@@ -6,7 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { FadeIn } from "@/components/shared/fade-in";
 import { cn } from "cn";
-import { howItWorksGreeting, howItWorksSteps } from "./content";
+import { howItWorksIntro, howItWorksSteps } from "./content";
 import { NiaMark } from "./nia-mark";
 
 /** Ambient blue glow bleeding off the right of the section. Figma node 8856:9959. */
@@ -24,35 +24,34 @@ function StepBadge({
   state,
   children,
 }: {
-  state: "sent" | "active" | "idle";
+  /** sent = already asked, ready = the next question, pending = later questions. */
+  state: "sent" | "ready" | "pending";
   children: React.ReactNode;
 }) {
+  // Once sent, the same round blue button shows a tick instead of the arrow.
   if (state === "sent") {
     return (
-      <span className="flex h-9 shrink-0 items-center gap-2 rounded-[10px] border border-white/8 bg-white/4 px-3">
-        <span className="grid size-[18px] shrink-0 place-items-center rounded-full bg-[#3979ff]">
-          <Image
-            src="/nia/check.svg"
-            alt=""
-            width={11}
-            height={11}
-            className="block"
-          />
-        </span>
-        <span className="text-sm leading-4 font-medium text-white/55">
-          Sent
-        </span>
+      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#3979ff]">
+        <span className="sr-only">Sent</span>
+        <Image
+          src="/nia/check.svg"
+          alt=""
+          width={16}
+          height={16}
+          className="block"
+        />
       </span>
     );
   }
 
-  // Same round send button as the chat panel's input, dimmed while NIA is typing.
-  const active = state === "active";
+  // Icon-only send button, the same one as the chat panel's input (Figma 8856:10036).
+  // Ready (next question) glows; pending (later questions) is dimmed.
+  const ready = state === "ready";
   return (
     <span
       className={cn(
-        "grid size-9 shrink-0 -rotate-90 place-items-center rounded-full bg-[#3979ff] transition-opacity duration-200",
-        active
+        "grid size-9 shrink-0 -rotate-90 place-items-center rounded-full bg-[#3979ff] transition-all duration-300",
+        ready
           ? "drop-shadow-[0px_0px_7px_rgba(57,121,255,0.5)]"
           : "opacity-40",
       )}
@@ -109,6 +108,8 @@ export function NiaHowItWorks() {
   const busy = turns.some((t) => t.status === "typing");
   const sent = new Set(turns.map((t) => t.index));
   const allSent = sent.size === howItWorksSteps.length && !busy;
+  // Questions are asked in order: the first unsent one is the only one you can send.
+  const nextIndex = howItWorksSteps.findIndex((_, i) => !sent.has(i));
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -121,7 +122,7 @@ export function NiaHowItWorks() {
   }, []);
 
   function send(index: number) {
-    if (busy || sent.has(index)) return;
+    if (busy || index !== nextIndex) return;
     setTurns((prev) => [...prev, { index, status: "typing" }]);
     const id = window.setTimeout(() => {
       setTurns((prev) =>
@@ -172,17 +173,24 @@ export function NiaHowItWorks() {
             <div className="mx-auto flex w-full max-w-[440px] flex-col lg:mx-0">
               {howItWorksSteps.map((step, index) => {
                 const isSent = sent.has(index);
-                const state = isSent ? "sent" : busy ? "idle" : "active";
+                const isNext = index === nextIndex && !busy;
+                const state = isSent ? "sent" : isNext ? "ready" : "pending";
                 return (
                   <button
                     key={step.number}
                     type="button"
                     onClick={() => send(index)}
-                    disabled={isSent || busy}
-                    aria-label={isSent ? `${step.question} (sent)` : `Send: ${step.question}`}
+                    disabled={!isNext}
+                    aria-label={
+                      isSent
+                        ? `${step.question} (sent)`
+                        : isNext
+                          ? `Send: ${step.question}`
+                          : `${step.question} (not sent yet)`
+                    }
                     className={cn(
                       "group flex items-center gap-3 border-b border-white/8 py-3 text-left sm:gap-5 lg:py-4",
-                      !isSent && !busy && "cursor-pointer",
+                      isNext && "cursor-pointer",
                     )}
                   >
                     <span
@@ -235,40 +243,39 @@ export function NiaHowItWorks() {
               className="relative flex h-[480px] flex-col gap-4 overflow-hidden rounded-[20px] border border-white/8 px-4 pb-4 font-sans sm:h-[560px] sm:px-10 sm:pb-10 lg:h-[clamp(420px,calc((100svh-112px)/var(--nia-scale,1)),754px)] lg:rounded-[24px]"
               style={{ backgroundImage: panelBackground }}
             >
-              {/* Colourless NIA mark sitting behind the conversation as a watermark */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-[38%] flex -translate-y-1/2 justify-center"
-              >
-                <span className="grid size-[120px] place-items-center rounded-full border border-white/6 bg-white/[0.03] sm:size-[160px]">
-                  <svg viewBox="0 0 18 18" className="size-14 text-white/10 sm:size-20" aria-hidden>
-                    <path
-                      fill="currentColor"
-                      d="M9 1.5L10.725 6.3C10.7977 6.52865 10.9242 6.73652 11.0938 6.90617C11.2635 7.07582 11.4714 7.2023 11.7 7.275L16.5 9L11.7 10.725C11.4714 10.7977 11.2635 10.9242 11.0938 11.0938C10.9242 11.2635 10.7977 11.4714 10.725 11.7L9 16.5L7.275 11.7C7.2023 11.4714 7.07582 11.2635 6.90617 11.0938C6.73652 10.9242 6.52865 10.7977 6.3 10.725L1.5 9L6.3 7.275C6.52865 7.2023 6.73652 7.07582 6.90617 6.90617C7.07582 6.73652 7.2023 6.52865 7.275 6.3L9 1.5Z"
-                    />
-                  </svg>
-                </span>
-              </div>
-
               <div
                 ref={scrollRef}
                 aria-live="polite"
                 className="relative flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               >
+                {/* Intro centred in the empty chat area; fades away once the chat starts */}
+                <AnimatePresence>
+                  {turns.length === 0 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.3 }}
+                      className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center font-tight"
+                    >
+                      <p className="text-xl leading-tight font-medium text-white sm:text-2xl">
+                        {howItWorksIntro.title}
+                      </p>
+                      <p className="max-w-[380px] text-sm leading-5 text-white/55 sm:text-base sm:leading-6">
+                        {howItWorksIntro.body}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Top padding lives inside the scroller so messages run up to the panel edge */}
                 <div className="mt-auto flex flex-col gap-4 pt-4 sm:pt-10">
-                  <NiaBubble>
-                    <p className="text-sm leading-5 text-white/80">
-                      {howItWorksGreeting}
-                    </p>
-                  </NiaBubble>
-
                   {turns.map((turn) => {
                     const step = howItWorksSteps[turn.index];
                     return (
                       <div key={step.number} className="flex flex-col gap-4">
                         <motion.div {...enter} className="flex justify-end">
-                          <div className="rounded-[16px] rounded-br-[4px] bg-gradient-to-r from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
+                          <div className="rounded-[16px] rounded-br-[4px] bg-linear-to-r/srgb from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
                             <p className="text-sm leading-5 font-medium text-white">
                               {step.question}
                             </p>

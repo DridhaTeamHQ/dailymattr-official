@@ -41,7 +41,7 @@ export function NiaScaledMain({
   }, [])
 
   return (
-    <main className={cn("flex-1 bg-[#0f0f0f] lg:[zoom:var(--nia-scale,1)]", className)}>
+    <main className={cn("flex-1 bg-[#0e0e10] lg:[zoom:var(--nia-scale,1)]", className)}>
       {children}
     </main>
   )
