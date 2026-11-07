@@ -9,7 +9,7 @@ export function PixTag({ children, className }: { children: React.ReactNode; cla
   return (
     <span
       className={cn(
-        "w-fit rounded-[6px] bg-[#eaf1ff] px-2 py-1 font-helvetica text-[13px] leading-4 font-medium tracking-[0.78px] whitespace-nowrap text-[#3979ff] uppercase",
+        "w-fit rounded-[0.375rem] bg-[#eaf1ff] px-2 py-1 font-helvetica text-sm leading-4 font-medium tracking-[0.0488rem] whitespace-nowrap text-[#3979ff] uppercase",
         className,
       )}
     >
@@ -23,9 +23,9 @@ export function PixButton({ href, children }: { href: string; children: React.Re
   return (
     <Link
       href={href}
-      className="flex h-10 w-fit items-center gap-2.5 rounded-[13px] bg-[#3979ff] py-2 pr-2 pl-4 font-helvetica transition-[translate,background-color] hover:-translate-y-px hover:bg-[#2f6bf0]"
+      className="flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-[#3979ff] py-2 pr-2 pl-4 font-helvetica transition-[translate,background-color] hover:-translate-y-px hover:bg-[#2f6bf0]"
     >
-      <span className="text-[16px] leading-4 font-medium tracking-[-0.2px] whitespace-nowrap text-white">
+      <span className="text-base leading-4 font-medium tracking-[-0.0125rem] whitespace-nowrap text-white">
         {children}
       </span>
       <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/20">
@@ -55,10 +55,10 @@ export function PixSectionIntro({
         className,
       )}
     >
-      <p className="text-[13px] leading-4 font-medium tracking-[0.78px] text-[#3979ff] uppercase lg:text-[15px]">
+      <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
         {eyebrow}
       </p>
-      <h2 className="text-[32px] leading-[1.1] font-medium tracking-[-1px] text-[#1c1c1e] sm:text-[40px] lg:text-[48px] lg:leading-[52px] lg:tracking-[-1.5px]">
+      <h2 className="text-3xl leading-none font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
         {title}
       </h2>
     </FadeIn>

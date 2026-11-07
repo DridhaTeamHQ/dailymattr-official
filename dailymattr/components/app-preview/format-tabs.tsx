@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formats } from "./formats"
 
 // Figma: media 1200 × 720 (shared content column); tab bar 1152 × 84 at (24, 612), padding 6,
-// gap 0, radius 16. Subtitles show once the box is wide enough to fit them.
+// gap 0, radius 16. Subtitles show once the box is wide enough to fit them (640px: the 800px box on a 1280px laptop, as in Figma).
 export function FormatTabs() {
   const [active, setActive] = useState(formats[0].value)
   const reduceMotion = useReducedMotion()
@@ -59,7 +59,7 @@ export function FormatTabs() {
           </TabsContent>
         ))}
 
-        <TabsList className="absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[16px] bg-foreground p-1.5 group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[84px]">
+        <TabsList className="absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[1rem] bg-foreground p-1.5 group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem]">
           {formats.map((f) => {
             const isActive = f.value === active
             return (
@@ -80,8 +80,8 @@ export function FormatTabs() {
                       transition={{ type: "spring", bounce: 0.15, visualDuration: 0.4 }}
                     />
                   ))}
-                <span className="relative text-sm font-medium">{f.title}</span>
-                <span className="relative hidden text-xs font-normal text-background/40 @min-[900px]:block">
+                <span className="relative text-sm font-bold lg:text-lg lg:leading-5">{f.title}</span>
+                <span className="relative hidden text-sm leading-4 font-normal text-background/50 @min-[640px]:block">
                   {f.subtitle}
                 </span>
               </TabsTrigger>

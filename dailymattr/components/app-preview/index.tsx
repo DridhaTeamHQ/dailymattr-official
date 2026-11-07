@@ -6,10 +6,10 @@ import { SectionHeading } from "@/components/shared/section-heading"
 import { FormatTabs } from "./format-tabs"
 import { FadeIn } from "@/components/shared/fade-in"
 
-// Figma frame: vertical auto layout, gap 48, padding 16 × 100, centered.
+// Figma frame: vertical auto layout, gap 48, padding 16 × 100, centered, fill #f5f5f7.
 export function AppPreviewSection() {
   return (
-    <section className="flex w-full flex-col items-center gap-12 px-4 py-[100px]">
+    <section className="flex w-full flex-col items-center gap-12 bg-[#f5f5f7] px-4 py-[6.25rem]">
       <SectionHeading
         eyebrow="For curious minds. Busy lives."
         title={
@@ -19,15 +19,14 @@ export function AppPreviewSection() {
             Find your way into the story.
           </>
         }
-        description="Start with a quick update. Follow your curiosity into an explainer. Choose the format that fits the moment."
       >
         <Button
           nativeButton={false}
           render={<Link href="/download" />}
-          className="h-9 gap-2 rounded-lg pr-1.5 pl-3.5 text-[13px] font-medium"
+          className="h-10 gap-2 rounded-lg pr-2 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
         >
           Take a look inside
-          <span className="flex size-5 items-center justify-center rounded-[5px] bg-primary-foreground/20">
+          <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-primary-foreground/20">
             <ArrowUpRight className="size-3" />
           </span>
         </Button>

@@ -6,17 +6,19 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { BriefingCard } from "./briefing-card"
 import { HeroShowcase } from "./hero-showcase"
 
-type Size = { w: number; h: number }
+// r = root font size / 16: the rem scale, which shrinks on laptops (see app/globals.css).
+type Size = { w: number; h: number; r: number }
 type Box = { x: number; y: number; width: number; height: number }
 
-// Mirrors the hero section's container: max-w-6xl with px-4 / sm:px-6 / lg:px-8.
+// Mirrors the hero section's container: max-w-6xl with px-4 / sm:px-6 / lg:px-8 (at a 16px
+// root; multiplied by the rem scale r).
 const MAX_WIDTH = 1152
 const sidePadding = (w: number) => (w >= 1024 ? 32 : w >= 640 ? 24 : 16)
 const CARD_RATIO = 2 // the hero card is 2:1
 
 /** The contained 2:1 card, at the top of the frame (growing) or the bottom (shrinking). */
-function cardBox({ w, h }: Size, align: "top" | "bottom"): Box {
-  const width = Math.min(w, MAX_WIDTH) - sidePadding(w) * 2
+function cardBox({ w, h, r }: Size, align: "top" | "bottom"): Box {
+  const width = Math.min(w, MAX_WIDTH * r) - sidePadding(w) * r * 2
   const height = Math.min(width / CARD_RATIO, h)
   return { x: (w - width) / 2, y: align === "top" ? 0 : h - height, width, height }
 }
@@ -64,7 +66,12 @@ export function HeroVideoExpand({ src }: { src: string }) {
   const [ratio, setRatio] = useState(16 / 9)
 
   useLayoutEffect(() => {
-    const measure = () => setSize({ w: document.documentElement.clientWidth, h: window.innerHeight })
+    const measure = () =>
+      setSize({
+        w: document.documentElement.clientWidth,
+        h: window.innerHeight,
+        r: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
+      })
     measure()
     window.addEventListener("resize", measure)
     return () => window.removeEventListener("resize", measure)
@@ -150,7 +157,7 @@ function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; ch
   const y = useTransform(scrollYProgress, (p) => boxAt(p).y)
   const width = useTransform(scrollYProgress, (p) => boxAt(p).width)
   const height = useTransform(scrollYProgress, (p) => boxAt(p).height)
-  const radius = useTransform(scrollYProgress, (p) => 12 * cardness(p))
+  const radius = useTransform(scrollYProgress, (p) => 12 * size.r * cardness(p))
 
   // The briefing card rides the box's top-right corner, hidden while the video is full-screen.
   const cardTop = useTransform(scrollYProgress, (p) => {
@@ -159,7 +166,7 @@ function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; ch
   })
   const cardRight = useTransform(scrollYProgress, (p) => {
     const b = boxAt(p)
-    return Math.max(size.w - b.x - b.width - (size.w >= 1024 ? 24 : 12), 16)
+    return Math.max(size.w - b.x - b.width - (size.w >= 1024 ? 24 : 12) * size.r, 16 * size.r)
   })
   const cardOpacity = useTransform(scrollYProgress, (p) => clamp01(cardness(p) / 0.4))
 

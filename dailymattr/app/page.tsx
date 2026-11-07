@@ -4,23 +4,26 @@ import { DailyRoutineSection } from "@/components/daily-routine";
 import { ExplainersSection } from "@/components/explainers";
 import { Hero } from "@/components/hero";
 import { LearnFormatsSection } from "@/components/learn-formats";
+import { LookInsideSection } from "@/components/look-inside";
 import { NewsletterSection } from "@/components/newsletter";
 import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
-import { dummyImage } from "@/lib/dummy-media";
 
+// Landing page, Figma 8585:9489. Every text style in the frame is Helvetica Neue
+// (Regular / Medium / Bold); font-helvetica falls back to Inter where it isn't installed.
 export default function Home() {
   return (
-    <main className="flex-1">
+    <main className="flex-1 font-helvetica">
       <Hero />
       <StoriesSection />
       <AppPreviewSection />
-      <LearnFormatsSection />
+      {/* <LearnFormatsSection /> */}
       <ExplainersSection />
       <DailyRoutineSection />
       <BriefingBentoSection />
       <TemplatesSection />
-      <NewsletterSection image={dummyImage(600, 1600, 860)} />
+      <LookInsideSection />
+      <NewsletterSection />
     </main>
   );
 }

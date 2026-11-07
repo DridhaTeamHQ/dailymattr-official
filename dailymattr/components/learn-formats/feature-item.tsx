@@ -8,8 +8,8 @@ export function FeatureItem({ feature, className }: { feature: Feature; classNam
     <div className={cn("flex gap-3 p-4", className)}>
       <Icon className="mt-0.5 size-5 shrink-0 text-muted-foreground" strokeWidth={1.75} />
       <div>
-        <p className="text-base font-medium text-foreground">{feature.title}</p>
-        <p className="mt-0.5 text-sm text-muted-foreground">{feature.description}</p>
+        <p className="text-base leading-snug font-medium text-black lg:text-lg">{feature.title}</p>
+        <p className="mt-1 text-sm leading-6 text-[#696969] lg:text-base">{feature.description}</p>
       </div>
     </div>
   )

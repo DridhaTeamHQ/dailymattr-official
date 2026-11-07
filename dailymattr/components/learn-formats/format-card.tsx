@@ -54,14 +54,14 @@ function SplitCard({ format, className }: { format: LearnFormat; className?: str
       orientation="vertical"
       defaultValue={format.features[0].title}
       render={<article />}
-      className={cn(CONTENT_WIDTH, "grid gap-6 bg-background md:grid-cols-2 lg:h-[720px]", className)}
+      className={cn(CONTENT_WIDTH, "grid gap-6 bg-background md:grid-cols-2 lg:h-[45rem]", className)}
     >
       <div className="flex flex-col">
         <FormatTag>{format.tag}</FormatTag>
         <div className="mt-4">
           <FormatTitle format={format} />
         </div>
-        <p className="mt-4 max-w-sm text-base text-muted-foreground">{format.description}</p>
+        <p className="mt-4 max-w-sm text-base text-[#1c1b17] lg:text-lg lg:leading-6">{format.description}</p>
         <FeatureTabs format={format} className="mt-8 md:mt-auto" />
         <div className="mt-6">
           <FormatCta format={format} />
@@ -85,12 +85,12 @@ function WideCard({ format, className }: { format: LearnFormat; className?: stri
           <div className="mt-4">
             <FormatTitle format={format} />
           </div>
-          <p className="mt-4 text-base text-muted-foreground">{format.description}</p>
+          <p className="mt-4 text-base text-[#1c1b17] lg:text-lg lg:leading-6">{format.description}</p>
         </div>
         <FormatCta format={format} />
       </div>
       {/* 440px tall, but allowed to shrink when the pinned stage is shorter */}
-      <Media format={format} className="h-[440px] min-h-56 shrink" />
+      <Media format={format} className="h-[27.5rem] min-h-56 shrink" />
       <FeatureTabs format={format} className="grid items-stretch sm:grid-cols-3 sm:gap-6" />
     </Tabs>
   )

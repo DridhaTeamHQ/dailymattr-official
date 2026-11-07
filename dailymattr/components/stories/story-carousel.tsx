@@ -21,7 +21,9 @@ const covers = [
 ]
 
 // Slide step = card width + 16px gutter (CarouselItem's pl-4), matching the basis-* classes below.
-const STEP = { base: 216, sm: 256, lg: 283 }
+// On desktop the card is 13.9% of the screen (Figma: 267px of 1920), so lg is computed.
+const STEP = { base: 216, sm: 256 }
+const LG_CARD_VW = 0.139
 const MIN_CARDS = 10
 
 // The row has to be wider than the viewport, or the slides bunch up against the left edge with
@@ -35,7 +37,12 @@ function useCardCount(ref: React.RefObject<HTMLDivElement | null>) {
     if (!el) return
 
     const measure = () => {
-      const step = window.innerWidth >= 1024 ? STEP.lg : window.innerWidth >= 640 ? STEP.sm : STEP.base
+      // Card widths are in rem, which shrink on laptops (see globals.css), so scale the px steps.
+      const remScale = parseFloat(getComputedStyle(document.documentElement).fontSize) / 16
+      const step =
+        window.innerWidth >= 1024
+          ? window.innerWidth * LG_CARD_VW + 16 * remScale
+          : (window.innerWidth >= 640 ? STEP.sm : STEP.base) * remScale
       // +2 keeps a card in hand on each side while the loop wraps the tail onto the head.
       const needed = Math.max(MIN_CARDS, Math.ceil(el.clientWidth / step) + 2)
       // Whole cycles only, so the seam never puts the same cover next to itself.
@@ -84,13 +91,13 @@ export function StoryCarousel() {
           {Array.from({ length: cardCount }, (_, i) => {
             const cover = covers[i % covers.length]
             return (
-              <CarouselItem key={i} className="basis-[216px] sm:basis-[256px] lg:basis-[283px]">
+              <CarouselItem key={i} className="basis-[13.5rem] sm:basis-[16rem] lg:basis-[calc(13.9vw+1rem)]">
                 <StoryCard>
                   <Image
                     src={cover.src}
                     alt={cover.alt}
                     fill
-                    sizes="(min-width: 1024px) 267px, (min-width: 640px) 240px, 200px"
+                    sizes="(min-width: 1024px) 14vw, (min-width: 640px) 240px, 200px"
                     className="object-cover"
                   />
                 </StoryCard>

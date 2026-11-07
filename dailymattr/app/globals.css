@@ -58,6 +58,49 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Type scale. Use Tailwind's named sizes (text-xs … text-7xl, leading-*) rather than
+ * text-[15px]. These fill the Figma sizes the default scale lacks:
+ *   text-md 15px · text-display 40px · text-6xl 64px (default 60) · text-9xl 120px (default 128)
+ */
+@theme {
+  --text-md: 0.9375rem; /* 15px */
+  --text-md--line-height: 1.4;
+  --text-display: 2.5rem; /* 40px */
+  --text-display--line-height: 1.2;
+  --text-6xl: 4rem; /* 64px */
+  --text-9xl: 7.5rem; /* 120px */
+  /* Bento wide-tile headlines, relative to the tile (an @container): Figma draws 72px and
+     120px on a 607px tile, so they keep that proportion — and stay on one line — at any width. */
+  --text-tile: 11.86cqw;
+  --text-tile--line-height: 1.05;
+  --text-tile-xl: 19.77cqw;
+  --text-tile-xl--line-height: 0.92;
+}
+
+/*
+ * Laptop sizing, no zoom: every size in the site is in rem (Tailwind's scale, and arbitrary
+ * values like py-[6.25rem]), so on 1024–1600px screens the root font size shrinks with the
+ * screen: 1vw = width / 1600 × 16px, never below 12px. A 1280px laptop gets 12.8px = 80% of
+ * the 1920px Figma layout's proportions, rendered at a true 100%. From 1600px up it is 16px.
+ * Write new sizes in rem (px ÷ 16) so they scale too.
+ *
+ * --site-scale (same ratio as a number, set by the script in app/layout.tsx) is only used to
+ * keep the navbar a little larger on laptops. NIA has its own scaling, so it stays at 16px.
+ */
+html {
+  --site-scale: var(--site-scale-auto, 1);
+}
+@media (min-width: 64rem) {
+  html {
+    font-size: clamp(12px, 1vw, 16px);
+  }
+}
+html:has(.theme-nia) {
+  --site-scale: 1;
+  font-size: 16px;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

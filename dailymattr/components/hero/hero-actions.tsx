@@ -11,7 +11,7 @@ export function HeroActions() {
       <Button
         nativeButton={false}
         render={<Link href="/download" />}
-        className="h-9 gap-2 rounded-lg pr-1.5 pl-3.5 text-[13px] font-medium"
+        className="h-10 gap-2 rounded-lg pr-2 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
       >
         Download
         {/* Brand logo, recoloured white for the blue button */}
@@ -19,9 +19,9 @@ export function HeroActions() {
           src={primaryLogo}
           alt="dailymattr"
           loading="eager"
-          className="h-[18px] w-auto brightness-0 invert"
+          className="h-[1.125rem] w-auto brightness-0 invert"
         />
-        <span className="flex size-5 items-center justify-center rounded-[5px] bg-primary-foreground/20">
+        <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-primary-foreground/20">
           <ArrowUpRight className="size-3" />
         </span>
       </Button>
@@ -29,7 +29,7 @@ export function HeroActions() {
         variant="secondary"
         nativeButton={false}
         render={<Link href="/stories" />}
-        className="h-9 gap-1.5 rounded-lg pr-2.5 pl-3.5 text-[13px] font-medium"
+        className="h-10 gap-1.5 rounded-lg pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
       >
         Explore today&rsquo;s stories
         <ChevronRight className="size-3.5" />

@@ -61,10 +61,12 @@ export const Carousel = ({ items, initialScroll = 0, className }: CarouselProps)
       <div className={cn("relative w-full", className)}>
         {/* Row clips the cards at its rounded edges (Figma radius 16); swipe/scroll to browse */}
         <div
-          className="flex w-full overflow-x-scroll overflow-y-hidden overscroll-x-contain scroll-smooth rounded-[16px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex w-full overflow-x-scroll overflow-y-hidden overscroll-x-contain scroll-smooth rounded-[1rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           ref={carouselRef}
         >
-          <div className="flex flex-row justify-start gap-3">
+          {/* Desktop: card and gap sizes follow the screen (Figma: 300 × 420 cards, 15px gap on a
+              1920px frame), so ~5 cards fit across the wide panel column at any width. */}
+          <div className="flex flex-row justify-start gap-3 lg:gap-[0.78vw]">
             {items.map((item, index) => (
               // Fade only — a vertical slide here made the row scroll up and down.
               <motion.div
@@ -73,7 +75,7 @@ export const Carousel = ({ items, initialScroll = 0, className }: CarouselProps)
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * index, ease: "easeOut" }}
                 key={"card" + index}
-                className="rounded-[16px]"
+                className="rounded-[1rem]"
               >
                 {item}
               </motion.div>
@@ -143,7 +145,7 @@ export const Card = ({
               {card.media && (
                 // Inset with rounded corners, like a phone screen, rather than edge to edge.
                 <div className="shrink-0 p-3 pb-0 sm:pr-0 sm:pb-3">
-                  <div className="mx-auto aspect-[9/16] h-[50svh] overflow-hidden rounded-[20px] bg-placeholder sm:h-[min(78svh,620px)]">
+                  <div className="mx-auto aspect-[9/16] h-[50svh] overflow-hidden rounded-[1.25rem] bg-placeholder sm:h-[min(78svh,38.75rem)]">
                     {card.media}
                   </div>
                 </div>
@@ -181,28 +183,28 @@ export const Card = ({
       <motion.button
         layoutId={layout ? `card-${card.title}` : undefined}
         onClick={() => setOpen(true)}
-        className="group relative z-10 flex h-[280px] w-[200px] flex-col items-start justify-between overflow-hidden rounded-[16px] bg-placeholder text-left md:h-80 md:w-[228px]"
+        className="group relative z-10 flex h-[17.5rem] w-[12.5rem] flex-col items-start justify-between overflow-hidden rounded-[1rem] bg-placeholder text-left md:h-80 md:w-[14.25rem] lg:h-[21.875vw] lg:w-[15.625vw]"
       >
         {/* Portrait card, Figma proportion 299:420 kept at a 320px height */}
         <div className="pointer-events-none absolute inset-0 z-30 bg-linear-to-b from-foreground/55 via-transparent to-transparent" />
         <div className="relative z-40 p-3">
           <motion.p
             layoutId={layout ? `category-${card.title}` : undefined}
-            className="inline-flex rounded-md bg-foreground/40 px-2 py-1 text-[9px] font-medium tracking-wider text-background uppercase backdrop-blur-sm"
+            className="inline-flex rounded-md bg-foreground/40 px-2 py-1 text-xs leading-tight font-normal tracking-[0.0488rem] text-background uppercase backdrop-blur-sm md:text-sm"
           >
             {card.category}
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${card.title}` : undefined}
-            className="mt-3 max-w-xs text-base leading-snug font-normal [text-wrap:balance] text-background md:text-lg"
+            className="mt-3 max-w-xs text-lg leading-snug font-normal tracking-[-0.0375rem] [text-wrap:balance] text-background md:text-xl md:tracking-[-0.065rem]"
           >
             {card.title}
           </motion.p>
         </div>
         {card.cta && (
-          <span className="relative z-40 m-3 inline-flex items-center gap-2 self-end rounded-lg bg-background py-1.5 pr-1.5 pl-2.5 text-xs font-medium text-foreground transition-transform group-hover:-translate-y-0.5">
+          <span className="relative z-40 m-3 inline-flex items-center gap-2 self-end rounded-lg bg-background py-1.5 pr-1.5 pl-2.5 text-sm font-medium tracking-[-0.01rem] text-foreground transition-transform group-hover:-translate-y-0.5">
             {card.cta}
-            <span className="flex size-5 items-center justify-center rounded-[5px] bg-foreground/10 text-foreground">
+            <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-foreground/10 text-foreground">
               <ArrowUpRight className="size-3" />
             </span>
           </span>

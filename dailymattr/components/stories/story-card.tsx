@@ -4,7 +4,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 // Placeholder story tile — drop an <Image fill /> in as children when visuals are ready.
 export function StoryCard({ children }: { children?: React.ReactNode }) {
   return (
-    <AspectRatio ratio={9 / 16} className="overflow-hidden rounded-[24px] bg-placeholder">
+    <AspectRatio ratio={9 / 16} className="overflow-hidden rounded-[1.5rem] bg-placeholder">
       {children}
     </AspectRatio>
   )

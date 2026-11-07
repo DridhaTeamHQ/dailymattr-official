@@ -22,7 +22,7 @@ const panelShadow =
 export function FeaturesMenuPanel() {
   return (
     <div
-      className="relative grid grid-cols-[340px_404px] grid-rows-[296px] gap-3 overflow-clip rounded-[24px] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
+      className="relative grid grid-cols-[21.25rem_25.25rem] grid-rows-[18.5rem] gap-3 overflow-clip rounded-[1.5rem] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
       style={{ boxShadow: panelShadow }}
       data-node-id="8856:12356"
     >
@@ -30,7 +30,7 @@ export function FeaturesMenuPanel() {
       <Link
         href="/nia"
         aria-label="NIA, your AI assistant"
-        className="flex min-h-[296px] flex-col items-start self-stretch overflow-clip rounded-[16px] p-[22px] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
+        className="flex min-h-[18.5rem] flex-col items-start self-stretch overflow-clip rounded-[1rem] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
         style={{ backgroundImage: niaPanelBackground }}
         data-node-id="8856:12357"
       >
@@ -42,25 +42,25 @@ export function FeaturesMenuPanel() {
             height={32}
             className="block shrink-0"
           />
-          <p className="text-[15px] leading-4 font-medium tracking-[0.8px] text-white/75">
+          <p className="text-md leading-4 font-medium tracking-[0.05rem] text-white/75">
             AI ASSISTANT
           </p>
         </div>
 
-        <div className="flex h-10 w-[296px] shrink-0 flex-col items-start pt-2">
-          <p className="w-full text-[28px] leading-8 font-medium tracking-[-0.8px] text-white">
+        <div className="flex h-10 w-[18.5rem] shrink-0 flex-col items-start pt-2">
+          <p className="w-full text-3xl leading-8 font-medium tracking-[-0.05rem] text-white">
             NIA
           </p>
         </div>
 
-        <div className="flex h-7 w-[296px] shrink-0 flex-col items-start pt-1.5">
-          <p className="w-full text-[15px] leading-[22px] text-white/72">
+        <div className="flex h-7 w-[18.5rem] shrink-0 flex-col items-start pt-1.5">
+          <p className="w-full text-md leading-5.5 text-white/72">
             Know more. Ask better.
           </p>
         </div>
 
         <div className="flex min-h-px flex-1 flex-col items-start justify-end">
-          <div className="h-12 w-[296px] shrink-0" />
+          <div className="h-12 w-[18.5rem] shrink-0" />
         </div>
       </Link>
 
@@ -70,15 +70,15 @@ export function FeaturesMenuPanel() {
           {formatItems.map((item, i) => (
             <div key={item.href} className="contents">
               {i > 0 && (
-                <div className="flex w-full shrink-0 flex-col items-start px-[14px]">
+                <div className="flex w-full shrink-0 flex-col items-start px-[0.875rem]">
                   <div className="h-px w-full shrink-0 bg-[#eef0f3] [.theme-nia_&]:bg-white/8" />
                 </div>
               )}
               <Link
                 href={item.href}
-                className="group/row flex w-[396px] shrink-0 items-center gap-[14px] rounded-[14px] p-[14px] transition-colors hover:bg-[#f5f7fb] focus-visible:bg-[#f5f7fb] focus-visible:outline-none [.theme-nia_&]:hover:bg-white/5 [.theme-nia_&]:focus-visible:bg-white/5"
+                className="group/row flex w-[24.75rem] shrink-0 items-center gap-[0.875rem] rounded-[0.875rem] p-[0.875rem] transition-colors hover:bg-[#f5f7fb] focus-visible:bg-[#f5f7fb] focus-visible:outline-none [.theme-nia_&]:hover:bg-white/5 [.theme-nia_&]:focus-visible:bg-white/5"
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-[12px] bg-[#eaf1ff] [.theme-nia_&]:bg-[rgba(57,121,255,0.14)]">
+                <span className="grid size-11 shrink-0 place-items-center rounded-[0.75rem] bg-[#eaf1ff] [.theme-nia_&]:bg-[rgba(57,121,255,0.14)]">
                   <Image
                     src={item.icon}
                     alt=""
@@ -90,22 +90,22 @@ export function FeaturesMenuPanel() {
 
                 <span className="flex min-w-px flex-1 flex-col items-start">
                   <span className="flex w-full items-center gap-2">
-                    <span className="text-[16px] leading-5 font-medium whitespace-nowrap text-[#0b0d12] [.theme-nia_&]:text-white">
+                    <span className="text-base leading-5 font-medium whitespace-nowrap text-[#0b0d12] [.theme-nia_&]:text-white">
                       {item.name}
                     </span>
-                    <span className="rounded-[6px] bg-[#eaf1ff] px-1.5 py-[3px] text-[11px] leading-[14px] font-medium tracking-[0.8px] whitespace-nowrap text-[#3979ff] [.theme-nia_&]:bg-[rgba(57,121,255,0.14)] [.theme-nia_&]:text-[#5b8cff]">
+                    <span className="rounded-[0.375rem] bg-[#eaf1ff] px-1.5 py-[0.1875rem] text-xs leading-3.5 font-medium tracking-[0.05rem] whitespace-nowrap text-[#3979ff] [.theme-nia_&]:bg-[rgba(57,121,255,0.14)] [.theme-nia_&]:text-[#5b8cff]">
                       {item.tag}
                     </span>
                   </span>
-                  <span className="flex h-[23px] w-[282px] flex-col items-start pt-[3px]">
-                    <span className="text-[14px] leading-5 whitespace-nowrap text-[#6b7280] [.theme-nia_&]:text-white/55">
+                  <span className="flex h-[1.4375rem] w-[17.625rem] flex-col items-start pt-[0.1875rem]">
+                    <span className="text-sm leading-5 whitespace-nowrap text-[#6b7280] [.theme-nia_&]:text-white/55">
                       {item.description}
                     </span>
                   </span>
                 </span>
 
                 {/* Rest state uses the muted arrow; hover swaps in the dark one */}
-                <span className="relative block size-[14px] shrink-0">
+                <span className="relative block size-[0.875rem] shrink-0">
                   <Image
                     src="/nav-menu/arrow-muted.svg"
                     alt=""
@@ -129,9 +129,9 @@ export function FeaturesMenuPanel() {
         <div className="flex min-h-px w-full flex-1 flex-col items-start justify-end">
           <Link
             href="/formats"
-            className="flex h-[37px] w-full shrink-0 items-center justify-between border-t border-solid border-[#eef0f3] [.theme-nia_&]:border-white/8 px-[14px] pt-3 pb-1"
+            className="flex h-[2.3125rem] w-full shrink-0 items-center justify-between border-t border-solid border-[#eef0f3] [.theme-nia_&]:border-white/8 px-[0.875rem] pt-3 pb-1"
           >
-            <span className="text-[14px] leading-5 font-medium whitespace-nowrap text-[#3979ff]">
+            <span className="text-sm leading-5 font-medium whitespace-nowrap text-[#3979ff]">
               Explore formats
             </span>
             <Image
@@ -147,12 +147,12 @@ export function FeaturesMenuPanel() {
 
       {/* Pointer notch — clipped by the card, matching the Figma render */}
       <div
-        className="absolute top-[-9.9px] left-[184.1px] flex size-[19.799px] items-center justify-center"
+        className="absolute top-[-0.6188rem] left-[11.5062rem] flex size-[1.2374rem] items-center justify-center"
         aria-hidden="true"
       >
         <div className="flex-none rotate-45">
           <div
-            className="size-[14px] rounded-[3px] bg-white [.theme-nia_&]:bg-[#18181b]"
+            className="size-[0.875rem] rounded-[0.1875rem] bg-white [.theme-nia_&]:bg-[#18181b]"
             style={{ boxShadow: "-1px -1px 0px 0px rgba(16,24,40,0.06)" }}
           />
         </div>

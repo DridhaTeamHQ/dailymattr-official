@@ -39,7 +39,7 @@ function StepBadge({
             className="block"
           />
         </span>
-        <span className="text-[14px] leading-4 font-medium text-white/55">
+        <span className="text-sm leading-4 font-medium text-white/55">
           Sent
         </span>
       </span>
@@ -157,10 +157,10 @@ export function NiaHowItWorks() {
           style={{ backgroundImage: glow }}
         />
         <FadeIn className="flex flex-col items-center gap-3 text-center lg:gap-4">
-          <p className="text-sm leading-[18px] font-medium tracking-[-0.16px] text-[#5b8cff] uppercase lg:text-[18px]">
+          <p className="text-sm leading-4.5 font-medium tracking-[-0.16px] text-[#5b8cff] uppercase lg:text-lg">
             How NIA works
           </p>
-          <h2 className="text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+          <h2 className="text-3xl leading-tight font-medium text-white sm:text-display lg:text-5xl lg:leading-12">
             One question can take you further.
           </h2>
         </FadeIn>
@@ -187,7 +187,7 @@ export function NiaHowItWorks() {
                   >
                     <span
                       className={cn(
-                        "grid size-9 shrink-0 place-items-center rounded-[10px] border text-[14px] font-medium tracking-[0.3px] text-white transition-colors duration-300 lg:size-10 lg:text-[15px]",
+                        "grid size-9 shrink-0 place-items-center rounded-[10px] border text-sm font-medium tracking-[0.3px] text-white transition-colors duration-300 lg:size-10 lg:text-md",
                         isSent
                           ? "border-[#3979ff] bg-[#3979ff]"
                           : "border-white/10 bg-white/10",
@@ -197,7 +197,7 @@ export function NiaHowItWorks() {
                     </span>
                     <span
                       className={cn(
-                        "flex-1 text-base leading-6 font-medium tracking-[-0.2px] transition-colors duration-300 lg:text-[18px]",
+                        "flex-1 text-base leading-6 font-medium tracking-[-0.2px] transition-colors duration-300 lg:text-lg",
                         isSent ? "text-white/60" : "text-white",
                       )}
                     >
@@ -218,7 +218,7 @@ export function NiaHowItWorks() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="mt-5 cursor-pointer self-start text-[14px] font-medium text-[#5b8cff] hover:text-[#7fa6ff]"
+                    className="mt-5 cursor-pointer self-start text-sm font-medium text-[#5b8cff] hover:text-[#7fa6ff]"
                   >
                     Start over
                   </motion.button>
@@ -258,7 +258,7 @@ export function NiaHowItWorks() {
                 {/* Top padding lives inside the scroller so messages run up to the panel edge */}
                 <div className="mt-auto flex flex-col gap-4 pt-4 sm:pt-10">
                   <NiaBubble>
-                    <p className="text-[14px] leading-5 text-white/80">
+                    <p className="text-sm leading-5 text-white/80">
                       {howItWorksGreeting}
                     </p>
                   </NiaBubble>
@@ -269,7 +269,7 @@ export function NiaHowItWorks() {
                       <div key={step.number} className="flex flex-col gap-4">
                         <motion.div {...enter} className="flex justify-end">
                           <div className="rounded-[16px] rounded-br-[4px] bg-gradient-to-r from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
-                            <p className="text-[14px] leading-5 font-medium text-white">
+                            <p className="text-sm leading-5 font-medium text-white">
                               {step.question}
                             </p>
                           </div>
@@ -284,7 +284,7 @@ export function NiaHowItWorks() {
                                 initial={reduceMotion ? false : { opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.3 }}
-                                className="text-[14px] leading-5 text-white/80"
+                                className="text-sm leading-5 text-white/80"
                               >
                                 {step.answer}
                               </motion.p>
@@ -298,7 +298,7 @@ export function NiaHowItWorks() {
               </div>
 
               <div className="relative flex h-12 shrink-0 items-center justify-between rounded-[12px] border border-white/8 bg-[#1c1c20] px-3.5">
-                <p className="text-[14px] leading-5 text-white/40">
+                <p className="text-sm leading-5 text-white/40">
                   Ask a follow-up question
                 </p>
                 <span className="grid size-7 shrink-0 -rotate-90 place-items-center rounded-full bg-[#3979ff] drop-shadow-[0px_0px_7px_rgba(57,121,255,0.5)]">

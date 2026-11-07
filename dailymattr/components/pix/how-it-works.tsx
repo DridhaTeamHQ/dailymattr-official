@@ -4,14 +4,14 @@ import { PixSectionIntro } from "./primitives"
 
 function StepCard({ step }: { step: PixStep }) {
   return (
-    <div className="flex h-full flex-col gap-4 rounded-[16px] border border-[#ebebeb] bg-white p-6 font-helvetica lg:min-h-[226px] lg:p-7">
-      <span className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-[#eaf1ff] text-[15px] leading-none font-medium tracking-[0.3px] text-[#3979ff]">
+    <div className="flex h-full flex-col gap-4 rounded-[1rem] border border-[#ebebeb] bg-white p-6 font-helvetica lg:min-h-[14.125rem] lg:p-7">
+      <span className="grid size-10 shrink-0 place-items-center rounded-[0.625rem] bg-[#eaf1ff] text-md leading-none font-medium tracking-[0.0187rem] text-[#3979ff]">
         {step.number}
       </span>
-      <h3 className="text-[18px] leading-6 font-medium tracking-[-0.2px] text-black lg:max-w-[224px]">
+      <h3 className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black lg:max-w-[14rem]">
         {step.title}
       </h3>
-      <p className="text-[16px] leading-6 tracking-[-0.2px] text-[#696969] lg:max-w-[224px]">
+      <p className="text-base leading-6 tracking-[-0.0125rem] text-[#696969] lg:max-w-[14rem]">
         {step.description}
       </p>
     </div>
@@ -23,9 +23,9 @@ export function PixHowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-24 bg-white px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-20 lg:pb-[160px]"
+      className="scroll-mt-24 bg-white px-4 pt-16 pb-20 sm:px-6 lg:px-8 lg:pt-20 lg:pb-[10rem]"
     >
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[75rem]">
         <PixSectionIntro eyebrow={howItWorks.eyebrow} title={howItWorks.title} />
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-6">

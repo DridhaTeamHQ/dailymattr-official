@@ -70,7 +70,7 @@ export function FeaturesMenu({
         aria-haspopup="true"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          "flex h-8 cursor-default items-center gap-1 rounded-[13px] px-3 py-2 text-sm whitespace-nowrap transition-colors",
+          "flex h-8 cursor-default items-center gap-1 rounded-[0.8125rem] px-3 py-2 text-sm whitespace-nowrap transition-colors",
           open ? "text-foreground" : "text-muted-foreground hover:text-foreground"
         )}
       >
@@ -85,7 +85,7 @@ export function FeaturesMenu({
 
       <div
         className={cn(
-          "absolute top-[calc(100%+12px)] left-0 z-50 origin-top-left transition duration-200 ease-out",
+          "absolute top-[calc(100%+0.75rem)] left-0 z-50 origin-top-left transition duration-200 ease-out",
           open
             ? "visible translate-y-0 scale-100 opacity-100"
             : "invisible -translate-y-1 scale-[0.98] opacity-0"

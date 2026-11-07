@@ -14,10 +14,10 @@ export function NiaCapabilities() {
               <span className="grid size-12 shrink-0 place-items-center rounded-[12px] border border-white/28 bg-white/12 shadow-[0px_0px_22px_0px_rgba(255,255,255,0.22)]">
                 <Image src={card.icon} alt="" width={24} height={24} className="block" />
               </span>
-              <p className="text-lg leading-7 font-medium tracking-[-0.4px] text-white lg:text-[20px]">
+              <p className="text-lg leading-7 font-medium tracking-[-0.4px] text-white lg:text-xl">
                 {card.title}
               </p>
-              <p className="max-w-[302px] text-[15px] leading-6 tracking-[-0.2px] text-white/55 lg:text-[16px]">
+              <p className="max-w-[302px] text-md leading-6 tracking-[-0.2px] text-white/55 lg:text-base">
                 {card.description}
               </p>
             </div>

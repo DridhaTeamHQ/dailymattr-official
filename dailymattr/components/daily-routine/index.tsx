@@ -3,7 +3,7 @@ import { ArrowUpRight, ChevronRight } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { CONTENT_WIDTH } from "@/components/shared/layout"
+import { PANEL_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
 import { dummyVideo } from "@/lib/dummy-media"
@@ -11,7 +11,7 @@ import { dummyVideo } from "@/lib/dummy-media"
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
   return (
-    <section className="mx-auto flex w-full max-w-[1540px] flex-col items-center gap-16 px-4 py-[100px]">
+    <section className="mx-auto flex w-full max-w-[96.25rem] flex-col items-center gap-16 px-4 py-[6.25rem] lg:gap-36">
       <SectionHeading
         eyebrow="A little curiosity, every day"
         title={
@@ -21,16 +21,15 @@ export function DailyRoutineSection() {
             part of your routine.
           </>
         }
-        description="Start with today’s stories. Come back tomorrow with new questions."
       >
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button
             nativeButton={false}
             render={<Link href="/download" />}
-            className="h-9 gap-2 rounded-lg pr-1.5 pl-3.5 text-[13px] font-medium"
+            className="h-10 gap-2 rounded-lg pr-2 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
           >
             Get dailymattr
-            <span className="flex size-5 items-center justify-center rounded-[5px] bg-primary-foreground/20">
+            <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-primary-foreground/20">
               <ArrowUpRight className="size-3" />
             </span>
           </Button>
@@ -38,7 +37,7 @@ export function DailyRoutineSection() {
             variant="secondary"
             nativeButton={false}
             render={<Link href="/stories" />}
-            className="h-9 gap-1.5 rounded-lg pr-2.5 pl-3.5 text-[13px] font-medium"
+            className="h-10 gap-1.5 rounded-lg pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
           >
             Read today&rsquo;s stories
             <ChevronRight className="size-3.5" />
@@ -46,8 +45,8 @@ export function DailyRoutineSection() {
         </div>
       </SectionHeading>
 
-      {/* Media placeholder — same column as the sections above; swap in an image or video */}
-      <FadeIn className={CONTENT_WIDTH}>
+      {/* Media placeholder (Figma: the wide 1507px panel column, ~144px below the buttons); swap in an image or video */}
+      <FadeIn className={PANEL_WIDTH}>
         <AspectRatio ratio={2.2} className="overflow-hidden rounded-xl bg-placeholder">
           <video src={dummyVideo(1)} autoPlay muted loop playsInline className="size-full object-cover" />
         </AspectRatio>

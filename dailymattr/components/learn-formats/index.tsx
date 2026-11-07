@@ -6,7 +6,7 @@ import { FadeIn } from "@/components/shared/fade-in"
 // Figma frame: max width 1540, vertical auto layout, gap 80, padding 16 × 100.
 export function LearnFormatsSection() {
   return (
-    <section className="mx-auto flex w-full max-w-[1540px] flex-col gap-20 px-4 py-[100px]">
+    <section className="mx-auto flex w-full max-w-[96.25rem] flex-col gap-20 px-4 py-[6.25rem]">
       <SectionHeading
         className="mx-auto"
         eyebrow="Made for the way you learn"

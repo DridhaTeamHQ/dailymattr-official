@@ -20,7 +20,7 @@ function TemplateDetails({ title }: { title: string }) {
         className="mt-6 h-10 w-full gap-2 rounded-lg bg-foreground text-sm font-medium text-background hover:bg-foreground/85 sm:mt-auto"
       >
         Use Template
-        <span className="flex size-5 items-center justify-center rounded-[5px] bg-background/15">
+        <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-background/15">
           <ArrowUpRight className="size-3" />
         </span>
       </Button>

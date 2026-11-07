@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 export function UKFlag({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 60 30" className={cn("h-3 w-[18px] rounded-[2px]", className)} aria-hidden>
+    <svg viewBox="0 0 60 30" className={cn("h-3 w-[1.125rem] rounded-[0.125rem]", className)} aria-hidden>
       <clipPath id="uk-s">
         <path d="M0,0 v30 h60 v-30 z" />
       </clipPath>

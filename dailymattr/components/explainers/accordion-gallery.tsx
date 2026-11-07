@@ -86,7 +86,7 @@ export function AccordionGallery({
       role="list"
       aria-label="Explainer gallery"
       className={cn(
-        "@container flex w-full gap-2 perspective-[1400px] max-md:snap-x max-md:overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+        "@container flex w-full gap-2 lg:gap-3 perspective-[87.5rem] max-md:snap-x max-md:overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
         className
       )}
     >
@@ -113,7 +113,7 @@ export function AccordionGallery({
               initial={false}
               animate={{ rotateY }}
               transition={transition}
-              className="relative h-[max(288px,33cqw)] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-72 max-md:transform-none!"
+              className="relative h-[max(18rem,33cqw)] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-72 max-md:transform-none!"
             >
               {item.video ? (
                 <GalleryVideo src={item.video} poster={item.image} playing={isActive} />
@@ -138,7 +138,7 @@ export function AccordionGallery({
               />
               <span
                 className={cn(
-                  "absolute top-1/2 left-1/2 flex size-12 -translate-1/2 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-[transform,opacity] duration-300 group-hover:scale-110",
+                  "absolute top-1/2 left-1/2 flex size-12 -translate-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm lg:size-14 transition-[transform,opacity] duration-300 group-hover:scale-110",
                   item.video && isActive && "opacity-0"
                 )}
               >
@@ -146,9 +146,10 @@ export function AccordionGallery({
               </span>
             </motion.div>
 
+            {/* Figma shows the category only; the title stays for screen readers */}
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-foreground">{item.category}</p>
-              <p className="truncate text-xs text-muted-foreground">{item.title}</p>
+              <p className="truncate text-md leading-5 font-medium text-black">{item.category}</p>
+              <p className="sr-only">{item.title}</p>
             </div>
           </motion.div>
         )

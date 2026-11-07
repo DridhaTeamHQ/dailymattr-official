@@ -31,13 +31,13 @@ export function NiaResponsible() {
             </span>
 
             <div className="flex flex-col gap-3 lg:gap-4">
-              <p className="text-sm leading-[18px] font-medium text-[#5b8cff] uppercase lg:text-[18px]">
+              <p className="text-sm leading-4.5 font-medium text-[#5b8cff] uppercase lg:text-lg">
                 Responsible answers
               </p>
-              <h2 className="max-w-[458px] text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+              <h2 className="max-w-[458px] text-3xl leading-tight font-medium text-white sm:text-display lg:text-5xl lg:leading-12">
                 Curiosity deserves clarity.
               </h2>
-              <p className="max-w-[458px] text-base leading-relaxed text-white/60 lg:text-[20px] lg:leading-[30px]">
+              <p className="max-w-[458px] text-base leading-relaxed text-white/60 lg:text-xl lg:leading-7.5">
                 NIA is designed to help you explore information, not replace your judgement.
                 AI-generated answers can make mistakes, so important claims should be checked
                 against reliable sources.
@@ -51,17 +51,17 @@ export function NiaResponsible() {
             className="flex h-full flex-col items-center justify-center gap-4 overflow-hidden rounded-[20px] border border-white/8 px-6 py-12 sm:px-10 lg:gap-5 lg:rounded-[24px] lg:py-16"
             style={{ backgroundImage: rightCardBackground }}
           >
-            <h2 className="max-w-[506px] text-center text-3xl leading-tight font-medium text-white sm:text-[40px] lg:text-[48px] lg:leading-[48px]">
+            <h2 className="max-w-[506px] text-center text-3xl leading-tight font-medium text-white sm:text-display lg:text-5xl lg:leading-12">
               Don&apos;t stop at the headline.
             </h2>
-            <p className="text-center text-base leading-relaxed text-white/60 lg:text-[20px] lg:leading-[30px]">
+            <p className="text-center text-base leading-relaxed text-white/60 lg:text-xl lg:leading-7.5">
               Ask NIA. Get the context. Make up your own mind.
             </p>
             <Link
               href="/"
               className="mt-3 flex h-10 items-center gap-2.5 rounded-[13px] bg-[#3979ff] py-2 pr-2 pl-4 drop-shadow-[0px_8px_14px_rgba(57,121,255,0.45)] transition-transform hover:-translate-y-px"
             >
-              <span className="text-[16px] leading-4 font-medium text-white">
+              <span className="text-base leading-4 font-medium text-white">
                 Explore DailyMattr
               </span>
               <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/20">

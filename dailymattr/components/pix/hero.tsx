@@ -25,11 +25,11 @@ export function PixHero() {
         className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07111d]/85 via-[#07111d]/55 to-transparent lg:hidden"
       />
 
-      <div className="mx-auto flex min-h-[560px] max-w-[1200px] items-center py-20 sm:min-h-[640px] lg:min-h-[872px] lg:py-[112px]">
-        <FadeIn className="flex max-w-[540px] flex-col items-start gap-5 font-helvetica lg:gap-6">
+      <div className="mx-auto flex min-h-[35rem] max-w-[75rem] items-center py-20 sm:min-h-[40rem] lg:min-h-[54.5rem] lg:py-[7rem]">
+        <FadeIn className="flex max-w-[33.75rem] flex-col items-start gap-5 font-helvetica lg:gap-6">
           <PixTag>{hero.tag}</PixTag>
 
-          <h1 className="text-[40px] leading-[1.05] font-medium tracking-[-1.5px] text-white sm:text-[52px] sm:leading-none lg:text-[64px] lg:leading-[64px] lg:tracking-[-3px]">
+          <h1 className="text-display leading-none font-medium tracking-[-0.0938rem] text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
             {hero.titleLines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -37,7 +37,7 @@ export function PixHero() {
             ))}
           </h1>
 
-          <p className="max-w-[500px] text-base leading-6 tracking-[-0.2px] text-white lg:text-[18px] lg:leading-7">
+          <p className="max-w-[31.25rem] text-base leading-6 tracking-[-0.0125rem] text-white lg:text-lg lg:leading-7">
             {hero.description}
           </p>
 

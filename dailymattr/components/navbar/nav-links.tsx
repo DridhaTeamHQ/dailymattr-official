@@ -11,7 +11,7 @@ import type { NavItem } from "./nav-config"
 
 // Matches Figma nav item: hug × 32, padding 12/8, gap 4, radius 13
 export const navLinkClass =
-  "h-8 gap-1 whitespace-nowrap rounded-[13px] bg-background px-3 py-2 text-sm font-normal text-muted-foreground hover:bg-background hover:text-foreground focus:bg-background"
+  "h-8 gap-1 whitespace-nowrap rounded-[0.8125rem] bg-background px-3 py-2 text-sm font-normal text-muted-foreground hover:bg-background hover:text-foreground focus:bg-background"
 
 export function NavLinks({ links, className }: { links: NavItem[]; className?: string }) {
   return (

@@ -13,7 +13,8 @@ export function BriefingCard({ className }: { className?: string }) {
         className
       )}
     >
-      <p className="text-xs leading-snug text-muted-foreground">
+      {/* Figma: Helvetica Neue Regular 15/20 #696969; button Medium 15/20 black */}
+      <p className="text-md leading-5 text-[#696969]">
         Your daily briefing is ready.
         <br />
         100 stories. Zero noise.
@@ -21,7 +22,7 @@ export function BriefingCard({ className }: { className?: string }) {
       <Button
         variant="secondary"
         size="sm"
-        className="h-7 gap-1 rounded-md px-2.5 text-xs font-medium"
+        className="h-8 gap-1 rounded-md px-3 text-md leading-5 font-medium text-black"
       >
         Read now
         <ChevronDown className="size-3" />
