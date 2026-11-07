@@ -35,8 +35,12 @@ export type HowItWorksStep = {
 }
 
 /** The message NIA greets with before any question is sent. */
-export const howItWorksGreeting =
-  "Hi, I'm NIA. Pick a question on the left and I'll walk you through today's story."
+/** Centred intro shown in the empty chat panel before the first question is sent. */
+export const howItWorksIntro = {
+  title: "What would you like to understand?",
+  body: "Start with the first question and NIA will build the story with you, one step at a time.",
+}
+
 
 export const howItWorksSteps: HowItWorksStep[] = [
   {

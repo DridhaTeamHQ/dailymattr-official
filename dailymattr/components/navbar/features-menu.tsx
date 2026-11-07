@@ -96,7 +96,7 @@ export function FeaturesMenu({
           if ((e.target as HTMLElement).closest("a")) setOpen(false)
         }}
       >
-        <FeaturesMenuPanel />
+        <FeaturesMenuPanel open={open} />
       </div>
     </div>
   )
