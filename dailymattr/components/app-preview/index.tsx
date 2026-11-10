@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { SectionHeading } from "@/components/shared/section-heading"
+import { ExpandOnScroll } from "./expand-on-scroll"
 import { FormatTabs } from "./format-tabs"
 import { FadeIn } from "@/components/shared/fade-in"
 
@@ -32,9 +33,11 @@ export function AppPreviewSection() {
         </Button>
       </SectionHeading>
 
-      <FadeIn className="w-full">
-        <FormatTabs />
-      </FadeIn>
+      <ExpandOnScroll>
+        <FadeIn className="w-full">
+          <FormatTabs />
+        </FadeIn>
+      </ExpandOnScroll>
     </section>
   )
 }

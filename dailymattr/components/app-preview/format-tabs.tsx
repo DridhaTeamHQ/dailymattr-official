@@ -22,9 +22,19 @@ export function FormatTabs() {
     <Tabs
       value={active}
       onValueChange={(value) => setActive(value as string)}
-      className={cn("@container gap-0", CONTENT_WIDTH)}
+      // At lg and up the width follows --expand-w (set by ExpandOnScroll as the section
+      // scrolls in), falling back to the content column when it isn't set.
+      className={cn(
+        "@container gap-0",
+        CONTENT_WIDTH,
+        "lg:w-[var(--expand-w,min(62.5vw,75rem))] lg:max-w-none"
+      )}
     >
-      <AspectRatio ratio={1200 / 720} className="overflow-hidden rounded-xl bg-placeholder">
+      <AspectRatio
+        ratio={1200 / 720}
+        // At lg and up the height follows --expand-h (falls back to the 5:3 height).
+        className="overflow-hidden rounded-xl bg-placeholder lg:aspect-auto lg:h-[var(--expand-h,calc(min(62.5vw,75rem)*0.6))]"
+      >
         {/*
           Decorative preview layer. Both clips are mounted while the tab changes, so the
           incoming one fades up over the outgoing one instead of cutting. The panels below
