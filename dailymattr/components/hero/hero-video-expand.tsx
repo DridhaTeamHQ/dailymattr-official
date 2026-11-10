@@ -45,18 +45,14 @@ const mixBox = (a: Box, b: Box, t: number): Box => ({
 
 // Scroll distances, as fractions of the screen height.
 const GROW = 0.8 // card → full screen (before the pin: the card rises from 80% down to the top)
-const HOLD = 0.25 // stays full screen — a brief beat, not a long stretch
-const SHRINK = 0.7 // full screen → card
-const TOTAL = GROW + HOLD + SHRINK
+const HOLD = 0.25 // stays full screen — a brief beat — then scrolls away with the page
+const TOTAL = GROW + HOLD
 const GROW_END = GROW / TOTAL
-const SHRINK_START = (GROW + HOLD) / TOTAL
-// Where the shrunk card ends: this far below the top of the screen (px at a 16px root).
-const END_TOP = 80
 
 /**
  * The hero video. On desktop it starts as the contained 2:1 card and, as the page scrolls,
- * grows to fill the screen edge to edge, holds there briefly, then
- * shrinks back into a card just above the next content. On phones and portrait screens a
+ * grows to fill the screen edge to edge, holds there briefly, then scrolls away with the
+ * page. On phones and portrait screens a
  * pinned full-screen stage would mostly be empty space around a short 16:9 strip, so the
  * video simply widens to the screen edges as it scrolls into view. Everything tracks the
  * scroll, so scrolling back up plays it in reverse.
@@ -129,7 +125,7 @@ function WidenOnScroll({ ratio, children }: { ratio: number; children: React.Rea
   )
 }
 
-/** Desktop: grow to full screen, a brief hold, shrink back — pinned while it plays. */
+/** Desktop: grow to full screen, a brief hold, then scroll on — pinned while it plays. */
 function PinnedExpand({ size, children }: { size: Size; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const { h } = size
@@ -138,25 +134,15 @@ function PinnedExpand({ size, children }: { size: Size; children: React.ReactNod
   // card sitting 80% down the screen (0) to the moment the pin releases (1).
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end end"] })
 
-  // The shrink ends with the card near the top of the screen (END_TOP below the top edge,
-  // clear of the navbar), not at the bottom: the pinned stage is a full screen tall, so a
-  // bottom-aligned card left an empty band above it. The content after the stage is pulled up
-  // by the stage's unused height (see marginBottom below) so it sits right under the card.
-  const endTop = END_TOP * size.r
-  const endBox: Box = { ...cardBox(size, "top"), y: endTop }
+  // No shrink: once full screen it stays full screen and, when the pin releases, scrolls up
+  // with the page. Scrolling back to the top reverses the grow, back down to the card.
   const boxAt = (p: number): Box => {
     const full = fullBox(size)
     if (p <= GROW_END) return mixBox(cardBox(size, "top"), full, ease(clamp01(p / GROW_END)))
-    if (p < SHRINK_START) return full
-    return mixBox(full, endBox, ease(clamp01((p - SHRINK_START) / (1 - SHRINK_START))))
+    return full
   }
   /** 0 when full-screen, 1 when a card: drives the corner radius and the briefing card. */
-  const cardness = (p: number) =>
-    p <= GROW_END
-      ? 1 - clamp01(p / GROW_END)
-      : p < SHRINK_START
-        ? 0
-        : clamp01((p - SHRINK_START) / (1 - SHRINK_START))
+  const cardness = (p: number) => (p <= GROW_END ? 1 - clamp01(p / GROW_END) : 0)
 
   const x = useTransform(scrollYProgress, (p) => boxAt(p).x)
   const y = useTransform(scrollYProgress, (p) => boxAt(p).y)
@@ -176,13 +162,8 @@ function PinnedExpand({ size, children }: { size: Size; children: React.ReactNod
   const cardOpacity = useTransform(scrollYProgress, (p) => clamp01(cardness(p) / 0.4))
 
   return (
-    // Pinned for the hold and the shrink; the grow happens while the card rises to the top.
-    <div
-      ref={ref}
-      className="relative mt-14"
-      style={{ height: h * (1 + HOLD + SHRINK), marginBottom: -Math.max(0, h - endTop - endBox.height) }}
-    >
-      {/* The empty part of the stage overlaps the next content, so it lets clicks through. */}
+    // Pinned for the hold; the grow happens while the card rises to the top.
+    <div ref={ref} className="relative mt-14" style={{ height: h * (1 + HOLD) }}>
       <div className="pointer-events-none sticky top-0 overflow-hidden" style={{ height: h }}>
         <motion.div
           className="pointer-events-auto absolute top-0 left-0 overflow-hidden bg-placeholder"
