@@ -24,13 +24,12 @@ function cardBox({ w, h, r }: Size, align: "top" | "bottom"): Box {
 }
 
 /**
- * Full screen at the video's own aspect ratio, so the whole frame is visible with no edges
- * cropped: as large as fits the screen, centred.
+ * Edge to edge: the box fills the whole viewport whatever its aspect ratio, and the video's
+ * object-cover crops the overflow. Fitting the video's own ratio instead left empty bands on
+ * any screen that isn't exactly 16:9 (16:10 laptops, ultrawides, short browser windows).
  */
-function fullBox({ w, h }: Size, ratio: number): Box {
-  const width = Math.min(w, h * ratio)
-  const height = width / ratio
-  return { x: (w - width) / 2, y: (h - height) / 2, width, height }
+function fullBox({ w, h }: Size): Box {
+  return { x: 0, y: 0, width: w, height: h }
 }
 
 const mix = (a: number, b: number, t: number) => a + (b - a) * t
@@ -56,7 +55,7 @@ const END_TOP = 80
 
 /**
  * The hero video. On desktop it starts as the contained 2:1 card and, as the page scrolls,
- * grows to fill the screen (the whole video, nothing cropped), holds there briefly, then
+ * grows to fill the screen edge to edge, holds there briefly, then
  * shrinks back into a card just above the next content. On phones and portrait screens a
  * pinned full-screen stage would mostly be empty space around a short 16:9 strip, so the
  * video simply widens to the screen edges as it scrolls into view. Everything tracks the
@@ -106,9 +105,7 @@ export function HeroVideoExpand({ src }: { src: string }) {
   if (size.w < 768 || size.w < size.h) return <WidenOnScroll ratio={ratio}>{video}</WidenOnScroll>
 
   return (
-    <PinnedExpand size={size} ratio={ratio}>
-      {video}
-    </PinnedExpand>
+    <PinnedExpand size={size}>{video}</PinnedExpand>
   )
 }
 
@@ -133,7 +130,7 @@ function WidenOnScroll({ ratio, children }: { ratio: number; children: React.Rea
 }
 
 /** Desktop: grow to full screen, a brief hold, shrink back — pinned while it plays. */
-function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; children: React.ReactNode }) {
+function PinnedExpand({ size, children }: { size: Size; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const { h } = size
 
@@ -148,7 +145,7 @@ function PinnedExpand({ size, ratio, children }: { size: Size; ratio: number; ch
   const endTop = END_TOP * size.r
   const endBox: Box = { ...cardBox(size, "top"), y: endTop }
   const boxAt = (p: number): Box => {
-    const full = fullBox(size, ratio)
+    const full = fullBox(size)
     if (p <= GROW_END) return mixBox(cardBox(size, "top"), full, ease(clamp01(p / GROW_END)))
     if (p < SHRINK_START) return full
     return mixBox(full, endBox, ease(clamp01((p - SHRINK_START) / (1 - SHRINK_START))))
