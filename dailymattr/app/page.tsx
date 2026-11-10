@@ -10,7 +10,7 @@ import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
 
 // Landing page, Figma 8585:9489. Every text style in the frame is Helvetica Neue
-// (Regular / Medium / Bold); font-helvetica falls back to Inter where it isn't installed.
+// (Regular / Medium / Bold); font-helvetica falls back to Inter Tight where it isn't installed.
 export default function Home() {
   return (
     <main className="flex-1 font-helvetica">

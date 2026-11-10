@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter_Tight, Roboto } from "next/font/google"
+import { Roboto } from "next/font/google"
 
 import {
   NiaCapabilities,
@@ -8,10 +8,8 @@ import {
   NiaResponsible,
 } from "@/components/nia"
 import { NiaScaledMain } from "@/components/nia/nia-scale"
-import { cn } from "@/lib/utils"
 
-// Fonts the NIA frame uses besides Inter; exposed as the font-tight / font-roboto utilities.
-const interTight = Inter_Tight({ subsets: ["latin"], variable: "--nf-inter-tight" })
+// Roboto is NIA-only (font-roboto); Inter Tight (font-tight) is loaded in the root layout.
 const roboto = Roboto({ subsets: ["latin"], weight: ["400", "600"], variable: "--nf-roboto" })
 
 export const metadata: Metadata = {
@@ -23,7 +21,7 @@ export const metadata: Metadata = {
 export default function NiaPage() {
   return (
     // On desktop the content zooms to keep the 1920px Figma frame's proportions.
-    <NiaScaledMain className={cn(interTight.variable, roboto.variable)}>
+    <NiaScaledMain className={roboto.variable}>
       <NiaHero />
       <NiaHowItWorks />
       <NiaCapabilities />

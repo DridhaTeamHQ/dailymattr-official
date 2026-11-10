@@ -17,7 +17,7 @@ export function Hero() {
       />
       <WordsReveal
         as="h1"
-        className="mt-4 text-4xl leading-none font-medium tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:tracking-[-0.1875rem]"
+        className="mt-4 text-4xl leading-none font-bold tracking-[-0.0938rem] text-[#292929] sm:text-5xl lg:text-6xl lg:tracking-[-0.1875rem]"
         text={"Understand the world\nwithin seconds."}
         // First line lands whole; the second then builds word by word.
         per={["line", "word"]}

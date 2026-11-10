@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Inter } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/footer";
@@ -9,7 +9,8 @@ import { RouteTheme } from "@/components/shared/route-theme";
 import { SmoothScroll } from "@/components/shared/smooth-scroll";
 import { siteScaleScript } from "@/lib/site-scale";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+// Inter Tight is the site's only sans: font-sans, plus the font-tight alias used by headings and NIA.
+const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "dailyMattr - News & Infotainment",
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", "font-sans", inter.variable)}
+      className={cn("h-full", "antialiased", "font-sans", interTight.variable)}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">

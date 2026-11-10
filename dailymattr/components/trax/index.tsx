@@ -1,0 +1,5 @@
+export { TraxHero } from "./hero"
+export { TraxExperiences } from "./experiences"
+export { TraxWhyAudio } from "./why-audio"
+export { TraxFeatured } from "./featured"
+export { TraxGetStarted } from "./get-started"
