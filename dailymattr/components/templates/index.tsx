@@ -13,8 +13,8 @@ export function TemplatesSection() {
   return (
     <section className="mx-auto flex w-full max-w-[96.25rem] flex-col items-center gap-20 px-4 py-20 lg:gap-32">
       <FadeIn className="flex max-w-4xl flex-col items-center text-center">
-        {/* Figma 8585:9969 — Medium 48/57.6 −1.92px #1c1b17; subline Medium 20/28 −0.4px */}
-        <h2 className="text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1b17] sm:text-4xl lg:text-5xl lg:tracking-[-0.12rem]">
+        {/* Figma 8585:9969 — 48/57.6 −1.92px, Inter Tight Semibold #292929 to match the other section headings */}
+        <h2 className="font-tight text-3xl leading-tight font-semibold tracking-[-0.0625rem] text-[#292929] sm:text-4xl lg:text-5xl lg:tracking-[-0.12rem]">
           Tailored solutions for deskless industries
         </h2>
         <p className="mt-6 text-base font-medium tracking-[-0.025rem] text-[#1c1b17] lg:text-xl lg:leading-7">

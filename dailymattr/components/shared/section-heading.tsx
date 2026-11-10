@@ -6,14 +6,16 @@ type SectionHeadingProps = {
   title: React.ReactNode
   description?: React.ReactNode
   className?: string
+  /** Extra classes for the <h2>, e.g. a heavier weight; merged after the defaults. */
+  titleClassName?: string
   children?: React.ReactNode
   /** Light text for headings that sit on a dark panel. */
   inverted?: boolean
 }
 
 /**
- * Landing page section heading (Figma 8585:9489), Helvetica Neue throughout:
- * eyebrow Medium 18/18 −0.16px #3979ff · title Medium 48/48 −1.5px #1c1c1e ·
+ * Landing page section heading (Figma 8585:9489), Helvetica Neue except the title:
+ * eyebrow Medium 18/18 −0.16px #3979ff · title Inter Tight Semibold 48/48 −1.5px #292929 ·
  * description Regular 18/26 #696969 · actions 40px below.
  */
 export function SectionHeading({
@@ -21,6 +23,7 @@ export function SectionHeading({
   title,
   description,
   className,
+  titleClassName,
   children,
   inverted,
 }: SectionHeadingProps) {
@@ -33,8 +36,9 @@ export function SectionHeading({
       )}
       <h2
         className={cn(
-          "text-3xl leading-none font-medium tracking-[-0.0625rem] sm:text-4xl lg:text-5xl lg:tracking-[-0.0938rem]",
-          inverted ? "text-white" : "text-[#1c1c1e]"
+          "font-tight text-3xl leading-none font-semibold tracking-[-0.0625rem] sm:text-4xl lg:text-5xl lg:tracking-[-0.0938rem]",
+          inverted ? "text-white" : "text-[#292929]",
+          titleClassName
         )}
       >
         {title}

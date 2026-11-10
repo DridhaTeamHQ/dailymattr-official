@@ -79,13 +79,13 @@ export function FeaturesMenu({
 
       {/* Hover bridge: keeps the menu open across the gap below the trigger */}
       <div
-        className={cn("absolute top-full left-0 h-3 w-full", open ? "block" : "hidden")}
+        className={cn("absolute top-full left-0 h-7 w-full", open ? "block" : "hidden")}
         aria-hidden="true"
       />
 
       <div
         className={cn(
-          "absolute top-[calc(100%+0.75rem)] left-0 z-50 origin-top-left transition duration-200 ease-out",
+          "absolute top-[calc(100%+1.75rem)] left-0 z-50 origin-top-left transition duration-200 ease-out",
           open
             ? "visible translate-y-0 scale-100 opacity-100"
             : "invisible -translate-y-1 scale-[0.98] opacity-0"
