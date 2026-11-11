@@ -8,7 +8,6 @@ export const hero = {
   lead: "Behind every story is a process.",
   body: [
     "Every headline represents a decision about what matters, what is verified, and what readers need to understand.",
-    "The dailymattr Newsroom brings together the editorial work behind our coverage. From researching developments and checking facts to writing concise summaries and adding context, our team works to make important information easier to understand.",
     "Our focus is simple: give readers the facts, the context, and a clearer picture of what's happening.",
   ],
 }
@@ -28,7 +27,7 @@ export type NewsroomSection = {
 /** Large sub-heading that sits right under a section title. */
 function Lead({ children }: { children: React.ReactNode }) {
   return (
-    <p className="pt-4 text-lg leading-7 font-semibold tracking-[-0.0125rem] text-[#141417] lg:text-xl lg:leading-8">
+    <p className="pt-4 text-lg leading-7 font-semibold tracking-[-0.0125rem] text-white lg:text-xl lg:leading-8">
       {children}
     </p>
   )
@@ -39,12 +38,12 @@ function Steps({ items }: { items: { title: string; body: string }[] }) {
   return (
     <ol className="grid grid-cols-1 gap-3 pt-5 sm:grid-cols-2">
       {items.map((step, i) => (
-        <li key={step.title} className="rounded-[1.125rem] border border-[#ececf0] bg-[#f6f6f8] p-5">
+        <li key={step.title} className="rounded-[1.125rem] border border-white/8 bg-white/[0.04] p-5">
           <span className="text-xs leading-[1.3125rem] font-bold tracking-[0.15625rem] text-[#3979ff]">
             STEP {String(i + 1).padStart(2, "0")}
           </span>
-          <h3 className="pt-1.5 text-base leading-7 font-bold text-[#141417]">{step.title}</h3>
-          <p className="pt-1 text-[0.90625rem] leading-[1.5859rem] text-[#3a3a40]">{step.body}</p>
+          <h3 className="pt-1.5 text-base leading-7 font-bold text-white">{step.title}</h3>
+          <p className="pt-1 text-[0.90625rem] leading-[1.5859rem] text-white/65">{step.body}</p>
         </li>
       ))}
     </ol>

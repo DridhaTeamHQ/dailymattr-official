@@ -15,9 +15,9 @@ import { footerGroups } from "./footer-links"
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:border-t-0 lg:pt-6 [.theme-nia_&]:bg-[#0b0b0d] [.theme-nia_&]:lg:border-t [.theme-nia_&]:lg:pt-24 [.theme-nia_&]:font-sans [.theme-nia_&]:lg:[zoom:var(--nia-scale,1)]">
+    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:border-t-0 lg:pt-6 [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:border-t [.nia-layout_&]:lg:pt-24 [.nia-layout_&]:font-sans [.nia-layout_&]:lg:[zoom:var(--nia-scale,1)]">
       {/* Lines up with the wide panels above (PANEL_WIDTH); the NIA page keeps its 1200px column */}
-      <div className={cn(PANEL_WIDTH, "flex flex-col [.theme-nia_&]:max-w-[75rem] [.theme-nia_&]:lg:w-full")}>
+      <div className={cn(PANEL_WIDTH, "flex flex-col [.nia-layout_&]:max-w-[75rem] [.nia-layout_&]:lg:w-full")}>
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-20">
           {/* Brand on top, newsletter sign-up pinned to the bottom of the row */}
           <div className="flex min-w-0 flex-col justify-between gap-12 lg:self-stretch">
@@ -71,8 +71,12 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 border-t border-border pt-6 text-sm leading-5 text-muted-foreground sm:text-right [.theme-nia_&]:text-white/50">
-          <p>© 2026 Dridha Technologies Private Limited. All rights reserved.</p>
+        <div className="mt-16 flex flex-col gap-2 border-t border-border pt-6 text-sm leading-5 text-muted-foreground sm:flex-row sm:items-start sm:justify-between sm:gap-8 [.theme-nia_&]:text-white/50">
+          <p className="lg:whitespace-nowrap">
+            The trademarks, logos, and service marks displayed on this site are the property of their
+            respective owners.
+          </p>
+          <p className="shrink-0 sm:text-right">© 2026 Dridha Technologies Private Limited. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -6,7 +6,7 @@ export const generateMetadata = () => seoMetadata("/newsroom")
 
 export default function NewsroomPage() {
   return (
-    <main className="flex-1 bg-white">
+    <main className="flex-1 bg-[#0e0e0e]">
       <NewsroomHero />
       <NewsroomArticle />
       <NewsroomCta />

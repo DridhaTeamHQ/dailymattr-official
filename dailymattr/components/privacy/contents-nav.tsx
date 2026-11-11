@@ -41,7 +41,7 @@ export function ContentsNav({ items }: { items: { id: string; label: string }[] 
 
   return (
     <nav aria-label="On this page">
-      <p className="text-xs font-semibold tracking-[0.09375rem] text-[#97979e] uppercase">On this page</p>
+      <p className="text-xs font-semibold tracking-[0.09375rem] text-[#97979e] uppercase [.theme-nia_&]:text-white/45">On this page</p>
       <ol className="mt-4">
         {items.map((item, i) => {
           const isActive = item.id === active
@@ -55,7 +55,7 @@ export function ContentsNav({ items }: { items: { id: string; label: string }[] 
                   "block border-l-2 px-3 py-[0.4375rem] text-[0.8125rem] leading-[1.1375rem] transition-colors",
                   isActive
                     ? "border-[#3979ff] font-semibold text-[#3979ff]"
-                    : "border-[#e5e4e8] font-medium text-[#6b6b73] hover:text-[#141417]",
+                    : "border-[#e5e4e8] font-medium text-[#6b6b73] hover:text-[#141417] [.theme-nia_&]:border-white/10 [.theme-nia_&]:text-white/55 [.theme-nia_&]:hover:text-white",
                 )}
               >
                 {i + 1}. {item.label}

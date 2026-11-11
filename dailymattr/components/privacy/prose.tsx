@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 /** Body paragraph. The first one after a section heading sits 16px down, later ones 14px. */
 export function P({ children, first }: { children: React.ReactNode; first?: boolean }) {
   return (
-    <p className={cn("text-[0.96875rem] leading-[1.6953rem] text-[#3a3a40]", first ? "pt-4" : "pt-3.5")}>
+    <p className={cn("text-[0.96875rem] leading-[1.6953rem] text-[#3a3a40] [.theme-nia_&]:text-white/65", first ? "pt-4" : "pt-3.5")}>
       {children}
     </p>
   )
@@ -17,7 +17,7 @@ export function P({ children, first }: { children: React.ReactNode; first?: bool
 
 /** Numbered sub-heading ("3.1 From all users"). */
 export function H3({ children }: { children: React.ReactNode }) {
-  return <h3 className="pt-[1.625rem] text-base leading-7 font-bold text-[#141417]">{children}</h3>
+  return <h3 className="pt-[1.625rem] text-base leading-7 font-bold text-[#141417] [.theme-nia_&]:text-white">{children}</h3>
 }
 
 /** Blue-dot list. `tight` drops the 14px lead-in for a list right under a sub-heading. */
@@ -29,7 +29,7 @@ export function List({ children, tight }: { children: React.ReactNode; tight?: b
 
 export function Li({ children }: { children: React.ReactNode }) {
   return (
-    <li className="relative pl-[1.625rem] text-[0.96875rem] leading-[1.6953rem] text-[#3a3a40]">
+    <li className="relative pl-[1.625rem] text-[0.96875rem] leading-[1.6953rem] text-[#3a3a40] [.theme-nia_&]:text-white/65">
       <span aria-hidden className="absolute top-[0.6rem] left-1 size-[0.4375rem] rounded-full bg-[#3979ff]" />
       {children}
     </li>
@@ -39,7 +39,7 @@ export function Li({ children }: { children: React.ReactNode }) {
 /** Grey note box ("We do not sell or rent your personal data…"). */
 export function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-[1.125rem] rounded-[1.125rem] border border-[#ececf0] bg-[#f6f6f8] px-[1.375rem] py-[1.125rem] text-[0.90625rem] leading-[1.5859rem] text-[#3a3a40]">
+    <div className="mt-[1.125rem] rounded-[1.125rem] border border-[#ececf0] bg-[#f6f6f8] px-[1.375rem] py-[1.125rem] text-[0.90625rem] leading-[1.5859rem] text-[#3a3a40] [.theme-nia_&]:border-white/8 [.theme-nia_&]:bg-white/[0.04] [.theme-nia_&]:text-white/65">
       {children}
     </div>
   )
@@ -47,7 +47,7 @@ export function Callout({ children }: { children: React.ReactNode }) {
 
 /** Bold, near-black emphasis. */
 export function B({ children }: { children: React.ReactNode }) {
-  return <strong className="font-bold text-[#141417]">{children}</strong>
+  return <strong className="font-bold text-[#141417] [.theme-nia_&]:text-white">{children}</strong>
 }
 
 /** Blue semibold highlight for key phrases. */

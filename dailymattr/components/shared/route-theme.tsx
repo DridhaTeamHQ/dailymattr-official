@@ -2,8 +2,15 @@
 
 import { usePathname } from "next/navigation"
 
-/** Routes whose shared chrome (navbar + footer) switches to the dark NIA theme. */
-const DARK_ROUTES = ["/nia"]
+import { cn } from "@/lib/utils"
+
+/** Routes whose shared chrome (navbar + footer) switches to the dark NIA colours. */
+const DARK_ROUTES = ["/nia", "/newsroom"]
+/** Routes that also take NIA's own sizing (fixed 16px root, zoomed footer layout). */
+const NIA_LAYOUT_ROUTES = ["/nia"]
+
+const matches = (routes: string[], pathname: string) =>
+  routes.some((r) => pathname === r || pathname.startsWith(`${r}/`))
 
 /**
  * The navbar and footer live in the root layout, so a page can't restyle them directly.
@@ -12,7 +19,10 @@ const DARK_ROUTES = ["/nia"]
  */
 export function RouteTheme({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const dark = DARK_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`))
+  const dark = matches(DARK_ROUTES, pathname)
+  const niaLayout = matches(NIA_LAYOUT_ROUTES, pathname)
 
-  return <div className={dark ? "theme-nia contents" : "contents"}>{children}</div>
+  return (
+    <div className={cn("contents", dark && "theme-nia", niaLayout && "nia-layout")}>{children}</div>
+  )
 }
