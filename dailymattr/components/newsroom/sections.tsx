@@ -30,7 +30,7 @@ export function NewsroomHero() {
           there is no hard edge where the article starts. Eased stops keep the ramp smooth. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-[linear-gradient(to_top,#0e0e0e_0%,rgba(14,14,14,0.92)_15%,rgba(14,14,14,0.7)_35%,rgba(14,14,14,0.4)_60%,rgba(14,14,14,0.15)_82%,transparent_100%)]"
+        className="absolute inset-x-0 -bottom-px -z-10 h-[65%] bg-[linear-gradient(to_top,#0e0e0e_0%,#0e0e0e_12%,rgba(14,14,14,0.95)_22%,rgba(14,14,14,0.82)_36%,rgba(14,14,14,0.6)_52%,rgba(14,14,14,0.35)_70%,rgba(14,14,14,0.12)_86%,transparent_100%)]"
       />
 
       {/* The title block stays centred in the space above; the body copy sits at the bottom. */}
