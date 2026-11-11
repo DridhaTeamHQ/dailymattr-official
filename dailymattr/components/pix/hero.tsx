@@ -1,31 +1,16 @@
-import Image from "next/image"
-
 import { FadeIn } from "@/components/shared/fade-in"
 import { hero } from "./content"
 import { PixButton, PixTag } from "./primitives"
 
-/** Full-bleed hero over the phone-in-hand photo. Figma 8632:2145. */
+/**
+ * Hero over the Pix entry video (1920×1080). The section takes the video's
+ * 16:9 ratio on large screens so the whole frame shows uncropped; on smaller
+ * screens the copy sits above and the video follows at full width.
+ */
 export function PixHero() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#0d1a2b] px-4 sm:px-6 lg:px-8">
-      {/* Figma places the 2091×1176 photo at (-98, -79) of the 1920×872 frame,
-          which works out to this focal point under object-cover. */}
-      <Image
-        src="/pix/hero-bg.png"
-        alt=""
-        fill
-        fetchPriority="high"
-        loading="eager"
-        sizes="100vw"
-        className="-z-10 object-cover object-[78%_26%] lg:object-[57%_26%]"
-      />
-      {/* Keeps the copy legible where it sits over the phone on narrow screens. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-r from-[#07111d]/85 via-[#07111d]/55 to-transparent lg:hidden"
-      />
-
-      <div className="mx-auto flex min-h-[35rem] max-w-[75rem] items-center py-20 sm:min-h-[40rem] lg:min-h-[54.5rem] lg:py-[7rem]">
+    <section className="relative isolate overflow-hidden bg-[#0d1a2b] lg:aspect-video">
+      <div className="mx-auto flex max-w-[75rem] items-center px-4 py-16 sm:px-6 sm:py-20 lg:absolute lg:inset-0 lg:z-10 lg:py-0 lg:px-8">
         <FadeIn className="flex max-w-[33.75rem] flex-col items-start gap-5 font-helvetica lg:gap-6">
           <PixTag>{hero.tag}</PixTag>
 
@@ -44,6 +29,19 @@ export function PixHero() {
           <PixButton href={hero.cta.href}>{hero.cta.label}</PixButton>
         </FadeIn>
       </div>
+
+      {/* The box always matches the video's ratio, so object-cover never crops it. */}
+      <video
+        src="/videos/pix_entry_video_web.mp4"
+        poster="/pix/hero-poster.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden
+        className="block aspect-video w-full object-cover lg:absolute lg:inset-0 lg:size-full"
+      />
     </section>
   )
 }
