@@ -17,7 +17,7 @@ const sectionId = (i: number) => `section-${i + 1}`
  */
 export function NewsroomHero() {
   return (
-    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] items-center overflow-hidden bg-[#0e0e0e] px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] flex-col overflow-hidden bg-[#0e0e0e] px-4 pt-16 pb-8 sm:px-6 lg:px-8 lg:pt-24 lg:pb-10">
       <Image
         src="/cover-images/newsroom_poster.jpeg"
         alt=""
@@ -26,15 +26,17 @@ export function NewsroomHero() {
         sizes="100vw"
         className="-z-10 object-cover"
       />
-      {/* The photo is bright, so a heavier wash keeps the white copy legible. */}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-[#0e0e0e]/55" />
+      {/* Slowly fades the bottom of the photo into the page background (#0e0e0e) below, so
+          there is no hard edge where the article starts. Eased stops keep the ramp smooth. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_62%_58%_at_50%_50%,rgba(14,14,14,0.5)_0%,transparent_100%)]"
+        className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-[linear-gradient(to_top,#0e0e0e_0%,rgba(14,14,14,0.92)_15%,rgba(14,14,14,0.7)_35%,rgba(14,14,14,0.4)_60%,rgba(14,14,14,0.15)_82%,transparent_100%)]"
       />
 
-      <div className="mx-auto w-full max-w-[75rem]">
-        <FadeIn className="flex flex-col items-center gap-5 text-center lg:gap-6">
+      {/* The title block stays centred in the space above; the body copy sits at the bottom. */}
+      <div className="mx-auto flex w-full max-w-[75rem] flex-1 flex-col items-center gap-10">
+        {/* No wash over the photo here, so a soft shadow keeps the white title legible. */}
+        <FadeIn className="my-auto flex flex-col items-center gap-5 text-center [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] lg:gap-6">
           <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
             {hero.eyebrow}
           </p>
@@ -44,6 +46,8 @@ export function NewsroomHero() {
           <p className="max-w-[36rem] text-lg leading-7 font-semibold text-white lg:text-xl">
             {hero.lead}
           </p>
+        </FadeIn>
+        <FadeIn delay={0.1} className="flex flex-col items-center gap-5 text-center lg:gap-6">
           {hero.body.map((p) => (
             <p key={p} className="max-w-[36rem] text-base leading-7 text-white/60 lg:text-lg">
               {p}

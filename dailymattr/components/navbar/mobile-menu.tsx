@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 
+import { useDarkRoute } from "@/components/shared/route-theme"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -14,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
 import { DownloadButton } from "./download-button"
 import { LanguageSwitcher } from "./language-switcher"
 import { Logo } from "./logo"
@@ -21,6 +23,7 @@ import { formatItems, leftLinks, rightLinks } from "./nav-config"
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false)
+  const dark = useDarkRoute()
   // Close the sheet after any link is tapped (same-page links would otherwise leave it open).
   const close = () => setOpen(false)
 
@@ -31,7 +34,12 @@ export function MobileMenu() {
       >
         <Menu />
       </SheetTrigger>
-      <SheetContent side="right" className="w-72 overflow-hidden rounded-l-3xl">
+      {/* The sheet is portalled to <body>, outside RouteTheme's wrapper, so it takes the
+          dark token scope itself on dark routes. */}
+      <SheetContent
+        side="right"
+        className={cn("w-72 overflow-hidden rounded-l-3xl", dark && "theme-nia")}
+      >
         <SheetHeader>
           <SheetTitle>
             <Logo className="h-5" />
