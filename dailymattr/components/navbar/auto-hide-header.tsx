@@ -1,39 +1,69 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react"
+import { useRef } from "react"
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+  type AnimationPlaybackControls,
+} from "motion/react"
 
-// How far the page must travel in one direction before the bar reacts. Smooth scrolling
-// moves a few pixels per frame, so this looks at the whole stroke, not frame-to-frame jitter.
-const HIDE_AFTER = 120
-const SHOW_AFTER = 24
-// Always show the bar near the top of the page.
-const TOP_ZONE = 80
+// How many pixels of scrolling it takes to slide the bar fully out (or back in).
+const SCROLL_DISTANCE = 300
+// Above this speed (px/s) the bar stops tracking the scroll and plays a timed glide instead,
+// so a fast flick doesn't make it vanish in a single frame.
+const FAST_SCROLL = 1500
+
+// Normal scrolling: a light spring that follows the scroll position.
+const FOLLOW = { type: "spring", stiffness: 220, damping: 32, mass: 0.6 } as const
+// Fast scrolling: an even glide to fully hidden or fully shown.
+const GLIDE = { duration: 0.8, ease: [0.45, 0, 0.25, 1] } as const
 
 /**
- * Sticky header that glides up and fades out while scrolling down, and glides back in once
- * the page is scrolled up again.
+ * Sticky header that moves with the scroll: scrolling down slides it up gradually until it
+ * is out of view, and scrolling up slides it back the same way. A fast scroll plays a smooth
+ * timed glide instead of jumping.
  */
 export function AutoHideHeader({ children }: { children: React.ReactNode }) {
-  const reduceMotion = useReducedMotion()
   const { scrollY } = useScroll()
-  const [hidden, setHidden] = useState(false)
-  // Where the current scroll stroke started, and which way it is going.
-  const anchor = useRef(0)
-  const direction = useRef<1 | -1>(1)
+  // Where the scroll says the bar should be: 0 = fully shown, 1 = fully hidden.
+  const target = useRef(0)
+  // What is drawn.
+  const progress = useMotionValue(0)
+  const glide = useRef<{ controls: AnimationPlaybackControls; to: number } | null>(null)
+  // A percentage keeps the offset right under the CSS zoom applied at xl.
+  const y = useTransform(progress, (h) => `${-h * 100}%`)
+  const opacity = useTransform(progress, [0, 0.6, 1], [1, 0.85, 0])
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious() ?? current
-    const dir = current > previous ? 1 : current < previous ? -1 : direction.current
-    if (dir !== direction.current) {
-      direction.current = dir
-      anchor.current = previous
-    }
-    const travelled = current - anchor.current
+    const delta = current - previous
+    if (delta === 0) return
+    const fast = Math.abs(scrollY.getVelocity()) > FAST_SCROLL
 
-    if (current < TOP_ZONE) setHidden(false)
-    else if (travelled > HIDE_AFTER) setHidden(true)
-    else if (travelled < -SHOW_AFTER) setHidden(false)
+    let next = Math.min(1, Math.max(0, target.current + delta / SCROLL_DISTANCE))
+    if (fast) next = delta > 0 ? 1 : 0
+    // Overscroll bounce above the top must never hide the bar.
+    if (current <= 0) next = 0
+    target.current = next
+
+    // Let a running glide finish while the scroll keeps heading the same way.
+    const running = glide.current
+    if (running && running.to === next) return
+
+    if (fast && current > 0) {
+      const controls = animate(progress, next, GLIDE)
+      glide.current = { controls, to: next }
+      controls.then(() => {
+        if (glide.current?.controls === controls) glide.current = null
+      })
+    } else {
+      glide.current = null
+      animate(progress, next, FOLLOW)
+    }
   })
 
   return (
@@ -41,23 +71,8 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
     // 1280px the nav is scaled back up to 90% so it reads a little larger; below that it keeps
     // the page size so all its links fit. At scale 1 (desktop, NIA) it stays 1:1.
     <motion.header
+      style={{ y, opacity }}
       className="sticky top-0 z-50 w-full bg-background will-change-transform xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))]"
-      initial={false}
-      animate={hidden ? { y: "-100%", opacity: 0 } : { y: 0, opacity: 1 }}
-      transition={
-        reduceMotion
-          ? { duration: 0 }
-          : {
-              // Hiding is a slow, even glide (ease-in-out) so the bar drifts away rather than
-              // snapping off; showing again uses a quicker ease-out so it is there when wanted.
-              y: hidden
-                ? { duration: 1.1, ease: [0.45, 0, 0.25, 1] }
-                : { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-              opacity: hidden
-                ? { duration: 0.9, ease: "easeInOut", delay: 0.2 }
-                : { duration: 0.5, ease: "easeOut" },
-            }
-      }
     >
       {children}
     </motion.header>
