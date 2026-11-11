@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import {
   animate,
   motion,
@@ -37,6 +37,29 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
   // A percentage keeps the offset right under the CSS zoom applied at xl.
   const y = useTransform(progress, (h) => `${-h * 100}%`)
   const opacity = useTransform(progress, [0, 0.6, 1], [1, 0.85, 0])
+  const ref = useRef<HTMLElement>(null)
+
+  // Publishes the announcement bar + nav height as --chrome-height, so full-screen heroes
+  // can fill exactly what is left of the first screen (the nav's size varies with zoom).
+  useEffect(() => {
+    const header = ref.current
+    if (!header) return
+    const banner = header.previousElementSibling
+    const measure = () => {
+      const height =
+        header.getBoundingClientRect().height + (banner?.getBoundingClientRect().height ?? 0)
+      document.documentElement.style.setProperty("--chrome-height", `${height}px`)
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(header)
+    if (banner) observer.observe(banner)
+    window.addEventListener("resize", measure)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", measure)
+    }
+  }, [])
 
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious() ?? current
@@ -71,6 +94,7 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
     // 1280px the nav is scaled back up to 90% so it reads a little larger; below that it keeps
     // the page size so all its links fit. At scale 1 (desktop, NIA) it stays 1:1.
     <motion.header
+      ref={ref}
       style={{ y, opacity }}
       className="sticky top-0 z-50 w-full bg-background will-change-transform xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))]"
     >

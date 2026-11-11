@@ -8,26 +8,47 @@ import { formats, hero, media, press, purpose } from "./content"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
 const HEADING =
-  "font-helvetica text-3xl leading-[1.15] font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
+  "font-helvetica text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
 
-/** Dark hero: "About" beside the dailymattr wordmark. Figma 8595:12572. */
+/**
+ * Hero over the office photo: "About" beside the dailymattr wordmark at the bottom left, the
+ * intro at the bottom right. It fills the rest of the first screen below the announcement bar
+ * and nav (--chrome-height, set by the header).
+ */
 export function AboutHero() {
   return (
-    <section className="bg-[#1c1c1e] px-4 py-24 sm:px-6 lg:py-[11.25rem]">
-      <FadeIn className="mx-auto flex flex-col items-center gap-6 text-center lg:gap-8">
-        <h1 className="flex flex-wrap items-end justify-center gap-x-4 gap-y-2 lg:gap-x-6">
-          <span className="text-[2.75rem] leading-none font-medium text-white lg:text-[4.25rem] lg:leading-[5.25rem]">
-            {hero.title}
-          </span>
-          {/* The wordmark art overhangs its 459 × 61 slot (Figma insets −32.56% / −17.71%). */}
-          <span className="relative block h-[2.5rem] w-[18.8rem] shrink-0 lg:h-[3.8125rem] lg:w-[28.6875rem]">
-            <span className="absolute inset-x-0 top-[-32.56%] bottom-[-17.71%]">
+    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] items-end overflow-hidden bg-[#1c1c1e] px-4 pt-24 pb-6 sm:px-6 lg:pl-15 lg:pb-8">
+      <Image
+        src="/cover-images/about_page_poster.JPG"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 object-cover"
+      />
+      {/* Darkens only the bottom of the photo, where the copy sits; the top stays clear. */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-[#1c1c1e]/90 via-[#1c1c1e]/40 via-45% to-transparent"
+      />
+
+      <FadeIn className="flex w-full flex-col items-start gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-16">
+        {/* One font size drives the whole title: the wordmark is sized in em, so it scales with
+            "About" at every breakpoint. Baseline-aligned: the wordmark slot's bottom edge is the
+            wordmark's baseline. */}
+        <h1 className="flex shrink-0 flex-wrap items-baseline gap-x-[0.4em] gap-y-2 text-[2rem] leading-none font-medium text-white sm:text-[2.5rem] lg:text-[2.25rem] xl:text-[2.75rem]">
+          <span>{hero.title}</span>
+          {/* The slot spans the wordmark from its ascenders (top of the art) to its baseline
+              (66.8 of the 91.67-unit art height), so the "y" descender overhangs below by 37.2%.
+              Height 0.75em ≈ the cap height of "About"; width keeps the art's 459 : 66.8 ratio. */}
+          <span className="relative block h-[0.75em] w-[5.153em] shrink-0">
+            <span className="absolute inset-x-0 top-0 bottom-[-37.2%]">
               {/* eslint-disable-next-line @next/next/no-img-element -- stretched vector art */}
               <img src="/about/wordmark.svg" alt="dailymattr" className="block size-full max-w-none" />
             </span>
           </span>
         </h1>
-        <p className="max-w-[40.75rem] font-helvetica text-lg leading-7 tracking-[-0.0125rem] text-white/60 lg:text-[1.3125rem] lg:leading-7">
+        <p className="max-w-[36rem] font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/80 sm:text-lg lg:max-w-[30rem] lg:text-[1.1125rem] xl:max-w-[36rem]">
           {hero.body}
         </p>
       </FadeIn>

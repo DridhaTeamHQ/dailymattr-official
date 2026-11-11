@@ -11,11 +11,29 @@ import { cta, hero, sections } from "./content"
 
 const sectionId = (i: number) => `section-${i + 1}`
 
-/** Centred intro copy. */
+/**
+ * Centred intro copy over the newsroom photo. It fills the rest of the first screen below
+ * the announcement bar and nav (--chrome-height, set by the header).
+ */
 export function NewsroomHero() {
   return (
-    <section className="bg-[#0e0e0e] bg-[radial-gradient(ellipse_62%_58%_at_50%_45%,rgba(14,14,14,0.96)_0%,rgba(14,14,14,0.85)_55%,rgba(14,14,14,0)_100%),url('/newsroom/hero-bg.svg')] bg-cover bg-center px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:px-8 lg:pt-[7rem] lg:pb-[12.25rem]">
-      <div className="mx-auto max-w-[75rem]">
+    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] items-center overflow-hidden bg-[#0e0e0e] px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <Image
+        src="/cover-images/newsroom_poster.jpeg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 object-cover"
+      />
+      {/* The photo is bright, so a heavier wash keeps the white copy legible. */}
+      <div aria-hidden className="absolute inset-0 -z-10 bg-[#0e0e0e]/55" />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_62%_58%_at_50%_50%,rgba(14,14,14,0.5)_0%,transparent_100%)]"
+      />
+
+      <div className="mx-auto w-full max-w-[75rem]">
         <FadeIn className="flex flex-col items-center gap-5 text-center lg:gap-6">
           <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
             {hero.eyebrow}
