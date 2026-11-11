@@ -1,7 +1,35 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "dailymattr", "url": "http://localhost:3000", "port": 3000 },
-    { "name": "dailymattr-dev", "runtimeExecutable": "npm", "runtimeArgs": ["--prefix", "dailymattr", "run", "dev"], "port": 3000 }
+    {
+      "name": "dailymattr",
+      "url": "http://localhost:3000",
+      "port": 3000
+    },
+    {
+      "name": "dailymattr-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "dailymattr",
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
+      "name": "cms-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "cms",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3001"
+      ],
+      "port": 3001
+    }
   ]
 }

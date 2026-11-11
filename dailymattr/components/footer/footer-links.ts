@@ -28,8 +28,13 @@ export const footerGroups: FooterGroup[] = [
   },
   {
     title: "Inside DailyMattr",
-    links: toLinks(["About", "Editorial", "Newsroom", "Careers", "Contact"]),
+    links: [
+      { label: "About", href: "/about" },
+      ...toLinks(["Editorial"]),
+      { label: "Newsroom", href: "/newsroom" },
+      ...toLinks(["Careers", "Contact"]),
+    ],
   },
-  { title: "Legal", links: toLinks(["Privacy", "Terms", "Cookies"]) },
+  { title: "Legal", links: [{ label: "Privacy", href: "/privacypolicy" }, ...toLinks(["Terms", "Cookies"])] },
   { title: "Support", links: toLinks(["Help Center", "Advertise", "Press"]) },
 ]

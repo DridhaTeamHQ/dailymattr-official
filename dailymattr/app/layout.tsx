@@ -8,13 +8,46 @@ import { Navbar } from "@/components/navbar";
 import { RouteTheme } from "@/components/shared/route-theme";
 import { SmoothScroll } from "@/components/shared/smooth-scroll";
 import { siteScaleScript } from "@/lib/site-scale";
+import { jsonLdHtml, site, siteJsonLd } from "@/lib/site";
 
 // Inter Tight is the site's only sans: font-sans, plus the font-tight alias used by headings and NIA.
 const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-sans" });
 
+// Site-wide SEO defaults (lib/site.ts). Pages override title / description / canonical with
+// seoMetadata() in lib/seo.ts; the share image comes from app/opengraph-image.tsx.
 export const metadata: Metadata = {
-  title: "dailyMattr - News & Infotainment",
-  description: "dailyMattr is a news and infotainment platform that provides curated content, insights, and analysis on various topics, keeping you informed and engaged with the latest trends and stories.",
+  metadataBase: new URL(site.url),
+  title: { default: site.title, template: `%s · ${site.name}` },
+  description: site.description,
+  applicationName: site.name,
+  keywords: [...site.keywords],
+  authors: [{ name: site.publisher.name, url: site.url }],
+  creator: site.publisher.name,
+  publisher: site.publisher.name,
+  category: "news",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    locale: site.locale,
+    url: "/",
+    title: site.title,
+    description: site.description,
+  },
+  twitter: { card: "summary_large_image", title: site.title, description: site.description },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  // Google Search Console ownership tag; set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION to enable.
+  ...(site.googleSiteVerification && { verification: { google: site.googleSiteVerification } }),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -29,6 +62,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="site-scale" strategy="beforeInteractive">
           {siteScaleScript}
         </Script>
+        {/* Organization + WebSite structured data for search engines */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(siteJsonLd()) }} />
         <SmoothScroll>
           <RouteTheme>
             <Navbar />

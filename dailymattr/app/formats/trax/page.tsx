@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import { seoMetadata } from "@/lib/seo"
 
 import {
   TraxExperiences,
@@ -8,11 +8,7 @@ import {
   TraxWhyAudio,
 } from "@/components/trax"
 
-export const metadata: Metadata = {
-  title: "Trax · dailyMattr",
-  description:
-    "Trax lets you listen to the stories that matter: daily wraps, audio explainers and stories on the go, hands-free.",
-}
+export const generateMetadata = () => seoMetadata("/formats/trax")
 
 export default function TraxPage() {
   return (

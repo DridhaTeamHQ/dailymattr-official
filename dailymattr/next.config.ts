@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
   },
+  // Old-site slugs (see PAGE-SLUGS.md): send the earlier new-site path to the old URL.
+  redirects() {
+    return [{ source: "/privacy", destination: "/privacypolicy", permanent: true }];
+  },
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

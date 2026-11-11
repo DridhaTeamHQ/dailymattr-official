@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import { seoMetadata } from "@/lib/seo"
 import { Plus_Jakarta_Sans } from "next/font/google"
 
 import {
@@ -16,11 +16,7 @@ const jakarta = Plus_Jakarta_Sans({
   variable: "--nf-jakarta",
 })
 
-export const metadata: Metadata = {
-  title: "Pix · dailyMattr",
-  description:
-    "Pix turns the news into visual stories: the important facts, stripped of noise. Swipe through the story and get to what matters.",
-}
+export const generateMetadata = () => seoMetadata("/formats/pix")
 
 export default function PixPage() {
   return (
