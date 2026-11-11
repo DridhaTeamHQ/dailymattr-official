@@ -72,6 +72,13 @@ export const defaultSeo: Record<string, PageSeo> = {
     priority: 0.3,
     changeFrequency: "yearly",
   },
+  "/advertise": {
+    title: "Advertise",
+    description:
+      "Advertise with dailyMattr: display advertising, clearly labelled sponsored content and brand campaigns that respect the reader's experience and editorial independence.",
+    priority: 0.5,
+    changeFrequency: "monthly",
+  },
 }
 
 /** The SEO entry for a route. The single place to connect the CMS. */

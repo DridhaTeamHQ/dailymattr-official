@@ -36,5 +36,12 @@ export const footerGroups: FooterGroup[] = [
     ],
   },
   { title: "Legal", links: [{ label: "Privacy", href: "/privacypolicy" }, ...toLinks(["Terms", "Cookies"])] },
-  { title: "Support", links: toLinks(["Help Center", "Advertise", "Press"]) },
+  {
+    title: "Support",
+    links: [
+      ...toLinks(["Help Center"]),
+      { label: "Advertise", href: "/advertise" },
+      ...toLinks(["Press"]),
+    ],
+  },
 ]
