@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { CarouselCard } from "@/components/ui/apple-cards-carousel"
 import { dummyImage, dummyVideo } from "@/lib/dummy-media"
+import { SiteVideo } from "@/components/shared/site-video"
 
 // Card copy from the Figma frame. Add `src` (image URL) to replace each placeholder fill.
 // The popup shows the template's vertical (9:16) video edge to edge beside these details.
@@ -30,15 +31,7 @@ function TemplateDetails({ title }: { title: string }) {
 
 function TemplateVideo({ index }: { index: number }) {
   return (
-    <video
-      src={dummyVideo(index)}
-      poster={dummyImage(500 + index * 6, 540, 960)}
-      autoPlay
-      muted
-      loop
-      playsInline
-      className="size-full object-cover"
-    />
+    <SiteVideo video={dummyVideo(index)} className="size-full object-cover" />
   )
 }
 

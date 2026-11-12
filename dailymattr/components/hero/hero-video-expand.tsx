@@ -3,6 +3,9 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 
+import { SiteVideo } from "@/components/shared/site-video"
+import type { VideoAsset } from "@/lib/videos"
+
 import { BriefingCard } from "./briefing-card"
 import { HeroShowcase } from "./hero-showcase"
 
@@ -57,10 +60,10 @@ const GROW_END = GROW / TOTAL
  * video simply widens to the screen edges as it scrolls into view. Everything tracks the
  * scroll, so scrolling back up plays it in reverse.
  */
-export function HeroVideoExpand({ src }: { src: string }) {
+export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
   const reduceMotion = useReducedMotion()
   const [size, setSize] = useState<Size | null>(null)
-  const [ratio, setRatio] = useState(16 / 9)
+  const [ratio, setRatio] = useState(asset.width / asset.height)
 
   useLayoutEffect(() => {
     const measure = () =>
@@ -75,12 +78,9 @@ export function HeroVideoExpand({ src }: { src: string }) {
   }, [])
 
   const video = (
-    <video
-      src={src}
-      autoPlay
-      muted
-      loop
-      playsInline
+    <SiteVideo
+      video={asset}
+      priority
       className="size-full object-cover"
       onLoadedMetadata={(e) => {
         const v = e.currentTarget

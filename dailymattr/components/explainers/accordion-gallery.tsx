@@ -6,6 +6,7 @@ import { Play } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
+import { SiteVideo } from "@/components/shared/site-video"
 
 export type GalleryItem = {
   id: string
@@ -18,25 +19,11 @@ export type GalleryItem = {
 }
 
 /** Muted looping clip that only plays while its panel is the active one. */
-function GalleryVideo({ src, poster, playing }: { src: string; poster?: string; playing: boolean }) {
-  const ref = React.useRef<HTMLVideoElement>(null)
-
-  React.useEffect(() => {
-    const video = ref.current
-    if (!video) return
-    if (playing) video.play().catch(() => {})
-    else video.pause()
-  }, [playing])
-
+function GalleryVideo({ src, playing }: { src: string; playing: boolean }) {
   return (
-    <video
-      ref={ref}
-      src={src}
-      poster={poster}
-      muted
-      loop
-      playsInline
-      preload="metadata"
+    <SiteVideo
+      video={src}
+      playing={playing}
       className={cn(
         "absolute inset-0 size-full object-cover transition-[filter] duration-500",
         !playing && "grayscale"
@@ -160,7 +147,7 @@ export function AccordionGallery({
               className="relative h-[var(--panel-h,max(18rem,33cqw))] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-72 max-md:transform-none!"
             >
               {item.video ? (
-                <GalleryVideo src={item.video} poster={item.image} playing={isActive} />
+                <GalleryVideo src={item.video} playing={isActive} />
               ) : item.image && (
                 <Image
                   src={item.image}

@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
+import { SiteVideo } from "@/components/shared/site-video"
 import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { LearnFormat } from "./content"
@@ -38,7 +39,7 @@ function Media({ format, className }: { format: LearnFormat; className?: string 
           className="absolute inset-0 animate-in duration-300 fade-in"
         >
           {f.video ? (
-            <video src={f.video} poster={f.image} autoPlay muted loop playsInline className="size-full object-cover" />
+            <SiteVideo video={f.video} className="size-full object-cover" />
           ) : (
             f.image && <Image src={f.image} alt={f.title} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
           )}

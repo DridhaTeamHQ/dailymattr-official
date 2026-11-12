@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { PANEL_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
+import { SiteVideo } from "@/components/shared/site-video"
+import { videos } from "@/lib/videos"
 
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
@@ -49,13 +51,8 @@ export function DailyRoutineSection() {
         {/* No fill on the frame: a background bleeds through the anti-aliased rounded edge as a pale
             outline. clip-path rounds the corners without that halo, so only the video is visible. */}
         <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">
-          <video
-            src="/videos/Day_by_day_video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
+          <SiteVideo
+            video={videos.dayByDay}
             // Slight zoom crops the faint encoding seam along the video's bottom edge
             className="block size-full scale-[1.01] object-cover"
           />

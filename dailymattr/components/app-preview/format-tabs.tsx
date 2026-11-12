@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { cn } from "@/lib/utils"
+import { SiteVideo } from "@/components/shared/site-video"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formats } from "./formats"
 
@@ -42,16 +43,10 @@ export function FormatTabs() {
         */}
         <AnimatePresence initial={false}>
           {activeFormat.videoSrc && (
-            <motion.video
+            <motion.div
               key={activeFormat.value}
-              src={activeFormat.videoSrc}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
               aria-hidden
-              className="absolute inset-0 size-full object-cover will-change-[opacity,transform]"
+              className="absolute inset-0 will-change-[opacity,transform]"
               initial={{ opacity: 0, scale: reduceMotion ? 1 : 1.03 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
@@ -59,7 +54,9 @@ export function FormatTabs() {
                 opacity: { duration: 0.5, ease: "easeInOut" },
                 scale: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
               }}
-            />
+            >
+              <SiteVideo video={activeFormat.videoSrc} className="size-full object-cover" />
+            </motion.div>
           )}
         </AnimatePresence>
 

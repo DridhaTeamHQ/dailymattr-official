@@ -1,4 +1,6 @@
 import { FadeIn } from "@/components/shared/fade-in"
+import { SiteVideo } from "@/components/shared/site-video"
+import { videos } from "@/lib/videos"
 import { hero } from "./content"
 import { PixButton, PixTag } from "./primitives"
 
@@ -31,14 +33,9 @@ export function PixHero() {
       </div>
 
       {/* The box always matches the video's ratio, so object-cover never crops it. */}
-      <video
-        src="/videos/pix_entry_video_web.mp4"
-        poster="/pix/hero-poster.jpg"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
+      <SiteVideo
+        video={videos.pixEntry}
+        priority
         aria-hidden
         className="block aspect-video w-full object-cover lg:absolute lg:inset-0 lg:size-full"
       />
