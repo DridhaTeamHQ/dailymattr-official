@@ -1,10 +1,8 @@
 import Image from "next/image"
 
-import { cn } from "@/lib/utils"
-import { PANEL_WIDTH } from "@/components/shared/layout"
 import { FadeIn } from "@/components/shared/fade-in"
 import checkIcon from "@/public/home/check.svg"
-import womanPhoto from "@/public/home/newsletter-woman.png"
+import bannerPhoto from "@/public/home/newsletter-banner.jpeg"
 
 // Copy from the Figma frame (8585:10373).
 const points = [
@@ -14,40 +12,36 @@ const points = [
 ]
 
 const fieldClass =
-  "h-12 w-full rounded-[0.75rem] border border-[rgba(51,65,85,0.8)] bg-[#07090e] px-[1.0625rem] text-sm text-white placeholder:text-[#64748b] focus-visible:border-[#3979ff] focus-visible:outline-none"
+  "h-12 w-full rounded-[0.75rem] border border-white/15 bg-black/30 px-[1.0625rem] text-sm text-white placeholder:text-[#94a3b8] focus-visible:border-[#3979ff] focus-visible:outline-none"
 
 /**
- * Figma 8585:10373: photo panel with the "One chai." headline, beside a 460px dark
- * newsletter card. Gap 16, both radius 16; stacked on narrow screens.
+ * Full-bleed banner photo (person reading the app on their phone) filling the screen, with the
+ * newsletter card floating over it as frosted glass. The card sits on the left so the phone in
+ * the middle of the photo stays clear; on narrow screens it is centred over the photo.
  */
 export function NewsletterSection() {
   return (
-    <section className="w-full px-4 py-8">
-      <div className={cn(PANEL_WIDTH, "flex flex-col gap-4 lg:flex-row")}>
-        {/* Image-only panel: the photo covers the whole box. Any headline is part of the
-            artwork supplied from the backend, so there is no text overlay here. The focus point
-            (88% down) keeps the same crop as Figma: the phone and blazer, not the face. */}
-        <FadeIn className="relative aspect-[1032/634] min-w-0 flex-1 overflow-hidden rounded-[1rem] bg-[#d9e9ea] lg:aspect-auto">
-          <Image
-            src={womanPhoto}
-            alt="A person in a pink blazer reading on their phone"
-            fill
-            sizes="(min-width: 1024px) 60vw, 100vw"
-            className="object-cover object-[50%_88%]"
-          />
-        </FadeIn>
+    <section className="relative my-14 flex w-full items-center overflow-hidden bg-[#0d1117] px-4 py-10 sm:my-20 sm:py-14">
+      <Image
+        src={bannerPhoto}
+        alt="A person lying back reading the dailymattr app on their phone"
+        fill
+        sizes="100vw"
+        className="object-cover object-[30%_50%]"
+      />
+      {/* Darken the left edge so the glass card reads clearly over the photo */}
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/60 via-black/25 to-transparent" />
 
-        <FadeIn
-          delay={0.1}
-          className="relative flex w-full shrink-0 flex-col overflow-hidden rounded-[1rem] border border-[rgba(57,121,255,0.25)] bg-[#0d1117] p-6 sm:p-[2.3125rem] lg:w-[28.75rem]"
-        >
+      {/* Wider than PANEL_WIDTH so the card sits nearer the left edge of the photo */}
+      <div className="relative mx-auto flex w-full justify-center lg:w-[90vw] lg:justify-start">
+        <FadeIn className="relative flex w-full max-w-[28.75rem] flex-col overflow-hidden rounded-[1.25rem] border border-white/15 bg-[rgba(13,17,23,0.45)] p-6 shadow-[0_1.5rem_4rem_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 sm:p-[2.3125rem]">
           {/* Top-corner glow and the hairline across the top edge */}
           <div className="pointer-events-none absolute -top-24 -right-24 size-60 rounded-full bg-[rgba(57,121,255,0.2)] blur-[4rem]" />
           <div className="pointer-events-none absolute inset-x-12 top-0 h-px bg-linear-to-r from-[rgba(57,121,255,0)] via-[rgba(57,121,255,0.6)] to-[rgba(57,121,255,0)]" />
 
           <div className="relative flex flex-col gap-[1.4375rem]">
             <div className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2 rounded-full border border-[rgba(57,121,255,0.3)] bg-[#131926] px-[0.9375rem] py-[0.4375rem] drop-shadow-[0_0_0.375rem_rgba(57,121,255,0.15)]">
+              <span className="flex items-center gap-2 rounded-full border border-[rgba(57,121,255,0.3)] bg-white/5 px-[0.9375rem] py-[0.4375rem] drop-shadow-[0_0_0.375rem_rgba(57,121,255,0.15)]">
                 <span className="size-1.5 rounded-full bg-[#3979ff] shadow-[0_0_0.5rem_#3979ff]" />
                 <span className="text-xs leading-4 font-medium tracking-[0.0344rem] text-[#e2e8f0] uppercase">
                   Get the newsletter
@@ -87,7 +81,7 @@ export function NewsletterSection() {
 
           <form
             action="/newsletter"
-            className="relative mt-[1.4375rem] flex flex-col gap-2.5 border-t border-[rgba(30,41,59,0.8)] pt-[1.3125rem] lg:mt-auto"
+            className="relative mt-[1.4375rem] flex flex-col gap-2.5 border-t border-white/10 pt-[1.3125rem]"
           >
             <input name="firstName" autoComplete="given-name" placeholder="First name — optional" aria-label="First name (optional)" className={fieldClass} />
             <input name="email" type="email" required autoComplete="email" placeholder="Your email address" aria-label="Email address" className={fieldClass} />
