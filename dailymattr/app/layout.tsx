@@ -57,7 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn("h-full", "antialiased", "font-sans", interTight.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {/* Laptop scale as a number, for the navbar (see lib/site-scale.ts) */}
         <Script id="site-scale" strategy="beforeInteractive">
           {siteScaleScript}

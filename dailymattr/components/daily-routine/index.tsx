@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { PANEL_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
-import { routineVideo } from "@/lib/dummy-media"
 
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
@@ -45,10 +44,21 @@ export function DailyRoutineSection() {
         </div>
       </SectionHeading>
 
-      {/* Media placeholder (Figma: the wide 1507px panel column, ~144px below the buttons); swap in an image or video */}
+      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped */}
       <FadeIn className={PANEL_WIDTH}>
-        <AspectRatio ratio={2.2} className="overflow-hidden rounded-xl bg-placeholder">
-          <video src={routineVideo} autoPlay muted loop playsInline className="size-full object-cover" />
+        {/* No fill on the frame: a background bleeds through the anti-aliased rounded edge as a pale
+            outline. clip-path rounds the corners without that halo, so only the video is visible. */}
+        <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">
+          <video
+            src="/videos/Day_by_day_video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            // Slight zoom crops the faint encoding seam along the video's bottom edge
+            className="block size-full scale-[1.01] object-cover"
+          />
         </AspectRatio>
       </FadeIn>
     </section>
