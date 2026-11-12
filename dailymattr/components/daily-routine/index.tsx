@@ -3,7 +3,6 @@ import { ArrowUpRight, ChevronRight } from "lucide-react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
-import { PANEL_WIDTH } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
 import { SiteVideo } from "@/components/shared/site-video"
@@ -46,8 +45,10 @@ export function DailyRoutineSection() {
         </div>
       </SectionHeading>
 
-      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped */}
-      <FadeIn className={PANEL_WIDTH}>
+      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped. Wider
+          than PANEL_WIDTH (nearly edge to edge), but capped so the whole 16:9 frame fits on one
+          screen below the sticky header (6rem left for the header and a small margin). */}
+      <FadeIn className="mx-auto w-full lg:w-[min(94vw,calc((100svh_-_6rem)*16/9))]">
         {/* No fill on the frame: a background bleeds through the anti-aliased rounded edge as a pale
             outline. clip-path rounds the corners without that halo, so only the video is visible. */}
         <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">
