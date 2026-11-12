@@ -14,17 +14,18 @@ const niaPanelBackground = [
 ].join(", ");
 
 /**
- * Format rows slide up and fade in one after another when the menu opens.
+ * NIA copy and format rows slide in from the right and fade in one after another when the
+ * menu opens (both columns run side by side, then "Explore formats" last).
  * On close the delay drops to 0 so they reset together under the panel's own fade.
  */
-const ROW_BASE_DELAY = 90;
-const ROW_STAGGER = 70;
+const ROW_BASE_DELAY = 220;
+const ROW_STAGGER = 120;
 
 function staggerIn(open: boolean, index: number) {
   return {
     className: cn(
-      "transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:translate-y-0 motion-reduce:transition-opacity",
-      open ? "translate-y-0 opacity-100" : "translate-y-2.5 opacity-0",
+      "transition-[opacity,translate] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:translate-x-0 motion-reduce:transition-opacity",
+      open ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0",
     ),
     style: {
       transitionDelay: open
@@ -56,7 +57,10 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
         style={{ backgroundImage: niaPanelBackground }}
         data-node-id="8856:12357"
       >
-        <div className="flex shrink-0 items-center gap-2">
+        <div
+          className={cn("flex shrink-0 items-center gap-2", staggerIn(open, 0).className)}
+          style={staggerIn(open, 0).style}
+        >
           <Image
             src="/nav-menu/nia-icon.svg"
             alt=""
@@ -69,13 +73,19 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
           </p>
         </div>
 
-        <div className="flex h-10 w-[18.5rem] shrink-0 flex-col items-start pt-2">
+        <div
+          className={cn("flex h-10 w-[18.5rem] shrink-0 flex-col items-start pt-2", staggerIn(open, 1).className)}
+          style={staggerIn(open, 1).style}
+        >
           <p className="w-full text-3xl leading-8 font-medium tracking-[-0.05rem] text-white">
             NIA
           </p>
         </div>
 
-        <div className="flex h-7 w-[18.5rem] shrink-0 flex-col items-start pt-1.5">
+        <div
+          className={cn("flex h-7 w-[18.5rem] shrink-0 flex-col items-start pt-1.5", staggerIn(open, 2).className)}
+          style={staggerIn(open, 2).style}
+        >
           <p className="w-full text-md leading-5.5 text-white/72">
             Know more. Ask better.
           </p>
@@ -93,7 +103,7 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
       >
         <div className="flex w-full flex-col items-start px-1 py-1.5">
           {formatItems.map((item, i) => {
-            const stagger = staggerIn(open, i);
+            const stagger = staggerIn(open, i + 1);
             return (
               <div
                 key={item.href}
@@ -162,9 +172,9 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
         <div
           className={cn(
             "flex min-h-px w-full flex-1 flex-col items-start justify-end",
-            staggerIn(open, formatItems.length).className,
+            staggerIn(open, formatItems.length + 1).className,
           )}
-          style={staggerIn(open, formatItems.length).style}
+          style={staggerIn(open, formatItems.length + 1).style}
         >
           <Link
             href="/formats"
