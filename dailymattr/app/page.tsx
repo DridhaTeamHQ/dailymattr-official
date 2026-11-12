@@ -20,7 +20,7 @@ export default function Home() {
       <Hero />
       <StoriesSection />
       <AppPreviewSection />
-      <LearnFormatsSection />
+      {/* <LearnFormatsSection /> */}
       <ExplainersSection />
       <DailyRoutineSection />
       <BriefingBentoSection />
