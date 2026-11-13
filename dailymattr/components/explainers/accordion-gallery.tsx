@@ -52,9 +52,9 @@ function GalleryVideo({
 const EASE = [0.215, 0.61, 0.355, 1] as const
 // Width ÷ height of the active panel: 1920 × 1080 (16:9).
 const ACTIVE_RATIO = 1920 / 1080
-// Width of an inactive panel as a fraction of the active one. Kept small so the closed
-// panels stay slim strips beside the wide 16:9 one, and the row keeps a usable height.
-const INACTIVE_SCALE = 0.2
+// Width of an inactive panel as a fraction of the active one. Kept small so the open 16:9
+// panel takes most of the row and the row stays tall; the closed panels are slim strips.
+const INACTIVE_SCALE = 0.09
 // Tallest the panels may get, as a fraction of the window height.
 const MAX_HEIGHT_VH = 0.7
 
@@ -65,20 +65,22 @@ const MAX_HEIGHT_VH = 0.7
  */
 export function AccordionGallery({
   items,
-  defaultIndex = 0,
+  defaultIndex = null,
   activeGrow = 3,
   tilt = 8,
   className,
 }: {
   items: GalleryItem[]
-  defaultIndex?: number
+  /** Panel open on load; null (the default) starts with every panel closed, equal widths. */
+  defaultIndex?: number | null
   /** flex-grow of the active panel (others are 1) below md; from md the 16:9 sizing applies. */
   activeGrow?: number
   /** Degrees inactive panels rotate away from the active one. */
   tilt?: number
   className?: string
 }) {
-  const [active, setActive] = React.useState(defaultIndex)
+  // Which panel is open; null = all closed. Hovering opens one, leaving the gallery closes it.
+  const [active, setActive] = React.useState<number | null>(defaultIndex)
   // The active video plays with sound. Browsers refuse unmuted autoplay until the visitor has
   // clicked, tapped or pressed a key on the page, so until then it plays muted (`blocked`) and
   // the first such interaction anywhere turns the sound on.
@@ -157,10 +159,15 @@ export function AccordionGallery({
       role="list"
       aria-label="Explainer gallery"
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={() => {
+        setHovered(false)
+        setActive(null)
+      }}
       onFocus={(e) => setKeyboardFocused(e.target.matches(":focus-visible"))}
       onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setKeyboardFocused(false)
+        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+        setKeyboardFocused(false)
+        if (canHover && !hovered) setActive(null)
       }}
       style={
         layout
@@ -174,7 +181,7 @@ export function AccordionGallery({
     >
       {items.map((item, i) => {
         const isActive = i === active
-        const rotateY = isActive ? 0 : i < active ? tilt : -tilt
+        const rotateY = active === null || isActive ? 0 : i < active ? tilt : -tilt
 
         return (
           <motion.div
