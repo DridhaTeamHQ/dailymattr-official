@@ -1,11 +1,80 @@
+"use client"
+
+import * as React from "react"
+import { useReducedMotion } from "motion/react"
+
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import type { VideoAsset } from "@/lib/videos"
 
 // 9:16 portrait tile, radius 24, fill #DEDEDE (--placeholder).
-// Placeholder story tile — drop an <Image fill /> in as children when visuals are ready.
-export function StoryCard({ children }: { children?: React.ReactNode }) {
+// Pass the cover <Image fill /> as children. With a `video`, hovering the card lifts it a
+// little and plays the clip, with sound, over the cover; leaving pauses it and rewinds.
+// Nothing is downloaded until the first hover.
+export function StoryCard({ children, video }: { children?: React.ReactNode; video?: VideoAsset }) {
+  const videoRef = React.useRef<HTMLVideoElement>(null)
+  const reduceMotion = useReducedMotion()
+  const [armed, setArmed] = React.useState(false)
+  const [hovered, setHovered] = React.useState(false)
+  const [playing, setPlaying] = React.useState(false)
+
+  const canPlay = !!video && !reduceMotion
+
+  // Plays with sound. Browsers refuse unmuted playback until the visitor has clicked, tapped or
+  // pressed a key on the page, so until then it plays muted and the first such interaction
+  // (while still hovering) turns the sound on.
+  React.useEffect(() => {
+    const el = videoRef.current
+    if (!el || !armed) return
+    if (!hovered) {
+      el.pause()
+      el.currentTime = 0
+      return
+    }
+    el.muted = false
+    el.play().catch(() => {
+      el.muted = true
+      el.play().catch(() => {})
+    })
+    const unmute = () => {
+      el.muted = false
+    }
+    const events = ["pointerdown", "keydown"] as const
+    events.forEach((e) => window.addEventListener(e, unmute, { capture: true }))
+    return () => events.forEach((e) => window.removeEventListener(e, unmute, { capture: true }))
+  }, [hovered, armed])
+
   return (
-    <AspectRatio ratio={9 / 16} className="overflow-hidden rounded-[1.5rem] bg-placeholder">
-      {children}
-    </AspectRatio>
+    <div
+      className="transition-transform duration-300 ease-out hover:scale-[1.08]"
+      onPointerEnter={(e) => {
+        if (e.pointerType !== "mouse" || !canPlay) return
+        setArmed(true)
+        setHovered(true)
+      }}
+      onPointerLeave={() => setHovered(false)}
+    >
+      <AspectRatio ratio={9 / 16} className="overflow-hidden rounded-[1.5rem] bg-placeholder">
+        {children}
+        {canPlay && armed && (
+          <video
+            ref={videoRef}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+            onPlaying={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+              hovered && playing ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {video.sources.map((s) => (
+              <source key={s.src} src={s.src} type={s.type} />
+            ))}
+          </video>
+        )}
+      </AspectRatio>
+    </div>
   )
 }

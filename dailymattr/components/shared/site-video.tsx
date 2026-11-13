@@ -15,6 +15,12 @@ type SiteVideoProps = Omit<
   priority?: boolean
   /** Leave unset to autoplay while on screen; pass false to hold it paused (e.g. inactive tab). */
   playing?: boolean
+  /**
+   * Play with sound. Browsers only allow that once the visitor has clicked or tapped the page,
+   * so until then it plays muted and calls onSoundBlocked (e.g. to show "tap for sound").
+   */
+  sound?: boolean
+  onSoundBlocked?: () => void
 }
 
 /** How far outside the screen a video starts loading, so it is ready as it scrolls in. */
@@ -27,7 +33,14 @@ const LOAD_MARGIN = "400px 0px"
  *  - shows its local poster (or first frame) instantly, and keeps it if the video fails,
  *  - stays on that still frame for visitors who prefer reduced motion.
  */
-export function SiteVideo({ video, priority = false, playing, ...props }: SiteVideoProps) {
+export function SiteVideo({
+  video,
+  priority = false,
+  playing,
+  sound = false,
+  onSoundBlocked,
+  ...props
+}: SiteVideoProps) {
   const asset = typeof video === "string" ? placeholderVideo(video) : video
   const ref = useRef<HTMLVideoElement>(null)
   const reduceMotion = useReducedMotion()
@@ -67,14 +80,22 @@ export function SiteVideo({ video, priority = false, playing, ...props }: SiteVi
   }, [near])
 
   const shouldPlay = near && visible && playing !== false && !reduceMotion
+  const onSoundBlockedRef = useRef(onSoundBlocked)
+  onSoundBlockedRef.current = onSoundBlocked
   useEffect(() => {
     const el = ref.current
     if (!el) return
     // React does not reliably reflect `muted` as an attribute; autoplay needs it set.
-    el.muted = true
-    if (shouldPlay) el.play().catch(() => {})
-    else el.pause()
-  }, [shouldPlay])
+    el.muted = !sound
+    if (!shouldPlay) return void el.pause()
+    el.play().catch(() => {
+      // Unmuted autoplay refused (no click/tap on the page yet): fall back to muted.
+      if (el.muted) return
+      el.muted = true
+      onSoundBlockedRef.current?.()
+      el.play().catch(() => {})
+    })
+  }, [shouldPlay, sound])
 
   return (
     <video

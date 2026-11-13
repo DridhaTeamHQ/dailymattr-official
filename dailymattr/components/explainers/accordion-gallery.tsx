@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 import { SiteVideo } from "@/components/shared/site-video"
+import type { VideoAsset } from "@/lib/videos"
 
 export type GalleryItem = {
   id: string
@@ -14,19 +15,34 @@ export type GalleryItem = {
   title: string
   /** Local image path, e.g. "/explainers/money.jpg". Leave empty for the placeholder. */
   image?: string
-  /** Local video path, e.g. "/explainers/money.mp4". Plays (muted, looped) while the panel is active. */
-  video?: string
+  /** An entry from lib/videos.ts (or a URL). Plays, looped and with sound, while the panel is active. */
+  video?: VideoAsset | string
 }
 
-/** Muted looping clip that only plays while its panel is the active one. */
-function GalleryVideo({ src, playing }: { src: string; playing: boolean }) {
+/** Looping clip that only plays (with sound, when allowed) while its panel is the active one. */
+function GalleryVideo({
+  src,
+  active,
+  playing,
+  sound,
+  onSoundBlocked,
+}: {
+  src: VideoAsset | string
+  /** The open panel: shown in colour (others are greyscale), whether or not it is playing. */
+  active: boolean
+  playing: boolean
+  sound: boolean
+  onSoundBlocked: () => void
+}) {
   return (
     <SiteVideo
       video={src}
       playing={playing}
+      sound={playing && sound}
+      onSoundBlocked={onSoundBlocked}
       className={cn(
         "absolute inset-0 size-full object-cover transition-[filter] duration-500",
-        !playing && "grayscale"
+        !active && "grayscale"
       )}
     />
   )
@@ -34,10 +50,11 @@ function GalleryVideo({ src, playing }: { src: string; playing: boolean }) {
 
 // power3.out — the easing React Bits' Accordion Gallery uses.
 const EASE = [0.215, 0.61, 0.355, 1] as const
-// Width ÷ height of the active panel: the explainer clips are 720 × 1080 (2:3).
-const ACTIVE_RATIO = 720 / 1080
-// Width of an inactive panel as a fraction of the active one.
-const INACTIVE_SCALE = 0.4
+// Width ÷ height of the active panel: 1920 × 1080 (16:9).
+const ACTIVE_RATIO = 1920 / 1080
+// Width of an inactive panel as a fraction of the active one. Kept small so the open 16:9
+// panel takes most of the row and the row stays tall; the closed panels are slim strips.
+const INACTIVE_SCALE = 0.09
 // Tallest the panels may get, as a fraction of the window height.
 const MAX_HEIGHT_VH = 0.7
 
@@ -48,23 +65,53 @@ const MAX_HEIGHT_VH = 0.7
  */
 export function AccordionGallery({
   items,
-  defaultIndex = 0,
+  defaultIndex = null,
   activeGrow = 3,
   tilt = 8,
   className,
 }: {
   items: GalleryItem[]
-  defaultIndex?: number
-  /** flex-grow of the active panel (others are 1) below md; from md the 2:3 sizing applies. */
+  /** Panel open on load; null (the default) starts with every panel closed, equal widths. */
+  defaultIndex?: number | null
+  /** flex-grow of the active panel (others are 1) below md; from md the 16:9 sizing applies. */
   activeGrow?: number
   /** Degrees inactive panels rotate away from the active one. */
   tilt?: number
   className?: string
 }) {
-  const [active, setActive] = React.useState(defaultIndex)
+  // Which panel is open; null = all closed. Hovering opens one, leaving the gallery closes it.
+  const [active, setActive] = React.useState<number | null>(defaultIndex)
+  // The active video plays with sound. Browsers refuse unmuted autoplay until the visitor has
+  // clicked, tapped or pressed a key on the page, so until then it plays muted (`blocked`) and
+  // the first such interaction anywhere turns the sound on.
+  const [blocked, setBlocked] = React.useState(false)
+  const soundOn = !blocked
+  const onSoundBlocked = React.useCallback(() => setBlocked(true), [])
+  React.useEffect(() => {
+    if (!blocked) return
+    const unblock = () => setBlocked(false)
+    const events = ["pointerdown", "keydown", "touchstart"] as const
+    events.forEach((e) => window.addEventListener(e, unblock, { capture: true }))
+    return () => events.forEach((e) => window.removeEventListener(e, unblock, { capture: true }))
+  }, [blocked])
+
   const reduceMotion = useReducedMotion()
 
-  // From md up, every panel shares one height H. The active panel is 2:3 (H × ACTIVE_RATIO
+  // Videos play only while the gallery is hovered (or keyboard-focused), and pause when the
+  // pointer leaves. Touch screens cannot hover, so there the open panel simply plays.
+  const [hovered, setHovered] = React.useState(false)
+  const [keyboardFocused, setKeyboardFocused] = React.useState(false)
+  const [canHover, setCanHover] = React.useState(true)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(hover: hover)")
+    const update = () => setCanHover(mq.matches)
+    update()
+    mq.addEventListener("change", update)
+    return () => mq.removeEventListener("change", update)
+  }, [])
+  const engaged = !canHover || hovered || keyboardFocused
+
+  // From md up, every panel shares one height H. The active panel is 16:9 (H × ACTIVE_RATIO
   // wide) and each inactive one INACTIVE_SCALE of that, so the row fills the available width.
   // If that makes H taller than MAX_HEIGHT_VH of the window, H is capped and every panel —
   // active and inactive — shrinks with it; the row then narrows and stays centred.
@@ -111,6 +158,17 @@ export function AccordionGallery({
       ref={listRef}
       role="list"
       aria-label="Explainer gallery"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => {
+        setHovered(false)
+        setActive(null)
+      }}
+      onFocus={(e) => setKeyboardFocused(e.target.matches(":focus-visible"))}
+      onBlur={(e) => {
+        if (e.currentTarget.contains(e.relatedTarget as Node | null)) return
+        setKeyboardFocused(false)
+        if (canHover && !hovered) setActive(null)
+      }}
       style={
         layout
           ? ({ "--panel-h": `${layout.height}px`, maxWidth: layout.maxWidth } as React.CSSProperties)
@@ -123,7 +181,7 @@ export function AccordionGallery({
     >
       {items.map((item, i) => {
         const isActive = i === active
-        const rotateY = isActive ? 0 : i < active ? tilt : -tilt
+        const rotateY = active === null || isActive ? 0 : i < active ? tilt : -tilt
 
         return (
           <motion.div
@@ -147,7 +205,13 @@ export function AccordionGallery({
               className="relative h-[var(--panel-h,max(18rem,33cqw))] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-72 max-md:transform-none!"
             >
               {item.video ? (
-                <GalleryVideo src={item.video} playing={isActive} />
+                <GalleryVideo
+                  src={item.video}
+                  active={isActive}
+                  playing={isActive && engaged}
+                  sound={soundOn}
+                  onSoundBlocked={onSoundBlocked}
+                />
               ) : item.image && (
                 <Image
                   src={item.image}
@@ -170,7 +234,7 @@ export function AccordionGallery({
               <span
                 className={cn(
                   "absolute top-1/2 left-1/2 flex size-12 -translate-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm lg:size-14 transition-[transform,opacity] duration-300 group-hover:scale-110",
-                  item.video && isActive && "opacity-0"
+                  item.video && isActive && engaged && "opacity-0"
                 )}
               >
                 <Play className="size-4 fill-current" />
