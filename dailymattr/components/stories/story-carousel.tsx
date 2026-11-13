@@ -6,6 +6,7 @@ import AutoScroll from "embla-carousel-auto-scroll"
 
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { StoryCard } from "./story-card"
+import { videos } from "@/lib/videos"
 import amaron from "@/public/cover-images/amaron.png"
 import jetAirways from "@/public/cover-images/jet-airways.png"
 import jockey from "@/public/cover-images/jockey.png"
@@ -13,11 +14,12 @@ import mrf from "@/public/cover-images/mrf.png"
 
 // Story cover art, 9:16. Drop more files in public/cover-images and add them here — the row
 // cycles through the list, so the card count below only sets how many slides it is built from.
+// `video` plays when the card is hovered (see StoryCard).
 const covers = [
-  { src: amaron, alt: "Amaron — Made in India" },
-  { src: jetAirways, alt: "Jet Airways — Made in India" },
-  { src: jockey, alt: "Jockey — Made in India" },
-  { src: mrf, alt: "MRF — Made in India" },
+  { src: amaron, alt: "Amaron — Made in India", video: videos.storyPreview },
+  { src: jetAirways, alt: "Jet Airways — Made in India", video: videos.storyPreview },
+  { src: jockey, alt: "Jockey — Made in India", video: videos.storyPreview },
+  { src: mrf, alt: "MRF — Made in India", video: videos.storyPreview },
 ]
 
 // Slide step = card width + 16px gutter (CarouselItem's pl-4), matching the basis-* classes below.
@@ -85,14 +87,16 @@ export function StoryCarousel() {
         key={cardCount}
         opts={{ align: "start", loop: true, dragFree: true }}
         plugins={plugins}
-        className="w-full"
+        // The viewport clips overflow, so pad the row (and pull the margin back) to leave room
+        // for a hovered card's lift without shifting the layout.
+        className="-my-8 w-full"
       >
-        <CarouselContent>
+        <CarouselContent className="py-8">
           {Array.from({ length: cardCount }, (_, i) => {
             const cover = covers[i % covers.length]
             return (
               <CarouselItem key={i} className="basis-[13.5rem] sm:basis-[16rem] lg:basis-[calc(13.9vw+1rem)]">
-                <StoryCard>
+                <StoryCard video={cover.video}>
                   <Image
                     src={cover.src}
                     alt={cover.alt}
