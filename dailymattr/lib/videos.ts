@@ -54,12 +54,9 @@ export const videos = {
   /** Daily routine section on the home page. */
   dayByDay: localVideo("day-by-day", 1920, 1080, { webm: false }),
   /**
-   * Home "whole world of stories" cards, played on hover. Placeholder: reuses the day-by-day
-   * clip until each story has its own 9:16 video — add one entry per story and point the
-   * covers in components/stories/story-carousel.tsx at them.
+   * Home "Follow your curiosity" explainers gallery (16:9, matches the open panel) and, as
+   * stand-ins, the "whole world of stories" hover previews. Both keep their sound.
    */
-  storyPreview: localVideo("day-by-day", 1920, 1080, { webm: false }),
-  /** Home "Follow your curiosity" explainers gallery (16:9, matches the open panel; with sound). */
   curiosity1: localVideo("curiosity-1", 1920, 1080),
   customerStory2: localVideo("customer-story-2", 1920, 1080),
   /** Pix page hero. */

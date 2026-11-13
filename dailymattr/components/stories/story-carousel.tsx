@@ -14,12 +14,13 @@ import mrf from "@/public/cover-images/mrf.png"
 
 // Story cover art, 9:16. Drop more files in public/cover-images and add them here — the row
 // cycles through the list, so the card count below only sets how many slides it is built from.
-// `video` plays when the card is hovered (see StoryCard).
+// `video` plays, with sound, when the card is hovered (see StoryCard). Stand-ins for now: the
+// two clips with audio, alternating, until each story has its own video.
 const covers = [
-  { src: amaron, alt: "Amaron — Made in India", video: videos.storyPreview },
-  { src: jetAirways, alt: "Jet Airways — Made in India", video: videos.storyPreview },
-  { src: jockey, alt: "Jockey — Made in India", video: videos.storyPreview },
-  { src: mrf, alt: "MRF — Made in India", video: videos.storyPreview },
+  { src: amaron, alt: "Amaron — Made in India", video: videos.curiosity1 },
+  { src: jetAirways, alt: "Jet Airways — Made in India", video: videos.customerStory2 },
+  { src: jockey, alt: "Jockey — Made in India", video: videos.curiosity1 },
+  { src: mrf, alt: "MRF — Made in India", video: videos.customerStory2 },
 ]
 
 // Slide step = card width + 16px gutter (CarouselItem's pl-4), matching the basis-* classes below.

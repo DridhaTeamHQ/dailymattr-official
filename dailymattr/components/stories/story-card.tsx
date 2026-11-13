@@ -8,7 +8,7 @@ import type { VideoAsset } from "@/lib/videos"
 
 // 9:16 portrait tile, radius 24, fill #DEDEDE (--placeholder).
 // Pass the cover <Image fill /> as children. With a `video`, hovering the card lifts it a
-// little and plays the clip over the cover; leaving pauses it and rewinds to the cover.
+// little and plays the clip, with sound, over the cover; leaving pauses it and rewinds.
 // Nothing is downloaded until the first hover.
 export function StoryCard({ children, video }: { children?: React.ReactNode; video?: VideoAsset }) {
   const videoRef = React.useRef<HTMLVideoElement>(null)
@@ -19,16 +19,28 @@ export function StoryCard({ children, video }: { children?: React.ReactNode; vid
 
   const canPlay = !!video && !reduceMotion
 
+  // Plays with sound. Browsers refuse unmuted playback until the visitor has clicked, tapped or
+  // pressed a key on the page, so until then it plays muted and the first such interaction
+  // (while still hovering) turns the sound on.
   React.useEffect(() => {
     const el = videoRef.current
     if (!el || !armed) return
-    el.muted = true
-    if (hovered) {
-      el.play().catch(() => {})
-    } else {
+    if (!hovered) {
       el.pause()
       el.currentTime = 0
+      return
     }
+    el.muted = false
+    el.play().catch(() => {
+      el.muted = true
+      el.play().catch(() => {})
+    })
+    const unmute = () => {
+      el.muted = false
+    }
+    const events = ["pointerdown", "keydown"] as const
+    events.forEach((e) => window.addEventListener(e, unmute, { capture: true }))
+    return () => events.forEach((e) => window.removeEventListener(e, unmute, { capture: true }))
   }, [hovered, armed])
 
   return (
