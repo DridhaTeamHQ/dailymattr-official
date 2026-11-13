@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Play } from "lucide-react"
+import { Play, VolumeX } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
@@ -142,6 +142,20 @@ export function AccordionGallery({
     }
   }, [items.length])
   const grow = layout ? 1 / INACTIVE_SCALE : activeGrow
+
+  // On the mobile strip, bring the panel that was just opened into view once it has widened.
+  React.useEffect(() => {
+    if (active === null || window.innerWidth >= 768) return
+    const list = listRef.current
+    const panel = list?.children[active] as HTMLElement | undefined
+    // Scroll only the strip (not the page): scrollIntoView would also move the page.
+    const t = window.setTimeout(() => {
+      if (!list || !panel) return
+      const left = list.scrollLeft + panel.getBoundingClientRect().left - list.getBoundingClientRect().left
+      list.scrollTo({ left, behavior: reduceMotion ? "auto" : "smooth" })
+    }, 350)
+    return () => window.clearTimeout(t)
+  }, [active, reduceMotion])
   const transition = reduceMotion ? { duration: 0 } : { duration: 0.6, ease: EASE }
 
   const onKeyDown = (i: number, e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -161,7 +175,8 @@ export function AccordionGallery({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => {
         setHovered(false)
-        setActive(null)
+        // Touch screens emulate mouse events on tap; there the panel stays open until another tap.
+        if (canHover) setActive(null)
       }}
       onFocus={(e) => setKeyboardFocused(e.target.matches(":focus-visible"))}
       onBlur={(e) => {
@@ -192,17 +207,22 @@ export function AccordionGallery({
             initial={false}
             animate={{ flexGrow: isActive ? grow : 1 }}
             transition={transition}
-            onMouseEnter={() => setActive(i)}
+            onMouseEnter={() => canHover && setActive(i)}
             onFocus={() => setActive(i)}
             onClick={() => setActive(i)}
             onKeyDown={(e) => onKeyDown(i, e)}
-            className="group flex min-w-0 basis-0 flex-col gap-3 outline-none max-md:w-44 max-md:flex-none max-md:grow-0! max-md:snap-start"
+            // Below md (a horizontal scroll strip) the open panel widens to the full strip at
+            // 16:9; closed panels are narrow portrait tiles.
+            className={cn(
+              "group flex min-w-0 basis-0 flex-col gap-3 outline-none max-md:flex-none max-md:grow-0! max-md:snap-start max-md:transition-[width] max-md:duration-500 max-md:ease-out",
+              isActive ? "max-md:w-[100cqw]" : "max-md:w-28"
+            )}
           >
             <motion.div
               initial={false}
               animate={{ rotateY }}
               transition={transition}
-              className="relative h-[var(--panel-h,max(18rem,33cqw))] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-72 max-md:transform-none!"
+              className="relative h-[var(--panel-h,max(18rem,33cqw))] overflow-hidden rounded-xl bg-placeholder transform-3d group-focus-visible:ring-3 group-focus-visible:ring-ring/50 max-md:h-[calc(100cqw*9/16)] max-md:transform-none!"
             >
               {item.video ? (
                 <GalleryVideo
@@ -239,6 +259,14 @@ export function AccordionGallery({
               >
                 <Play className="size-4 fill-current" />
               </span>
+              {/* Shown only while the browser keeps the video muted (no click/tap/key yet). Any
+                  click on the page, this panel included, turns the sound on and hides it. */}
+              {item.video && isActive && engaged && blocked && (
+                <span className="pointer-events-none absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-sm font-medium whitespace-nowrap text-white backdrop-blur-sm">
+                  <VolumeX className="size-4" aria-hidden />
+                  Click for sound
+                </span>
+              )}
             </motion.div>
 
             {/* Figma shows the category only; the title stays for screen readers */}

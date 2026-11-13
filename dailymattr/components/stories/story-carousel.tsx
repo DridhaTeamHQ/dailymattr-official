@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import AutoScroll from "embla-carousel-auto-scroll"
 
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { StoryCard } from "./story-card"
 import { videos } from "@/lib/videos"
 import amaron from "@/public/cover-images/amaron.png"
@@ -63,10 +63,30 @@ function useCardCount(ref: React.RefObject<HTMLDivElement | null>) {
 
 // Embla's loop joins the last card to the first, and AutoScroll moves the row at a constant
 // speed, so it scrolls continuously with no jump. It pauses on hover and resumes on leave;
-// dragging still works.
+// dragging still works. On touch screens a tapped card plays its clip (one at a time) and the
+// row holds still until it is tapped again.
 export function StoryCarousel() {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const cardCount = useCardCount(containerRef)
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [tapped, setTapped] = React.useState<number | null>(null)
+
+  React.useEffect(() => {
+    const autoScroll = api?.plugins()?.autoScroll
+    if (!api || !autoScroll) return
+    if (tapped === null) {
+      if (!autoScroll.isPlaying()) autoScroll.play()
+      return
+    }
+    autoScroll.stop()
+    // AutoScroll restarts itself once the row settles after a touch, so keep stopping it while
+    // a card plays. It flags itself as playing only after emitting, hence the microtask.
+    const keepStopped = () => queueMicrotask(() => autoScroll.stop())
+    api.on("autoScroll:play", keepStopped)
+    return () => {
+      api.off("autoScroll:play", keepStopped)
+    }
+  }, [api, tapped])
 
   const plugins = React.useMemo(
     () => [
@@ -86,6 +106,7 @@ export function StoryCarousel() {
           than calling reInit() — one clean init, and AutoScroll starts itself. */}
       <Carousel
         key={cardCount}
+        setApi={setApi}
         opts={{ align: "start", loop: true, dragFree: true }}
         plugins={plugins}
         // The viewport clips overflow, so pad the row (and pull the margin back) to leave room
@@ -97,7 +118,11 @@ export function StoryCarousel() {
             const cover = covers[i % covers.length]
             return (
               <CarouselItem key={i} className="basis-[13.5rem] sm:basis-[16rem] lg:basis-[calc(13.9vw+1rem)]">
-                <StoryCard video={cover.video}>
+                <StoryCard
+                  video={cover.video}
+                  tapped={tapped === i}
+                  onTap={() => setTapped((t) => (t === i ? null : i))}
+                >
                   <Image
                     src={cover.src}
                     alt={cover.alt}
