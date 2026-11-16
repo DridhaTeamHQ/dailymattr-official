@@ -4,13 +4,19 @@ import { useRef } from "react"
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 
 /**
- * Widens the app preview media as it scrolls into view on desktop: from the content column
- * (min(62.5vw, 75rem)) out to 88vw, fully open once its centre reaches the middle of the
+ * Widens the app preview media as it scrolls into view on desktop: from 85vw (START_W, about
+ * 94px from each edge on a 1280 screen) out to the Figma frame (8859:12712: 1792 × 1008 on the 1920 page, so
+ * 64px / 4rem from each edge, 16:9), fully open once its centre reaches the middle of the
  * screen. It tracks the scroll, so scrolling back narrows it again.
  * It only sets --expand-w / --expand-h; the media reads them at lg and up (see format-tabs.tsx), so phones
  * and tablets, which already fill the width, are unaffected. Reduced motion: no variable, so
- * the media stays at the content column.
+ * the media stays at the starting size.
  */
+/** Starting width at lg and up; format-tabs.tsx uses the same values when no variable is set. */
+export const START_W = "85vw"
+/** Starting height: 16:9, like the open size, so the box only grows. */
+export const START_H = "calc(85vw * 0.5625)"
+
 export function ExpandOnScroll({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const reduceMotion = useReducedMotion()
@@ -19,10 +25,11 @@ export function ExpandOnScroll({ children }: { children: React.ReactNode }) {
     const t = Math.min(Math.max(p, 0), 1)
     return 1 - (1 - t) ** 3 // ease-out: opens quickly, settles gently
   })
-  // Widens to 88vw, but the height only grows to 47.1vw (what a 78.5vw-wide 5:3 box would
-  // be), so the extra width doesn't push the bottom off a laptop screen; object-cover crops.
-  const width = useTransform(eased, (e) => `calc(${1 - e} * min(62.5vw, 75rem) + ${e} * 88vw)`)
-  const height = useTransform(eased, (e) => `calc(${1 - e} * min(62.5vw, 75rem) * 0.6 + ${e} * 47.1vw)`)
+  // Open width: the row (the section's content box, already 1rem in from each edge) less 3rem
+  // a side, leaving 4rem (64px at 1920) to the screen edges. Open height: 16:9 of that width
+  // (100vw includes the scrollbar, a few px off; object-cover absorbs it).
+  const width = useTransform(eased, (e) => `calc(${1 - e} * ${START_W} + ${e} * (100% - 6rem))`)
+  const height = useTransform(eased, (e) => `calc(${1 - e} * ${START_H} + ${e} * (100vw - 8rem) * 0.5625)`)
 
   return (
     <motion.div
