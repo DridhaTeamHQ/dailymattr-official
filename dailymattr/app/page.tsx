@@ -7,6 +7,7 @@ import { Hero } from "@/components/hero";
 import { LearnFormatsSection } from "@/components/learn-formats";
 import { LookInsideSection } from "@/components/look-inside";
 import { NewsletterSection } from "@/components/newsletter";
+import { RecognizedInSection } from "@/components/recognized-in";
 import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
 
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <main className="flex-1 font-helvetica">
       <Hero />
+      <RecognizedInSection />
       <StoriesSection />
       <AppPreviewSection />
       {/* <LearnFormatsSection /> */}

@@ -77,6 +77,18 @@
   --text-tile--line-height: 1.05;
   --text-tile-xl: 19.77cqw;
   --text-tile-xl--line-height: 0.92;
+
+  /* Logo strip (components/recognized-in): the track holds two identical sets, so moving it
+     by half its width lands the second set exactly where the first started. */
+  --animate-marquee: marquee 40s linear infinite;
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 /*
