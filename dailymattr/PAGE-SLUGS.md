@@ -170,7 +170,7 @@ These pages have no old URL. Keep their slugs as they are.
 | --- | --- | --- |
 | `/nia/` | NIA – AI News Assistant | Exists |
 | `/formats/pix/` | Pix – Visual News Stories | Exists |
-| `/formats/qix/` | Qix – Short Video Explainers | To build (already linked) |
+| `/formats/qix/` | Qix – Short Video Explainers | Exists |
 | `/formats/trax/` | Trax – Listen to the News | Exists |
 | `/formats/xplaind/` | Xplaind – Explainers | To build (already linked) |
 | `/newsroom/` | Newsroom | Exists |

@@ -44,6 +44,13 @@ export const defaultSeo: Record<string, PageSeo> = {
     priority: 0.8,
     changeFrequency: "monthly",
   },
+  "/formats/qix": {
+    title: "Qix – Short Video Explainers",
+    description:
+      "Qix makes learning visual: short video explainers that break today's biggest developments and the ideas behind them into clear, easy-to-follow moments.",
+    priority: 0.8,
+    changeFrequency: "monthly",
+  },
   "/formats/trax": {
     title: "Trax – Listen to the News",
     description:
