@@ -9,39 +9,37 @@ import { cta, hero, sections } from "./content"
 
 const sectionId = (i: number) => `section-${i + 1}`
 
-/** Copy beside a glowing media panel. Figma 8697:1604. */
+/**
+ * Dark band: eyebrow, then the two-line title on the left and the intro on the right.
+ * Figma 9144:324 (1920×575): eyebrow at 240px, copy row 1668px wide ending 120px above the
+ * bottom. Sizes in rem (px ÷ 16) so laptops scale them.
+ */
 export function PrivacyHero() {
   return (
-    <section className="bg-white px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:px-8 lg:pt-[7rem] lg:pb-[7.5rem]">
-      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,33.75rem)_minmax(0,36.75rem)] lg:justify-between lg:gap-[4.5rem]">
-        <FadeIn className="flex flex-col items-start gap-5 lg:gap-6">
-          <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
-            {hero.eyebrow}
-          </p>
-          <h1 className="text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16">
+    // Side margins keep Figma's 126/1920 proportion at every desktop width, so the copy never
+    // runs to the screen edges on laptops.
+    <section className="bg-[#1c1c1e] px-4 pt-20 pb-16 sm:px-6 sm:pt-28 lg:px-[6.5625vw] lg:pt-[15rem] lg:pb-[7.5rem]">
+      <FadeIn className="mx-auto flex max-w-[104.25rem] flex-col gap-5 lg:gap-[1.6875rem]">
+        <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+          {hero.eyebrow}
+        </p>
+
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <h1 className="text-[2.5rem] leading-[1.15] font-medium text-white sm:text-5xl sm:leading-[1.2] lg:text-[3.5rem] lg:leading-[4.25rem] lg:whitespace-nowrap">
             {hero.title.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
           </h1>
-          {hero.body.map((p) => (
-            <p key={p} className="max-w-[31.25rem] text-base leading-7 text-[#696969] lg:text-lg">
-              {p}
-            </p>
-          ))}
-        </FadeIn>
 
-        {/* Media slot: an empty placeholder in Figma, kept as one until the art exists. */}
-        <FadeIn delay={0.1}>
-          <div
-            className="flex aspect-[588/520] w-full overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] p-4 sm:p-6"
-            style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
-          >
-            <div className="size-full rounded-[1.125rem] bg-[rgba(230,231,234,0.75)]" />
+          {/* Paragraph widths shrink with the 21→18px type so the lines break as in Figma. */}
+          <div className="flex flex-col gap-6 font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:gap-6 lg:text-lg">
+            <p className="max-w-[37.875rem]">{hero.body[0]}</p>
+            <p className="max-w-[33.75rem]">{hero.body[1]}</p>
           </div>
-        </FadeIn>
-      </div>
+        </div>
+      </FadeIn>
     </section>
   )
 }
