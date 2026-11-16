@@ -1,10 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { DarkArrowLink } from "@/components/shared/dark-arrow-link"
 import { FadeIn } from "@/components/shared/fade-in"
-import { softGlow } from "@/components/shared/soft-glow"
-import { formats, hero, media, press, purpose } from "./content"
+import { hero, media, purpose } from "./content"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
 const HEADING =
@@ -70,106 +68,60 @@ export function AboutPurpose() {
   )
 }
 
-/** Four format cards with soft corner glows. Figma 8595:12621. */
-export function AboutFormats() {
-  return (
-    <section className="bg-white px-4 py-24 sm:px-6 lg:px-8 lg:py-[10rem]">
-      <div className="mx-auto max-w-[75rem]">
-        <FadeIn className="flex flex-col items-center gap-4 text-center font-helvetica">
-          <h2 className={HEADING}>{formats.title}</h2>
-          <p className="text-lg leading-[1.875rem] tracking-[-0.0188rem] text-[#696969] lg:text-xl">
-            {formats.subtitle}
-          </p>
-        </FadeIn>
+/** Darkens the bottom and right edges of the photo. Figma 9144:290. */
+const mediaPhotoOverlay = [
+  "linear-gradient(61.72deg, rgba(0, 0, 0, 0) 58.77%, rgba(0, 0, 0, 0.7) 99.7%)",
+  "linear-gradient(179.03deg, rgba(0, 0, 0, 0) 10.72%, rgba(0, 0, 0, 0.7) 97.92%)",
+].join(", ")
 
-        <ul className="mt-12 grid grid-cols-2 gap-4 sm:gap-6 lg:mt-16 lg:grid-cols-4">
-          {formats.items.map((f, i) => (
-            <li key={f.name}>
-              <FadeIn delay={i * 0.06} className="h-full">
-                <Link
-                  href={f.href}
-                  className="flex h-full min-h-[10rem] flex-col gap-6 rounded-2xl px-6 py-8 font-helvetica transition-transform hover:-translate-y-1 lg:min-h-[12.25rem] lg:px-8 lg:py-10"
-                  style={{
-                    backgroundImage: softGlow("linear-gradient(#f7f7f7, #f7f7f7)", {
-                      blue: { at: "20% 20%", size: "45% 60%", alpha: 0.12 },
-                      violet: { at: "85% 80%", size: "40% 60%", alpha: 0.1 },
-                    }),
-                  }}
-                >
-                  <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-white drop-shadow-[0px_1px_1px_rgba(16,24,40,0.06)] drop-shadow-[0px_4px_6px_rgba(16,24,40,0.04)]">
-                    <Image src={f.icon} alt="" width={24} height={24} className="size-6" />
-                  </span>
-                  <span className="text-3xl leading-none font-medium tracking-[-0.0938rem] text-[#1c1b17] lg:text-display lg:leading-11">
-                    {f.name}
-                  </span>
-                </Link>
-              </FadeIn>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )
-}
-
-/** Downloadable press files on white cards. Figma 8595:12622. */
-export function AboutPress() {
-  return (
-    <section id="press" className="bg-[#f5f5f7] px-4 py-24 sm:px-6 lg:px-8 lg:py-[10rem]">
-      <div className="mx-auto max-w-[75rem]">
-        <FadeIn>
-          <h2 className={HEADING}>{press.title}</h2>
-        </FadeIn>
-
-        <ul className="mt-10 grid gap-4 sm:grid-cols-2 sm:gap-6 lg:mt-12 lg:grid-cols-3">
-          {press.items.map((item, i) => (
-            <li key={item.label}>
-              <FadeIn delay={(i % 3) * 0.06} className="h-full">
-                <a
-                  href={item.href}
-                  className="group flex h-full min-h-[6rem] items-center gap-4 rounded-2xl bg-white px-7 py-6 font-helvetica transition-shadow hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]"
-                >
-                  <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#eaf1ff]">
-                    <Image src={item.icon} alt="" width={24} height={24} className="size-6" />
-                  </span>
-                  <span className="min-w-0 flex-1 text-lg leading-6 font-medium tracking-[-0.0125rem] text-black">
-                    {item.label}
-                  </span>
-                  <Image
-                    src="/about/press-download.svg"
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="size-5 shrink-0 opacity-70 transition-opacity group-hover:opacity-100"
-                  />
-                </a>
-              </FadeIn>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )
-}
-
-/** Glowing contact panel. Figma 8595:12706. */
+/**
+ * Frosted contact card over a full-bleed photo (the same photo as NIA's "Responsible answers").
+ * Figma 9144:289: 1920×747 frame, card 9144:311 at left 207 / bottom 84, 290 tall.
+ */
 export function AboutMedia() {
   return (
-    <section className="bg-white px-4 py-24 sm:px-6 lg:px-8 lg:py-[10rem]">
-      <FadeIn className="mx-auto max-w-[75rem]">
-        <div
-          className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] p-8 font-helvetica sm:p-12 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:p-20"
-          style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
-        >
-          <div className="flex max-w-[47.9rem] flex-col gap-4">
-            <h2 className={HEADING}>{media.title}</h2>
-            <p className="max-w-[40rem] text-lg leading-[1.875rem] tracking-[-0.0188rem] text-[#696969] lg:text-xl">
-              {media.body}
+    // data-full-bleed: the footer adds Figma's 97px top gap after a page-ending photo.
+    <section data-full-bleed className="relative isolate flex overflow-hidden px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-0 lg:pt-0 lg:pb-[5.25rem] lg:pl-[12.9375rem]">
+      <Image
+        src="/nia/responsible-answers.png"
+        alt=""
+        fill
+        sizes="100vw"
+        className="-z-10 object-cover object-[60%_center] lg:object-center"
+      />
+      <div aria-hidden className="absolute inset-0 -z-10" style={{ backgroundImage: mediaPhotoOverlay }} />
+
+      <FadeIn className="w-full lg:w-auto">
+        {/*
+          Figma draws this with its Glass effect (frost 15, depth 11, light −45° at 0.8,
+          refraction 0.96, dispersion 0.77) over a 20% white fill. CSS has no Glass, so:
+          frost 15 → blur(7.5px) (Figma radius ≈ 2σ), the −45° light → a brighter top-left
+          rim and a softer bottom-right one, and depth → a faint 11px inner edge glow.
+        */}
+        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 font-helvetica shadow-[inset_1px_1px_0.5px_rgba(255,255,255,0.4),inset_-1px_-1px_0.5px_rgba(255,255,255,0.2),inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
+          <div className="flex flex-col gap-4 lg:w-[37.0625rem]">
+            <h2 className="text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
+              {media.title}
+            </h2>
+            <p className="max-w-[40rem] text-lg leading-[1.875rem] tracking-[-0.0188rem] text-white lg:w-[40rem] lg:text-xl">
+              {media.bodyLines[0]} <br className="hidden lg:block" />
+              {media.bodyLines[1]}
             </p>
           </div>
-          <DarkArrowLink href={media.cta.href} className="shrink-0">
-            {media.cta.label}
-          </DarkArrowLink>
+
+          <div className="shrink-0 lg:w-[14.1875rem]">
+            <Link
+              href={media.cta.href}
+              className="flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-white py-2 pr-2 pl-4 transition-[translate,background-color] hover:-translate-y-px hover:bg-white/90"
+            >
+              <span className="text-base leading-4 font-medium tracking-[-0.0125rem] whitespace-nowrap text-[#1c1c1e]">
+                {media.cta.label}
+              </span>
+              <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-[rgba(57,121,255,0.2)]">
+                <Image src="/shared/arrow-up-right-blue.svg" alt="" width={12} height={12} className="block size-3" />
+              </span>
+            </Link>
+          </div>
         </div>
       </FadeIn>
     </section>

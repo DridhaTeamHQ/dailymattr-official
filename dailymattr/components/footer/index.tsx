@@ -15,7 +15,7 @@ import { footerGroups } from "./footer-links"
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:border-t-0 lg:pt-6 [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:border-t [.nia-layout_&]:lg:pt-24 [.nia-layout_&]:font-sans [.nia-layout_&]:lg:[zoom:var(--nia-scale,1)]">
+    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:border-t-0 lg:pt-6 [main:has(>[data-full-bleed]:last-child)+&]:border-t-0 lg:[main:has(>[data-full-bleed]:last-child)+&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:border-t [.nia-layout_&]:lg:pt-24 [.nia-layout_&]:font-sans [.nia-layout_&]:lg:[zoom:var(--nia-scale,1)]">
       {/* Lines up with the wide panels above (PANEL_WIDTH); the NIA page keeps its 1200px column */}
       <div className={cn(PANEL_WIDTH, "flex flex-col [.nia-layout_&]:max-w-[75rem] [.nia-layout_&]:lg:w-full")}>
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-20">

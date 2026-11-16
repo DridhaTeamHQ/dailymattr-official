@@ -1,6 +1,7 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { AboutFormats, AboutHero, AboutMedia, AboutPress, AboutPurpose } from "@/components/about/sections"
+import { AboutFormats } from "@/components/about/formats"
+import { AboutHero, AboutMedia, AboutPurpose } from "@/components/about/sections"
 
 export const generateMetadata = () => seoMetadata("/about")
 
@@ -10,7 +11,6 @@ export default function AboutPage() {
       <AboutHero />
       <AboutPurpose />
       <AboutFormats />
-      <AboutPress />
       <AboutMedia />
     </main>
   )
