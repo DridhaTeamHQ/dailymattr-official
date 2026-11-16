@@ -6,11 +6,13 @@ import { SectionHeading } from "@/components/shared/section-heading"
 import { ExpandOnScroll } from "./expand-on-scroll"
 import { FormatTabs } from "./format-tabs"
 import { FadeIn } from "@/components/shared/fade-in"
+import { SITE_GUTTER } from "@/components/shared/layout"
+import { cn } from "@/lib/utils"
 
 // Figma frame: vertical auto layout, gap 48, padding 16 × 100, centered, fill #f5f5f7.
 export function AppPreviewSection() {
   return (
-    <section className="flex w-full flex-col items-center gap-12 bg-[#f5f5f7] px-4 py-[6.25rem]">
+    <section className={cn("flex w-full flex-col items-center gap-12 bg-[#f5f5f7] py-[6.25rem]", SITE_GUTTER)}>
       <SectionHeading
         eyebrow="For curious minds. Busy lives."
         title={

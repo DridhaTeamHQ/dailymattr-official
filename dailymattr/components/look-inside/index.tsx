@@ -7,11 +7,13 @@ import { SectionHeading } from "@/components/shared/section-heading"
 import playIcon from "@/public/home/play.svg"
 
 // Figma 8625:617: a 1507 × 889 #ededed panel (radius 16) with the heading centred and a
-// black pill link, 40px below, that opens the app tour.
+// black pill link, 40px below, that opens the app tour. From lg it spans the site gutters, so
+// at 1507:889 it would outgrow the screen; its height is capped to fit one screen below the
+// sticky header (4rem) with a little room to spare.
 export function LookInsideSection() {
   return (
-    <section className="w-full px-4 py-8 lg:pt-12 lg:pb-0">
-      <div className={cn(PANEL_WIDTH, "flex aspect-[4/5] flex-col items-center justify-center rounded-[1rem] bg-[#ededed] px-4 sm:aspect-[1507/889]")}>
+    <section className="w-full px-4 py-8 sm:px-6 lg:px-16 lg:pt-12 lg:pb-0">
+      <div className={cn(PANEL_WIDTH, "flex aspect-[4/5] flex-col items-center justify-center rounded-[1rem] bg-[#ededed] px-4 sm:aspect-[1507/889] lg:aspect-auto lg:h-[min(calc((100vw-8rem)*889/1507),calc(100svh-7rem))]")}>
         <SectionHeading
           eyebrow="A look inside dailymattr"
           title={

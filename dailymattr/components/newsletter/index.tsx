@@ -21,7 +21,7 @@ const fieldClass =
  */
 export function NewsletterSection() {
   return (
-    <section className="relative my-14 flex w-full items-center overflow-hidden bg-[#0d1117] px-4 py-10 sm:my-20 sm:py-14">
+    <section className="relative my-14 flex w-full items-center overflow-hidden bg-[#0d1117] px-4 py-10 sm:my-20 sm:px-6 sm:py-14 lg:px-16">
       <Image
         src={bannerPhoto}
         alt="A person lying back reading the dailymattr app on their phone"
@@ -32,8 +32,8 @@ export function NewsletterSection() {
       {/* Darken the left edge so the glass card reads clearly over the photo */}
       <div className="pointer-events-none absolute inset-0 bg-linear-to-r from-black/60 via-black/25 to-transparent" />
 
-      {/* Wider than PANEL_WIDTH so the card sits nearer the left edge of the photo */}
-      <div className="relative mx-auto flex w-full justify-center lg:w-[90vw] lg:justify-start">
+      {/* The card sits on the left site gutter, 64px from the edge at 1920 */}
+      <div className="relative mx-auto flex w-full justify-center lg:justify-start">
         <FadeIn className="relative flex w-full max-w-[28.75rem] flex-col overflow-hidden rounded-[1.25rem] border border-white/15 bg-[rgba(13,17,23,0.45)] p-6 shadow-[0_1.5rem_4rem_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 sm:p-[2.3125rem]">
           {/* Top-corner glow and the hairline across the top edge */}
           <div className="pointer-events-none absolute -top-24 -right-24 size-60 rounded-full bg-[rgba(57,121,255,0.2)] blur-[4rem]" />

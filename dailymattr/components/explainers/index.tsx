@@ -11,7 +11,7 @@ import { FadeIn } from "@/components/shared/fade-in"
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function ExplainersSection() {
   return (
-    <section className="mx-auto flex w-full max-w-[96.25rem] flex-col items-center gap-16 px-4 py-[6.25rem]">
+    <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem]">
       <SectionHeading
         eyebrow="Follow your curiosity"
         title={
@@ -35,7 +35,7 @@ export function ExplainersSection() {
         </Button>
       </SectionHeading>
 
-      {/* Figma: the wide 1507px panel column (78.5% of the screen); active panel 2× the others */}
+      {/* Gutter to gutter (64px from each edge at 1920); active panel 2× the others */}
       <FadeIn className={PANEL_WIDTH}>
         <AccordionGallery items={explainers} activeGrow={2} />
       </FadeIn>

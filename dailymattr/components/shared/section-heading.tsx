@@ -8,6 +8,8 @@ type SectionHeadingProps = {
   className?: string
   /** Extra classes for the <h2>, e.g. a heavier weight; merged after the defaults. */
   titleClassName?: string
+  /** Extra classes for the description, merged after the defaults. */
+  descriptionClassName?: string
   children?: React.ReactNode
   /** Light text for headings that sit on a dark panel. */
   inverted?: boolean
@@ -24,6 +26,7 @@ export function SectionHeading({
   description,
   className,
   titleClassName,
+  descriptionClassName,
   children,
   inverted,
 }: SectionHeadingProps) {
@@ -44,7 +47,7 @@ export function SectionHeading({
         {title}
       </h2>
       {description && (
-        <p className="mt-4 max-w-2xl text-base text-[#696969] lg:text-lg lg:leading-6.5">
+        <p className={cn("mt-4 max-w-2xl text-base text-[#696969] lg:text-lg lg:leading-6.5", descriptionClassName)}>
           {description}
         </p>
       )}

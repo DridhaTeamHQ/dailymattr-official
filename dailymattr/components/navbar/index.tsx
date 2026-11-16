@@ -17,7 +17,7 @@ export function Navbar() {
       <AnnouncementBar />
       <AutoHideHeader>
         {/* Full width: links sit at the screen edges (with padding), logo stays centred */}
-        <div className="grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
+        <div className="grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-16">
           <NavLinks links={leftLinks} className="hidden justify-self-start md:flex" />
           <div className="md:hidden" />
 

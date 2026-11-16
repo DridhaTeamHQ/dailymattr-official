@@ -1,82 +1,99 @@
-import Image from "next/image"
+import Image, { type StaticImageData } from "next/image"
 
 import { cn } from "@/lib/utils"
-import { CONTENT_WIDTH } from "@/components/shared/layout"
+import { SITE_GUTTER } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
-import { dummyImage } from "@/lib/dummy-media"
+import appScreens from "@/public/home/bento/app-screens.png"
+import phoneInHand from "@/public/home/bento/phone-in-hand.png"
+import readingOnPhone from "@/public/home/bento/reading-on-phone.png"
+import surprisedReader from "@/public/home/bento/surprised-reader.png"
 
-// Figma 8625:465: black panel (radius 16, padding 104 / 88), heading, then three 283px rows
-// of a 1197px bento, gap 12. Rows alternate small · small · wide and wide · small · small.
-// Columns are fr-based so the 283 : 283 : 607 proportions hold as the panel narrows.
+// Figma 9157:428: black panel (radius 16), heading, then a 1824 × 873 bento of three rows,
+// row gap 12, column gap 16. Each row is two 754.5-wide tiles and one 283 square:
+//   100 · app screens · 3 ways in  /  1 app · human judgement · reading  /  curiosity · reader · a place to stop
+//
+// From md the bento is a size container and every length inside it is in cqw of the 1824
+// frame (72px = 72 / 1824 = 3.947cqw), so text, padding and crops keep the Figma proportions
+// at any width. Small text has a rem floor so it stays readable on laptops.
+//
+// Desktop: the whole panel fits one screen below the sticky header. The bento's width is the
+// smaller of the row between the gutters and what its 1824:873 shape allows in the height
+// left after the header (5rem), panel padding (2.5rem × 2), heading (8.125rem) and the gap
+// above the bento (2.5rem): 100svh − 21rem.
 
-const cell = "relative overflow-hidden rounded-[1rem] p-6"
+const tile = "relative overflow-hidden rounded-[1rem] bg-[#121212]"
 
-/** Centered stat or label on a #121212 tile. */
-function TextCell({ title, body, big }: { title: string; body: string; big?: boolean }) {
+// Type, as cqw of the 1824 bento (md+), with phone sizes before the md: prefix.
+const bold72 = "text-5xl font-bold leading-[1.056] tracking-[-0.0278em] md:text-[3.947cqw] md:whitespace-nowrap"
+const bold120 = "text-7xl font-bold leading-[0.917] tracking-[-0.0333em] md:text-[6.579cqw] md:whitespace-nowrap"
+const medium32 = "text-2xl font-medium leading-none tracking-[-0.019em] md:text-[max(1.25rem,1.754cqw)] md:whitespace-nowrap"
+const regular21 = "text-lg leading-[1.286] md:text-[max(1rem,1.151cqw)]"
+const medium21 = "text-lg font-medium leading-[1.238] md:text-[max(1rem,1.151cqw)]"
+const medium18 = "text-base font-medium leading-[1.444] md:text-[max(0.9375rem,0.987cqw)]"
+const regular14 = "text-sm leading-[1.43] text-[#8a8a8e] md:text-[max(0.8125rem,0.768cqw)]"
+
+/** A Figma image placed with its own crop: `frame` is the image box as % of the tile. */
+function TileImage({ src, frame, sizes }: { src: StaticImageData; frame?: string; sizes: string }) {
   return (
-    <div className={cn(cell, "flex aspect-square flex-col items-center justify-center bg-[#121212] text-center")}>
-      <p
-        className={cn(
-          "text-white",
-          big
-            ? "text-5xl leading-none font-bold tracking-[-0.125rem] lg:text-7xl"
-            : "text-xl leading-tight font-medium tracking-[-0.0375rem] lg:text-2xl lg:leading-7.5"
-        )}
-      >
-        {title}
-      </p>
-      <p
-        className={cn(
-          "max-w-[13.125rem] text-sm leading-5",
-          big ? "mt-4 max-w-[11.25rem] text-[#9a9a9e]" : "mt-3.5 text-[#8a8a8e]"
-        )}
-      >
-        {body}
-      </p>
+    <div aria-hidden className={cn("pointer-events-none absolute", frame ?? "inset-0")}>
+      <Image src={src} alt="" fill sizes={sizes} className="object-cover" />
     </div>
   )
 }
 
-/** Wide tile: big headline sitting at the bottom left, supporting line underneath. */
-function WideCell({
-  title,
-  body,
+// Tile sizes for next/image: wide tiles are ~41% of the bento, squares ~16%.
+const WIDE = "(min-width: 768px) 42vw, 100vw"
+const SQUARE = "(min-width: 768px) 16vw, 50vw"
+
+/** Phone-in-hand photo tile with a headline and a short grey line, vertically centred, 64px in. */
+function PhotoLabelTile({ title, body }: { title: string; body: React.ReactNode }) {
+  return (
+    <div className={cn(tile, "flex min-h-[13rem] flex-col justify-center p-6 md:min-h-0 md:px-[3.509cqw] md:py-0")}>
+      <TileImage src={phoneInHand} sizes={WIDE} />
+      <div className="relative">
+        <p className={cn(medium32, "text-white")}>{title}</p>
+        <p className={cn(regular14, "mt-3.5 max-w-[13.125rem] md:mt-[0.768cqw] md:max-w-[11.513cqw]")}>{body}</p>
+      </div>
+    </div>
+  )
+}
+
+/** Plain colour tile with a big headline and a line underneath, at the bottom left. */
+function StatTile({
   className,
+  title,
   titleClassName,
+  body,
   bodyClassName,
+  image,
 }: {
-  title: string
-  body: string
   className: string
+  title: string
   titleClassName: string
+  body: string
   bodyClassName: string
+  /** Optional full-tile photo behind the text. */
+  image?: StaticImageData
 }) {
   return (
-    <div className={cn(cell, "@container col-span-2 flex min-h-[13.75rem] flex-col justify-end md:col-span-1", className)}>
-      <p className={cn("text-white", titleClassName)}>{title}</p>
-      <p className={cn("text-base leading-6.5 font-medium lg:text-lg", bodyClassName)}>{body}</p>
+    <div className={cn(tile, "flex min-h-[13rem] flex-col justify-end p-6 md:min-h-0 md:p-[1.316cqw]", className)}>
+      {image && <TileImage src={image} sizes={WIDE} />}
+      <p className={cn("relative text-white", titleClassName)}>{title}</p>
+      <p className={cn("relative text-white", bodyClassName)}>{body}</p>
     </div>
   )
 }
 
-/** Image tile (#2a2b30 placeholder in Figma). */
-function ImageCell({ src }: { src: string }) {
-  return (
-    <div className={cn(cell, "aspect-square bg-[#2a2b30] p-0")}>
-      <Image src={src} alt="" fill sizes="(min-width: 1024px) 283px, 50vw" className="object-cover" />
-    </div>
-  )
-}
-
-// Desktop: sized to the tile (text-tile, see globals.css) so it matches Figma at any width.
-const bold72 = "text-5xl leading-none font-bold tracking-[-0.125rem] lg:text-tile lg:whitespace-nowrap"
+// Phones: one column, squares as 16:10 bands. From md: the three Figma columns.
+const row = "grid grid-cols-1 gap-3 md:gap-x-[0.877cqw]"
+const square = "aspect-[16/10] md:aspect-square"
 
 export function BriefingBentoSection() {
   return (
-    // The black band runs edge to edge; the heading and bento stay centred inside it.
     <section className="w-full py-8 lg:py-12">
-      <div className="w-full bg-black px-4 pt-16 pb-12 sm:px-6 lg:pt-16 lg:pb-[5.5rem]">
+      {/* The black panel runs edge to edge with rounded corners; the bento sits in the gutters. */}
+      <div className={cn("w-full bg-black pt-16 pb-12 lg:rounded-[1rem] lg:py-10", SITE_GUTTER)}>
         <SectionHeading
           inverted
           className="mx-auto"
@@ -90,42 +107,75 @@ export function BriefingBentoSection() {
           }
         />
 
-        {/* Figma: 1197px of the 1920px frame. On desktop it follows the screen width (62.5%, the
-            shared content column) so a laptop gets the same proportions as the frame. */}
-        <FadeIn className={cn("mt-12 flex max-w-[74.8125rem] flex-col gap-3 lg:mt-24", CONTENT_WIDTH, "lg:max-w-[74.8125rem]")}>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-[283fr_283fr_607fr]">
-            <TextCell big title="100" body="Stories selected for your daily catch-up." />
-            <ImageCell src={dummyImage(400, 600, 600)} />
-            <WideCell
+        <FadeIn
+          className={cn(
+            "@container mx-auto mt-12 flex w-full flex-col gap-3 md:gap-[0.658cqw] lg:mt-10",
+            "lg:w-[min(100%,calc((100svh-21rem)*1824/873))]"
+          )}
+        >
+          {/* 100 · app screens · 3 ways in */}
+          <div className={cn(row, "md:grid-cols-[754.5fr_283fr_754.5fr]")}>
+            <div className={cn(tile, "flex min-h-[13rem] flex-col justify-center p-6 md:min-h-0 md:px-[3.509cqw] md:py-0")}>
+              {/* Figma crop: image 100% × 149.89% of the tile, 19.63% above its top edge. */}
+              <TileImage src={phoneInHand} frame="inset-x-0 top-[-19.63%] h-[149.89%]" sizes={WIDE} />
+              <div className="relative flex flex-col gap-2 text-white md:gap-[0.439cqw]">
+                <p className={cn(bold72, "leading-none")}>100</p>
+                <p className={cn(regular21, "md:w-[13.761cqw]")}>
+                  Stories selected for
+                  <br />
+                  your daily catch-up.
+                </p>
+              </div>
+            </div>
+            <div className={cn(tile, square, "bg-white")}>
+              <TileImage src={appScreens} frame="top-[-7%] left-[-19.29%] h-[127.37%] w-[138%]" sizes={SQUARE} />
+            </div>
+            <StatTile
               className="bg-[#121212]"
+              image={phoneInHand}
               title="3 ways in"
               titleClassName={bold72}
               body="Read, watch or listen."
-              bodyClassName="mt-3 text-white"
+              bodyClassName={cn(medium21, "mt-3 md:mt-[0.658cqw]")}
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-[607fr_283fr_283fr]">
-            <WideCell
-              className="bg-[#3979ff]"
+          {/* 1 app · human judgement · reading */}
+          <div className={cn(row, "md:grid-cols-[754.5fr_754.5fr_283fr]")}>
+            <StatTile
+              className="bg-[#2a2b30]"
               title="1 app"
-              titleClassName="text-7xl leading-none font-normal tracking-[-0.1875rem] lg:text-tile-xl lg:tracking-[-0.25rem] lg:whitespace-nowrap"
-              body="Your updates and deeper explainers, together."
-              bodyClassName="mt-4 text-white"
+              titleClassName={bold120}
+              body="Updates and deeper explainers."
+              bodyClassName={cn(medium21, "mt-4 md:mt-[0.877cqw]")}
             />
-            <TextCell title="Human judgement" body="Editors choose, review and approve what gets published." />
-            <ImageCell src={dummyImage(410, 600, 600)} />
+            <PhotoLabelTile
+              title="Human judgement"
+              body={
+                <>
+                  Selected, reviewed and
+                  <br />
+                  approved by editors.
+                </>
+              }
+            />
+            <div className={cn(tile, square, "bg-[#2a2b30]")}>
+              <TileImage src={readingOnPhone} sizes={SQUARE} />
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-[283fr_283fr_607fr]">
-            <TextCell title="Room for curiosity" body="Follow a quick update into a bigger idea." />
-            <ImageCell src={dummyImage(420, 600, 600)} />
-            <WideCell
-              className="bg-[#a7f1b5]"
+          {/* curiosity · reader · a place to stop */}
+          <div className={cn(row, "md:grid-cols-[754.5fr_283fr_754.5fr]")}>
+            <PhotoLabelTile title="Room for curiosity" body="Follow a quick update into a bigger idea." />
+            <div className={cn(tile, square, "bg-[#2a2b30]")}>
+              <TileImage src={surprisedReader} frame="inset-x-0 top-[6.63%] h-[145.35%]" sizes={SQUARE} />
+            </div>
+            <StatTile
+              className="bg-[#010028]"
               title="A place to stop"
-              titleClassName={cn(bold72, "text-[#1f6b33]")}
+              titleClassName={bold72}
               body="Finish your daily briefing and get back to your day."
-              bodyClassName="mt-3 text-[#0b2a14]"
+              bodyClassName={cn(medium18, "mt-3 md:mt-[0.658cqw]")}
             />
           </div>
         </FadeIn>

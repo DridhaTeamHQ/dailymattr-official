@@ -25,10 +25,10 @@ export function ExpandOnScroll({ children }: { children: React.ReactNode }) {
     const t = Math.min(Math.max(p, 0), 1)
     return 1 - (1 - t) ** 3 // ease-out: opens quickly, settles gently
   })
-  // Open width: the row (the section's content box, already 1rem in from each edge) less 3rem
-  // a side, leaving 4rem (64px at 1920) to the screen edges. Open height: 16:9 of that width
-  // (100vw includes the scrollbar, a few px off; object-cover absorbs it).
-  const width = useTransform(eased, (e) => `calc(${1 - e} * ${START_W} + ${e} * (100% - 6rem))`)
+  // Open width: the whole row between the site gutters (SITE_GUTTER, 4rem / 64px at 1920 from
+  // each edge). Open height: 16:9 of that width (100vw includes the scrollbar, a few px off;
+  // object-cover absorbs it).
+  const width = useTransform(eased, (e) => `calc(${1 - e} * ${START_W} + ${e} * 100%)`)
   const height = useTransform(eased, (e) => `calc(${1 - e} * ${START_H} + ${e} * (100vw - 8rem) * 0.5625)`)
 
   return (

@@ -11,7 +11,7 @@ import { videos } from "@/lib/videos"
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
   return (
-    <section className="mx-auto flex w-full max-w-[96.25rem] flex-col items-center gap-16 px-4 py-[6.25rem] lg:gap-36">
+    <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem] lg:gap-36">
       <SectionHeading
         eyebrow="A little curiosity, every day"
         title={
@@ -45,10 +45,9 @@ export function DailyRoutineSection() {
         </div>
       </SectionHeading>
 
-      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped. Wider
-          than PANEL_WIDTH (nearly edge to edge), but capped so the whole 16:9 frame fits on one
-          screen below the sticky header (6rem left for the header and a small margin). */}
-      <FadeIn className="mx-auto w-full max-w-full lg:w-[min(94vw,calc((100svh_-_6rem)*16/9))]">
+      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped. Gutter to
+          gutter like the other panels (64px from each edge at 1920). */}
+      <FadeIn className="mx-auto w-full">
         {/* No fill on the frame: a background bleeds through the anti-aliased rounded edge as a pale
             outline. clip-path rounds the corners without that halo, so only the video is visible. */}
         <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">

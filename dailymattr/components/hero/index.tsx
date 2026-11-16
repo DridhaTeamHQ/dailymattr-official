@@ -32,14 +32,6 @@ export function Hero() {
 
     {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
     <HeroVideoExpand video={videos.homeHero} />
-
-    <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-12 text-center sm:px-6 lg:px-8">
-      <FadeIn className="mt-10">
-        <p className="text-lg font-medium tracking-[-0.025rem] text-[#1c1b17] lg:text-2xl lg:leading-8">
-          Your daily catch-up. With a clear place to stop.
-        </p>
-      </FadeIn>
-    </section>
     </>
   )
 }

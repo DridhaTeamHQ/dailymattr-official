@@ -11,7 +11,7 @@ import { FadeIn } from "@/components/shared/fade-in"
 // wide panel column (78.5% of the screen) with 300 × 420 cards, ~130px below the heading.
 export function TemplatesSection() {
   return (
-    <section className="mx-auto flex w-full max-w-[96.25rem] flex-col items-center gap-20 px-4 py-20 lg:gap-32">
+    <section className="flex w-full flex-col items-center gap-20 px-4 sm:px-6 lg:px-16 py-20 lg:gap-32">
       <FadeIn className="flex max-w-4xl flex-col items-center text-center">
         {/* Figma 8585:9969 — 48/57.6 −1.92px, Inter Tight Semibold #292929 to match the other section headings */}
         <h2 className="font-tight text-3xl leading-tight font-semibold tracking-[-0.0625rem] text-[#292929] sm:text-4xl lg:text-5xl lg:tracking-[-0.12rem]">
