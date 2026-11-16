@@ -8,20 +8,6 @@ export const hero = {
   cta: { label: "Listen with Trax", href: "/formats/trax#featured" },
 }
 
-/** Phone mock-up player (8595:11828). Placeholder copy straight from the frame. */
-export const phonePlayer = {
-  topic: "Topic",
-  title: "Episode title",
-  elapsed: "00:00",
-  remaining: "00:00",
-  // Bar heights in px, left to right; the first `played` bars are blue.
-  bars: [
-    11, 16, 25, 28, 24, 16, 8, 15, 19, 23, 21, 14, 11, 22, 28, 29, 23, 12, 14, 22, 24, 21, 15, 8,
-    15, 22, 26, 24, 17, 10, 21, 28, 28, 22, 13, 12, 18, 20, 20, 17,
-  ],
-  played: 24,
-}
-
 export type TraxExperience = { icon: string; title: string; description: string }
 
 export const experiences = {
