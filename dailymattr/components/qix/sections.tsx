@@ -113,8 +113,8 @@ export function QixPillars() {
 }
 
 /**
- * Row of tall video cards that starts on the 1200px column and runs off the right edge, so it
- * scrolls sideways. The first card is wider (340 vs 252). Figma 8646:2798.
+ * Row of tall video cards kept inside the centred 1200px column; the cards that don't fit
+ * scroll sideways within it. The first card is wider (340 vs 252). Figma 8646:2798.
  */
 export function QixGallery() {
   return (
@@ -124,8 +124,8 @@ export function QixGallery() {
         <h2 className={QIX_H2}>{gallery.title}</h2>
       </FadeIn>
 
-      <FadeIn delay={0.1} className="mt-10 lg:mt-16">
-        <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 [scrollbar-width:none] sm:px-6 lg:scroll-pl-[max(2rem,calc((100%-75rem)/2))] lg:pr-8 lg:pl-[max(2rem,calc((100%-75rem)/2))] [&::-webkit-scrollbar]:hidden">
+      <FadeIn delay={0.1} className="mx-auto mt-10 max-w-[75rem] px-4 sm:px-6 lg:mt-16 lg:box-content lg:px-8">
+        <ul className="flex snap-x snap-mandatory gap-4 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {gallery.episodes.map((ep, i) => (
             <li
               key={ep.id}
