@@ -28,6 +28,8 @@ const VIDEOS = [
   // Explainers gallery on the home page, played with sound.
   { name: "curiosity-1", input: "curiosity_1.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
   { name: "customer-story-2", input: "dailymattr_Customer_Story_2.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
+  // Longer 1:11 cut of the same story; only the gallery's "Technology & AI" panel plays it.
+  { name: "customer-story-2-v2", input: "dailymattr_Customer_Story_2_v2.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
 ]
 
 /** Longest edge; the masters are 1080p and the widest use is a full-screen hero. */
