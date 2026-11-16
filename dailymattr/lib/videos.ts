@@ -26,18 +26,18 @@ export type VideoAsset = {
   placeholder?: boolean
 }
 
-/** A video encoded by `npm run videos` into public/videos/. */
+/** A video encoded by `npm run videos` into public/videos/ (or public/<dir>/). */
 export const localVideo = (
   name: string,
   width: number,
   height: number,
-  { webm = true }: { webm?: boolean } = {}
+  { webm = true, dir = "videos" }: { webm?: boolean; dir?: string } = {}
 ): VideoAsset => ({
   sources: [
-    ...(webm ? [{ src: `/videos/${name}.webm`, type: "video/webm" }] : []),
-    { src: `/videos/${name}.mp4`, type: "video/mp4" },
+    ...(webm ? [{ src: `/${dir}/${name}.webm`, type: "video/webm" }] : []),
+    { src: `/${dir}/${name}.mp4`, type: "video/mp4" },
   ],
-  poster: `/videos/${name}-poster.webp`,
+  poster: `/${dir}/${name}-poster.webp`,
   width,
   height,
 })
@@ -53,10 +53,7 @@ export const placeholderVideo = (src: string, width = 1280, height = 720): Video
 export const videos = {
   /** Daily routine section on the home page. */
   dayByDay: localVideo("day-by-day", 1920, 1080, { webm: false }),
-  /**
-   * Home "Follow your curiosity" explainers gallery (16:9, matches the open panel) and, as
-   * stand-ins, the "whole world of stories" hover previews. Both keep their sound.
-   */
+  /** Home "Follow your curiosity" explainers gallery (16:9, matches the open panel), with sound. */
   curiosity1: localVideo("curiosity-1", 1920, 1080),
   customerStory2: localVideo("customer-story-2", 1920, 1080),
   /** Longer cut of the customer story, on the explainers gallery's "Technology & AI" panel. */
@@ -68,4 +65,22 @@ export const videos = {
    * (mixkit.co/free-stock-video/landscape-from-an-aerial-view-of-a-big-city-49837).
    */
   homeHero: placeholderVideo("https://assets.mixkit.co/videos/49837/49837-1080.mp4", 1920, 1080),
+} satisfies Record<string, VideoAsset>
+
+/** 9:16 brand stories in public/stories/, one per card in the home "whole world of stories" row. */
+const story = (name: string, opts: { webm?: boolean } = {}) =>
+  localVideo(name, 720, 1280, { dir: "stories", ...opts })
+
+export const storyVideos = {
+  amaron: story("amaron"),
+  asianPaints: story("asian-paints"),
+  ather: story("ather", { webm: false }),
+  dixon: story("dixon"),
+  fevicol: story("fevicol"),
+  havells: story("havells"),
+  jockey: story("jockey", { webm: false }),
+  mrf: story("mrf"),
+  nilkamal: story("nilkamal"),
+  relaxo: story("relaxo"),
+  videocon: story("videocon"),
 } satisfies Record<string, VideoAsset>

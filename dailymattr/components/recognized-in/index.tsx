@@ -1,22 +1,28 @@
 import Image from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import ambitionBox from "@/public/carousal/ambition-box.png"
+import clutch from "@/public/carousal/clutch.png"
+import glassdoor from "@/public/carousal/glassdoor.svg"
 import superbCompanies from "@/public/carousal/Superb Companies 2.svg"
 import yourStory from "@/public/carousal/headerV3_YS 1.svg"
 import tracxn from "@/public/carousal/tracxn-logo-full.svg"
 
-// Press logos, in the Figma order (Tracxn · YourStory · Superb Companies). Heights are the
-// Figma sizes in rem (32px / 28px), so they scale with the laptop root font size like the rest
+// Press logos, in the Figma order (Tracxn · YourStory · Superb Companies · AmbitionBox ·
+// Glassdoor · Clutch). Heights are the Figma sizes in rem (40px / 32px / 28px), so they scale with the laptop root font size like the rest
 // of the site; widths follow each SVG's own aspect ratio.
 const logos = [
   { src: tracxn, alt: "Tracxn", className: "h-8" },
   { src: yourStory, alt: "YourStory", className: "h-7" },
   { src: superbCompanies, alt: "Superb Companies", className: "h-8" },
+  { src: ambitionBox, alt: "AmbitionBox", className: "h-10" },
+  { src: glassdoor, alt: "Glassdoor", className: "h-10" },
+  { src: clutch, alt: "Clutch", className: "h-8" },
 ]
 
-// Enough copies of the three logos to overflow a 1920px screen, so one set always fills the
-// row while the other slides in behind it.
-const SET = Array.from({ length: 4 }, () => logos).flat()
+// Enough copies of the logos to overflow a 1920px screen, so one set always fills the row
+// while the other slides in behind it.
+const SET = Array.from({ length: 2 }, () => logos).flat()
 
 function LogoSet({ hidden }: { hidden?: boolean }) {
   return (

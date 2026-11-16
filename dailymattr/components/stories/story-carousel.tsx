@@ -1,26 +1,36 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
+import Image, { type StaticImageData } from "next/image"
 import AutoScroll from "embla-carousel-auto-scroll"
 
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { StoryCard } from "./story-card"
-import { videos } from "@/lib/videos"
+import { storyVideos as v, type VideoAsset } from "@/lib/videos"
 import amaron from "@/public/cover-images/amaron.png"
+import fevicol from "@/public/cover-images/fevicol.jpg"
+import investingDecoded from "@/public/cover-images/investing-decoded.jpg"
 import jetAirways from "@/public/cover-images/jet-airways.png"
 import jockey from "@/public/cover-images/jockey.png"
 import mrf from "@/public/cover-images/mrf.png"
+import newAgeInvesting from "@/public/cover-images/new-age-investing.jpg"
+import nilkamal from "@/public/cover-images/nilkamal.jpg"
 
-// Story cover art, 9:16. Drop more files in public/cover-images and add them here — the row
+// One card per story, 9:16, in the Figma order (website page, frame 9108:5369). Each cover is
+// the Figma thumbnail; `video` (public/stories/) plays, with sound, when the card is hovered
+// (see StoryCard). Investing Decoded, New Age Investing and Jet Airways have no video of their
+// own in the Drive folder yet, so they borrow spare brand stories (Asian Paints, Havells,
+// Videocon) until theirs arrive: swap the `video` on those three lines then. The row
 // cycles through the list, so the card count below only sets how many slides it is built from.
-// `video` plays, with sound, when the card is hovered (see StoryCard). Stand-ins for now: the
-// two clips with audio, alternating, until each story has its own video.
-const covers = [
-  { src: amaron, alt: "Amaron — Made in India", video: videos.curiosity1 },
-  { src: jetAirways, alt: "Jet Airways — Made in India", video: videos.customerStory2 },
-  { src: jockey, alt: "Jockey — Made in India", video: videos.curiosity1 },
-  { src: mrf, alt: "MRF — Made in India", video: videos.customerStory2 },
+const covers: { src: StaticImageData; alt: string; video: VideoAsset }[] = [
+  { src: investingDecoded, alt: "Investing Decoded — Finance Xplaind", video: v.asianPaints },
+  { src: newAgeInvesting, alt: "New Age Investing — Finance Xplaind", video: v.havells },
+  { src: amaron, alt: "Amaron — Made in India", video: v.amaron },
+  { src: jetAirways, alt: "Jet Airways — Made in India", video: v.videocon },
+  { src: jockey, alt: "Jockey — Made in India", video: v.jockey },
+  { src: mrf, alt: "MRF — Made in India", video: v.mrf },
+  { src: nilkamal, alt: "Nilkamal — Made in India", video: v.nilkamal },
+  { src: fevicol, alt: "Fevicol — Made in India", video: v.fevicol },
 ]
 
 // Slide step = card width + 16px gutter (CarouselItem's pl-4), matching the basis-* classes below.
