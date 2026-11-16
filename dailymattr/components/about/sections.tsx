@@ -35,7 +35,9 @@ export function AboutHero() {
             "About" at every breakpoint. Baseline-aligned: the wordmark slot's bottom edge is the
             wordmark's baseline. */}
         <h1 className="flex shrink-0 flex-wrap items-baseline gap-x-[0.4em] gap-y-2 text-[2rem] leading-none font-medium text-white sm:text-[2.5rem] lg:text-[2.25rem] xl:text-[2.75rem]">
-          <span>{hero.title}</span>
+          {/* Scaled so the x-height of "bout" (Inter Tight ≈ 0.545em) equals the wordmark's
+              lowercase height (41 of its 66.8-unit ascender height at 0.75em ≈ 0.46em). */}
+          <span className="text-[0.845em]">{hero.title}</span>
           {/* The slot spans the wordmark from its ascenders (top of the art) to its baseline
               (66.8 of the 91.67-unit art height), so the "y" descender overhangs below by 37.2%.
               Height 0.75em ≈ the cap height of "About"; width keeps the art's 459 : 66.8 ratio. */}
