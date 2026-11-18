@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react"
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react"
 
 import { ScrubVideo } from "@/components/shared/scrub-video"
+import { SiteVideo } from "@/components/shared/site-video"
 import type { VideoAsset } from "@/lib/videos"
 
 import { HeroShowcase } from "./hero-showcase"
@@ -57,8 +58,8 @@ const GROW_END = GROW / TOTAL
  * grows to fill the screen edge to edge, holds there while the clip scrubs by, then scrolls away with the
  * page. On phones and portrait screens a
  * pinned full-screen stage would mostly be empty space around a short 16:9 strip, so the
- * video simply widens to the screen edges as it scrolls into view. Everything tracks the
- * scroll, so scrolling back up plays it in reverse.
+ * video simply widens to the screen edges as it scrolls into view and the clip plays on its
+ * own. On desktop everything tracks the scroll, so scrolling back up plays it in reverse.
  */
 export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
   const reduceMotion = useReducedMotion()
@@ -100,7 +101,18 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
     )
   }
 
-  if (size.w < 768 || size.w < size.h) return <WidenOnScroll ratio={ratio} size={size} video={video} />
+  // Phones and portrait screens: the clip just plays and loops, it isn't tied to the scroll.
+  if (size.w < 768 || size.w < size.h) {
+    const playingVideo = () => (
+      <SiteVideo
+        video={asset}
+        priority
+        className="size-full object-cover"
+        onLoadedMetadata={onLoadedMetadata}
+      />
+    )
+    return <WidenOnScroll ratio={ratio} video={playingVideo} />
+  }
 
   return <PinnedExpand size={size} video={video} />
 }
@@ -134,11 +146,12 @@ function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size, m
   return useTransform(scrollY, (y) => y / end.current)
 }
 
-/** Phones / portrait: the video widens from the padded card to the screen edges, in flow. */
-function WidenOnScroll({ ratio, size, video }: { ratio: number; size: Size; video: RenderVideo }) {
+/**
+ * Phones / portrait: the video widens from the padded card to the screen edges, in flow.
+ * The clip itself plays normally here (SiteVideo); only the width follows the scroll.
+ */
+function WidenOnScroll({ ratio, video }: { ratio: number; video: RenderVideo }) {
   const ref = useRef<HTMLDivElement>(null)
-  // The clip runs from the top of the page until the video has scrolled off the screen.
-  const videoProgress = usePageProgress(ref, size, "flow")
   // 0 as the video enters from the bottom, 1 once it is centred on screen.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] })
   const inset = useTransform(scrollYProgress, (p) => 16 * (1 - ease(clamp01(p))))
@@ -150,7 +163,7 @@ function WidenOnScroll({ ratio, size, video }: { ratio: number; size: Size; vide
         className="w-full overflow-hidden"
         style={{ aspectRatio: ratio, borderRadius: radius }}
       >
-        {video(videoProgress)}
+        {video()}
       </motion.div>
     </motion.div>
   )
