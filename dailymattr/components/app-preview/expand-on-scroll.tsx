@@ -16,6 +16,13 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 export const START_W = "85vw"
 /** Starting height: 16:9, like the open size, so the box only grows. */
 export const START_H = "calc(85vw * 0.5625)"
+/**
+ * Tallest the media gets at lg and up: the screen height less 3rem above and below, so the
+ * whole box (tab bar included) fits on desktop screens shorter than 16:9 of the width. Past
+ * that the box keeps its width and the clip crops (object-cover) instead of overflowing.
+ * format-tabs.tsx repeats it in its fallback height.
+ */
+export const MAX_H = "100svh - 6rem"
 
 export function ExpandOnScroll({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -27,9 +34,12 @@ export function ExpandOnScroll({ children }: { children: React.ReactNode }) {
   })
   // Open width: the whole row between the site gutters (SITE_GUTTER, 4rem / 64px at 1920 from
   // each edge). Open height: 16:9 of that width (100vw includes the scrollbar, a few px off;
-  // object-cover absorbs it).
+  // object-cover absorbs it), capped at MAX_H so it fits the screen.
   const width = useTransform(eased, (e) => `calc(${1 - e} * ${START_W} + ${e} * 100%)`)
-  const height = useTransform(eased, (e) => `calc(${1 - e} * ${START_H} + ${e} * (100vw - 8rem) * 0.5625)`)
+  const height = useTransform(
+    eased,
+    (e) => `min(calc(${1 - e} * ${START_H} + ${e} * (100vw - 8rem) * 0.5625), ${MAX_H})`
+  )
 
   return (
     <motion.div

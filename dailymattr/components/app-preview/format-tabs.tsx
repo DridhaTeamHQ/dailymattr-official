@@ -41,8 +41,8 @@ export function FormatTabs() {
       <AspectRatio
         ratio={1200 / 720}
         // At lg and up the height follows --expand-h (falls back to the starting 16:9 height,
-        // START_H in expand-on-scroll.tsx).
-        className="overflow-hidden rounded-xl bg-placeholder lg:aspect-auto lg:h-[var(--expand-h,calc(85vw*0.5625))]"
+        // START_H in expand-on-scroll.tsx, capped at MAX_H so it fits the screen).
+        className="overflow-hidden rounded-xl bg-placeholder lg:aspect-auto lg:h-[var(--expand-h,min(85vw*0.5625,100svh_-_6rem))]"
       >
         {/*
           Decorative preview layer. Both clips are mounted while the tab changes, so the
