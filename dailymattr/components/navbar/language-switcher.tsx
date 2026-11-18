@@ -117,8 +117,11 @@ export function LanguageSwitcher() {
                     active={l.code === lang}
                     render={<button type="button" />}
                     onClick={() => {
-                      saveRegion(l.code)
                       setOpen(null)
+                      if (l.code === lang) return
+                      saveRegion(l.code)
+                      // Reload so the whole page picks up the new region.
+                      window.location.reload()
                     }}
                     className="w-full gap-3 px-2.5 py-2 text-left text-[0.9375rem]"
                   >

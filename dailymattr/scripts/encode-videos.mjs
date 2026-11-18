@@ -6,7 +6,9 @@
 //   <name>.webm         VP9  — smallest, preferred by Chrome, Firefox, Edge, Safari 17+
 //   <name>.mp4          H.264 — fallback that plays everywhere, moov atom up front
 //   <name>-poster.webp  first frame, so the box is never blank while the video loads
-// Set posterAt (seconds) when the first frame is blank.
+// Set posterAt (seconds) when the first frame is blank. Set scrub: true for videos driven by
+// scroll position (dense keyframes, so any frame can be shown at once). Set length (seconds)
+// to keep only the start of the clip.
 // Audio is dropped unless an entry sets audio: true (AAC in the mp4, Opus in the webm).
 // Needs ffmpeg on PATH.
 //
@@ -23,6 +25,9 @@ import path from "node:path"
 // since browsers that support WebM pick it first. When VP9 gains nothing for a clip, set
 // webm: false here and pass { webm: false } to its localVideo() in lib/videos.ts.
 const VIDEOS = [
+  // Home hero, scrubbed by scroll rather than played. scrub: a keyframe every 4 frames so
+  // seeking to any scroll position is instant; VP9 seeks slower, so mp4 only.
+  { name: "home-hero", input: "hand-phone-rising.mp4", h264Crf: 26, webm: false, scrub: true, length: 7 },
   // Low-detail footage: H.264 already lands at ~0.7 MB and VP9 could not beat it.
   { name: "day-by-day", input: "Day_by_day_video.mp4", h264Crf: 26, webm: false },
   { name: "pix-entry", input: "pix_entry_video.mp4", h264Crf: 26, vp9Crf: 36 },
@@ -69,7 +74,7 @@ const outputs = (outDir, name) => ({
 
 const ffmpeg = (args) => execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...args], { stdio: "inherit" })
 
-for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0 } of VIDEOS) {
+for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0, scrub = false, length } of VIDEOS) {
   if (only && !only.includes(name)) continue
   const source = path.join(srcDir, input)
   if (!existsSync(source)) {
@@ -86,9 +91,10 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
 
   if (stale(out.mp4)) {
     ffmpeg([
-      "-i", source, ...(audio ? ["-c:a", "aac", "-b:a", "128k"] : ["-an"]), "-vf", scale,
+      "-i", source, ...(length ? ["-t", String(length)] : []), ...(audio ? ["-c:a", "aac", "-b:a", "128k"] : ["-an"]), "-vf", scale,
       "-c:v", "libx264", "-preset", "slow", "-crf", String(h264Crf), "-profile:v", "high",
-      "-pix_fmt", "yuv420p", "-maxrate", "5M", "-bufsize", "10M",
+      "-pix_fmt", "yuv420p",
+      ...(scrub ? ["-g", "4", "-keyint_min", "4", "-sc_threshold", "0"] : ["-maxrate", "5M", "-bufsize", "10M"]),
       "-movflags", "+faststart", out.mp4,
     ])
   }

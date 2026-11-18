@@ -60,10 +60,10 @@ export const videos = {
   /** Pix page hero. */
   pixEntry: localVideo("pix-entry", 1920, 1080),
   /**
-   * Home hero (grows to full screen on scroll). Placeholder: Mixkit free stock video #49837
-   * (mixkit.co/free-stock-video/landscape-from-an-aerial-view-of-a-big-city-49837).
+   * Home hero: grows to full screen on scroll, and its frames are scrubbed by the scroll
+   * position instead of playing (see <ScrubVideo>). Encoded with scrub: true.
    */
-  homeHero: placeholderVideo("https://assets.mixkit.co/videos/49837/49837-1080.mp4", 1920, 1080),
+  homeHero: localVideo("home-hero", 1920, 1080, { webm: false }),
 } satisfies Record<string, VideoAsset>
 
 /** 9:16 brand stories in public/stories/, one per card in the home "whole world of stories" row. */

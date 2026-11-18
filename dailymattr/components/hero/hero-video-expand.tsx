@@ -1,12 +1,11 @@
 "use client"
 
 import { useLayoutEffect, useRef, useState } from "react"
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react"
 
-import { SiteVideo } from "@/components/shared/site-video"
+import { ScrubVideo } from "@/components/shared/scrub-video"
 import type { VideoAsset } from "@/lib/videos"
 
-import { BriefingCard } from "./briefing-card"
 import { HeroShowcase } from "./hero-showcase"
 
 // r = root font size / 16: the rem scale, which shrinks on laptops (see app/globals.css).
@@ -48,13 +47,14 @@ const mixBox = (a: Box, b: Box, t: number): Box => ({
 
 // Scroll distances, as fractions of the screen height.
 const GROW = 0.8 // card → full screen (before the pin: the card rises from 80% down to the top)
-const HOLD = 0.25 // stays full screen — a brief beat — then scrolls away with the page
+// Stays full screen while the rest of the clip scrubs by, then scrolls away with the page.
+const HOLD = 0.7
 const TOTAL = GROW + HOLD
 const GROW_END = GROW / TOTAL
 
 /**
  * The hero video. On desktop it starts as the contained 2:1 card and, as the page scrolls,
- * grows to fill the screen edge to edge, holds there briefly, then scrolls away with the
+ * grows to fill the screen edge to edge, holds there while the clip scrubs by, then scrolls away with the
  * page. On phones and portrait screens a
  * pinned full-screen stage would mostly be empty space around a short 16:9 strip, so the
  * video simply widens to the screen edges as it scrolls into view. Everything tracks the
@@ -77,15 +77,17 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
     return () => window.removeEventListener("resize", measure)
   }, [])
 
-  const video = (
-    <SiteVideo
+  const onLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const v = e.currentTarget
+    if (v.videoWidth && v.videoHeight) setRatio(v.videoWidth / v.videoHeight)
+  }
+  // The clip never plays by itself: its frames follow the page scroll (see ScrubVideo).
+  const video = (progress?: MotionValue<number>) => (
+    <ScrubVideo
       video={asset}
-      priority
+      progress={progress}
       className="size-full object-cover"
-      onLoadedMetadata={(e) => {
-        const v = e.currentTarget
-        if (v.videoWidth && v.videoHeight) setRatio(v.videoWidth / v.videoHeight)
-      }}
+      onLoadedMetadata={onLoadedMetadata}
     />
   )
 
@@ -93,21 +95,50 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
   if (reduceMotion || !size) {
     return (
       <div className="mx-auto mt-14 w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        <HeroShowcase>{video}</HeroShowcase>
+        <HeroShowcase>{video()}</HeroShowcase>
       </div>
     )
   }
 
-  if (size.w < 768 || size.w < size.h) return <WidenOnScroll ratio={ratio}>{video}</WidenOnScroll>
+  if (size.w < 768 || size.w < size.h) return <WidenOnScroll ratio={ratio} size={size} video={video} />
 
-  return (
-    <PinnedExpand size={size}>{video}</PinnedExpand>
-  )
+  return <PinnedExpand size={size} video={video} />
+}
+
+type RenderVideo = (progress?: MotionValue<number>) => React.ReactNode
+
+/**
+ * 0 at the very top of the page, 1 when `ref`'s section is done: for "pin", when its bottom
+ * meets the bottom of the screen (the pin releases); for "flow", when it has scrolled off the
+ * top. Measured from the page top, not from when the section enters, so the clip sits on its
+ * first frame on load and moves from the very first scroll.
+ */
+function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size, mode: "pin" | "flow") {
+  const { scrollY } = useScroll()
+  const end = useRef(1)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const measure = () => {
+      const bottom = el.getBoundingClientRect().bottom + window.scrollY
+      end.current = Math.max(mode === "pin" ? bottom - window.innerHeight : bottom, 1)
+    }
+    measure()
+    // Re-measure whenever the section or anything above it changes height (fonts, images, the
+    // scroll length itself), so the last frame always lands exactly where the section ends.
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    observer.observe(document.body)
+    return () => observer.disconnect()
+  }, [ref, size, mode])
+  return useTransform(scrollY, (y) => y / end.current)
 }
 
 /** Phones / portrait: the video widens from the padded card to the screen edges, in flow. */
-function WidenOnScroll({ ratio, children }: { ratio: number; children: React.ReactNode }) {
+function WidenOnScroll({ ratio, size, video }: { ratio: number; size: Size; video: RenderVideo }) {
   const ref = useRef<HTMLDivElement>(null)
+  // The clip runs from the top of the page until the video has scrolled off the screen.
+  const videoProgress = usePageProgress(ref, size, "flow")
   // 0 as the video enters from the bottom, 1 once it is centred on screen.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] })
   const inset = useTransform(scrollYProgress, (p) => 16 * (1 - ease(clamp01(p))))
@@ -116,19 +147,21 @@ function WidenOnScroll({ ratio, children }: { ratio: number; children: React.Rea
   return (
     <motion.div ref={ref} className="mt-10 w-full" style={{ paddingInline: inset }}>
       <motion.div
-        className="w-full overflow-hidden bg-placeholder"
+        className="w-full overflow-hidden"
         style={{ aspectRatio: ratio, borderRadius: radius }}
       >
-        {children}
+        {video(videoProgress)}
       </motion.div>
     </motion.div>
   )
 }
 
 /** Desktop: grow to full screen, a brief hold, then scroll on — pinned while it plays. */
-function PinnedExpand({ size, children }: { size: Size; children: React.ReactNode }) {
+function PinnedExpand({ size, video }: { size: Size; video: RenderVideo }) {
   const ref = useRef<HTMLDivElement>(null)
   const { h } = size
+  // The clip runs from the top of the page (first frame) to the pin releasing (last frame).
+  const videoProgress = usePageProgress(ref, size, "pin")
 
   // One scroll value drives every stage, so they can never get out of step. It runs from the
   // card sitting 80% down the screen (0) to the moment the pin releases (1).
@@ -141,7 +174,7 @@ function PinnedExpand({ size, children }: { size: Size; children: React.ReactNod
     if (p <= GROW_END) return mixBox(cardBox(size, "top"), full, ease(clamp01(p / GROW_END)))
     return full
   }
-  /** 0 when full-screen, 1 when a card: drives the corner radius and the briefing card. */
+  /** 0 when full-screen, 1 when a card: drives the corner radius. */
   const cardness = (p: number) => (p <= GROW_END ? 1 - clamp01(p / GROW_END) : 0)
 
   const x = useTransform(scrollYProgress, (p) => boxAt(p).x)
@@ -150,32 +183,15 @@ function PinnedExpand({ size, children }: { size: Size; children: React.ReactNod
   const height = useTransform(scrollYProgress, (p) => boxAt(p).height)
   const radius = useTransform(scrollYProgress, (p) => 12 * size.r * cardness(p))
 
-  // The briefing card rides the box's top-right corner, hidden while the video is full-screen.
-  const cardTop = useTransform(scrollYProgress, (p) => {
-    const b = boxAt(p)
-    return b.y + b.height * 0.14
-  })
-  const cardRight = useTransform(scrollYProgress, (p) => {
-    const b = boxAt(p)
-    return Math.max(size.w - b.x - b.width - (size.w >= 1024 ? 24 : 12) * size.r, 16 * size.r)
-  })
-  const cardOpacity = useTransform(scrollYProgress, (p) => clamp01(cardness(p) / 0.4))
-
   return (
     // Pinned for the hold; the grow happens while the card rises to the top.
     <div ref={ref} className="relative mt-14" style={{ height: h * (1 + HOLD) }}>
       <div className="pointer-events-none sticky top-0 overflow-hidden" style={{ height: h }}>
         <motion.div
-          className="pointer-events-auto absolute top-0 left-0 overflow-hidden bg-placeholder"
+          className="pointer-events-auto absolute top-0 left-0 overflow-hidden"
           style={{ x, y, width, height, borderRadius: radius }}
         >
-          {children}
-        </motion.div>
-        <motion.div
-          className="pointer-events-auto absolute"
-          style={{ top: cardTop, right: cardRight, opacity: cardOpacity }}
-        >
-          <BriefingCard />
+          {video(videoProgress)}
         </motion.div>
       </div>
     </div>
