@@ -2,7 +2,7 @@ import Image, { type StaticImageData } from "next/image"
 
 import { cn } from "@/lib/utils"
 import { SectionHeading } from "@/components/shared/section-heading"
-import { FadeIn } from "@/components/shared/fade-in"
+import { BentoReveal, RevealTile } from "./reveal"
 import formatListen from "@/public/home/bento/format-listen.svg"
 import formatRead from "@/public/home/bento/format-read.svg"
 import formatUnderstand from "@/public/home/bento/format-understand.svg"
@@ -41,16 +41,20 @@ import xplaindHaze from "@/public/home/bento/xplaind-haze.svg"
 //   Watch       |                                              | Save · Habit
 //               | 4 ways in · 1 app · Less scrolling                     |
 //
-// Below lg the grid wrappers turn into `display: contents`, so every tile drops into one
-// two-column grid (wide tiles span both) and keeps its Figma aspect ratio.
+// On phones (below md) the grid wrappers turn into `display: contents`, so every tile drops
+// into one two-column grid (wide tiles span both) and keeps its Figma aspect ratio.
 //
 // Inside each tile, Tailwind's spacing step is one Figma px of that tile (see Tile), so
 // `left-30.5` is Figma x = 30.5 and the drawing scales with the tile at any width.
+//
+// From md, scrolling plays the reveal in reveal.tsx: the bento pins, the "100" tile starts
+// full screen and zooms out into its slot, and the others slide in. Each tile's `at` is its
+// Figma position and `revealAt` its turn, in the mixed order of the reference video.
 
 /** Bento gap, 15.31 of the 1799.22 tile area, as cqw of the bento container. */
-const gap = "lg:gap-[0.851cqw]"
-/** A nested grid on lg, invisible (its children join the parent grid) below it. */
-const group = cn("contents min-h-0 min-w-0 lg:grid", gap)
+const gap = "md:gap-[0.851cqw]"
+/** A nested grid from md, invisible (its children join the parent grid) on phones. */
+const group = cn("contents min-h-0 min-w-0 md:grid", gap)
 
 // Type, in Figma px of the tile.
 const fs = {
@@ -87,13 +91,15 @@ const silverText = "bg-linear-to-b from-[#d2d2d7] to-[#8e8e93] bg-clip-text text
 /**
  * One bento tile, drawn in its own Figma pixels. The outer box is a size container and resets
  * Tailwind's spacing step to `width / w`, so every spacing utility inside (left-*, w-*, gap-*,
- * leading-*) is in Figma px of this tile. On lg the grid sizes the tile; below lg it keeps the
- * Figma aspect ratio. The inner box carries the look, since lengths on the container itself
+ * leading-*) is in Figma px of this tile. From md the grid sizes the tile; on phones it keeps
+ * the Figma aspect ratio. The inner box carries the look, since lengths on the container itself
  * would resolve against the bento instead.
  */
 function Tile({
   w,
   h,
+  at,
+  revealAt,
   wide,
   className,
   style,
@@ -102,24 +108,38 @@ function Tile({
   /** Figma width and height of the tile. */
   w: number
   h: number
-  /** Spans both columns below lg. */
+  /** Figma position in the bento's tile area, and when the scroll reveal brings it in (0–1);
+   *  leave both out for the hero, which the reveal zooms instead. See reveal.tsx. */
+  at?: [number, number]
+  revealAt?: number
+  /** Spans both columns on phones. */
   wide?: boolean
   className?: string
   style?: React.CSSProperties
   children: React.ReactNode
 }) {
-  return (
+  const outer = cn("@container min-h-0 min-w-0 aspect-(--tile-ratio) md:aspect-auto", wide && "max-md:col-span-2")
+  const vars = { "--tile-ratio": `${w} / ${h}`, "--spacing": `calc(100cqw / ${w})` } as React.CSSProperties
+  const inner = (
     <div
-      className={cn("@container min-h-0 min-w-0 aspect-(--tile-ratio) lg:aspect-auto", wide && "max-lg:col-span-2")}
-      style={{ "--tile-ratio": `${w} / ${h}`, "--spacing": `calc(100cqw / ${w})` } as React.CSSProperties}
+      className={cn("relative size-full overflow-hidden rounded-[calc(var(--spacing)*26.797)] bg-[#0e0e0f]", className)}
+      style={style}
     >
-      <div
-        className={cn("relative size-full overflow-hidden rounded-[calc(var(--spacing)*26.797)] bg-[#0e0e0f]", className)}
-        style={style}
-      >
-        {children}
-      </div>
+      {children}
     </div>
+  )
+
+  if (!at || revealAt === undefined) {
+    return (
+      <div className={outer} style={vars}>
+        {inner}
+      </div>
+    )
+  }
+  return (
+    <RevealTile at={at} w={w} h={h} revealAt={revealAt} className={outer} style={vars}>
+      {inner}
+    </RevealTile>
   )
 }
 
@@ -166,7 +186,7 @@ function Chip({ children }: { children: React.ReactNode }) {
 /** "Ask NIA" (9212:9242): headline, subline and the NIA chat sheet rising from the bottom. */
 function AskNiaTile() {
   return (
-    <Tile w={436.406} h={405.781} wide>
+    <Tile w={436.406} h={405.781} at={[0, 0]} revealAt={0.52} wide>
       {/* Violet and blue shades rising behind the sheet */}
       <div aria-hidden className="absolute top-112 left-0 h-299.5 w-209.5 bg-linear-to-b from-transparent to-[#af75ff]/20" />
       <div aria-hidden className="absolute top-112 left-220 h-299.5 w-216.25 bg-linear-to-b from-transparent to-[#3979ff]/20" />
@@ -266,7 +286,7 @@ function AskNiaTile() {
 /** "Add your vote" (9212:9298): a mini poll — vote button, result bars, results button. */
 function VoteTile() {
   return (
-    <Tile w={436.406} h={153.125} wide className="bg-transparent bg-linear-to-r from-[#2b1f5c] to-[#1a2f6b]">
+    <Tile w={436.406} h={153.125} at={[0, 421.09]} revealAt={0.44} wide className="bg-transparent bg-linear-to-r from-[#2b1f5c] to-[#1a2f6b]">
       <div aria-hidden className="absolute top-26.75 left-42 h-61.25 w-352.25">
         <Icon src={voteCircle} className="top-0 left-0 size-61.25" />
         <Icon src={voteCheck} className="top-16.25 left-16.25 size-28.75" />
@@ -286,12 +306,12 @@ function VoteTile() {
 /** "Watch" (9212:9313): faded episode still, play button and a player bar. */
 function WatchTile() {
   return (
-    <Tile w={436.406} h={405.781} wide className="bg-[#0f0f10]">
+    <Tile w={436.406} h={405.781} at={[0, 589.53]} revealAt={0.74} wide className="bg-[#0f0f10]">
       <Photo
         src={watchCricket}
         frame="-left-0.5 top-0 h-406 w-437 opacity-10"
         crop="inset-x-0 top-[-8.65%] h-[191.35%]"
-        sizes="(min-width: 1024px) 24vw, (min-width: 640px) 32rem, 100vw"
+        sizes="(min-width: 768px) 24vw, (min-width: 640px) 32rem, 100vw"
       />
 
       <h3 className={cn(title38, "absolute top-28.75 left-30.5 w-360 text-center tracking-[-0.03em]")}>Watch</h3>
@@ -327,7 +347,7 @@ function WatchTile() {
 /** "A place to stop" (9212:9338): silver two-line headline, centred. */
 function PlaceToStopTile() {
   return (
-    <Tile w={256.484} h={237.344} className="flex items-center justify-center">
+    <Tile w={256.484} h={237.344} at={[451.72, 0]} revealAt={0.29} className="flex items-center justify-center">
       <p className={cn(fs[42], silverText, "w-210.5 text-center leading-46 font-semibold")}>
         A place
         <br />
@@ -343,6 +363,8 @@ function LightDarkTile() {
     <Tile
       w={352.188}
       h={237.344}
+      at={[723.51, 0]}
+      revealAt={0.26}
       wide
       className="bg-[linear-gradient(88.88deg,#f5f5f7_0.9%,rgba(245,245,247,0.5)_29.79%,rgba(245,245,247,0.13)_44.4%,rgba(245,245,247,0)_58.09%),linear-gradient(#0e0e0f,#0e0e0f)]"
     >
@@ -363,7 +385,7 @@ function LightDarkTile() {
 /** "Make it yours" (9212:9340). */
 function MakeItYoursTile() {
   return (
-    <Tile w={256.484} h={237.344} className="bg-linear-to-b from-[#19191c] to-[#111112]">
+    <Tile w={256.484} h={237.344} at={[1091.01, 0]} revealAt={0.4} className="bg-linear-to-b from-[#19191c] to-[#111112]">
       <div aria-hidden className="absolute inset-x-0 top-0 h-118.75 bg-linear-to-b from-[#0e0e0f] to-transparent" />
       <div className="absolute top-51.75 left-30 flex w-196 flex-col items-start gap-24 font-medium">
         <p className={cn(fs[32], "w-full text-center leading-29 text-[#f5f5f7]")}>Make it yours.</p>
@@ -390,7 +412,7 @@ function HundredTile() {
           Stories. <span className="text-white">One daily destination.</span>
         </p>
       </div>
-      <Photo src={heroPhone} frame="-top-114 left-492 h-665.25 w-374.25" sizes="(min-width: 1024px) 21vw, 42vw" />
+      <Photo src={heroPhone} frame="-top-114 left-492 h-665.25 w-374.25" sizes="(min-width: 768px) 21vw, 42vw" />
     </Tile>
   )
 }
@@ -398,7 +420,7 @@ function HundredTile() {
 /** "Listen" (9212:9392): a podcast player card. */
 function ListenTile() {
   return (
-    <Tile w={436.406} h={237.344} wide>
+    <Tile w={436.406} h={237.344} at={[1362.81, 0]} revealAt={0.82} wide>
       <Icon src={listenHaze} className="top-47.75 -left-126.25 h-363.75 w-689" />
       <h3 className={cn(title38, "absolute top-19.25 left-30.5 w-360 text-center tracking-[-0.03em]")}>Listen</h3>
       <p className={cn(subline22, "absolute top-69 left-30.5 w-360 text-center")}>
@@ -409,7 +431,7 @@ function ListenTile() {
         src={listenCover}
         frame="top-121.5 left-20 h-100.5 w-80.5 rounded-[calc(var(--spacing)*10.049)]"
         crop="inset-x-0 top-[-10.49%] h-[142.22%]"
-        sizes="(min-width: 1024px) 5vw, 20vw"
+        sizes="(min-width: 768px) 5vw, 20vw"
       />
       <div aria-hidden className="absolute top-118.75 left-153 flex w-242 flex-col items-center whitespace-nowrap text-white">
         <p className={cn(fs[20], "leading-30.5 font-medium")}>Nilkamal</p>
@@ -440,9 +462,9 @@ function ListenTile() {
 
 /** "Xplaind · Connect the dots" (9212:9419): three explainer covers fanned out. */
 function XplaindTile() {
-  const cardSizes = "(min-width: 1024px) 6vw, 25vw"
+  const cardSizes = "(min-width: 768px) 6vw, 25vw"
   return (
-    <Tile w={436.406} h={237.344} wide>
+    <Tile w={436.406} h={237.344} at={[1362.81, 252.66]} revealAt={0.48} wide>
       <Icon src={xplaindHaze} className="top-47.75 -left-126.25 h-363.75 w-689" />
       <p className={cn(caption21, "top-32.5 leading-26.75")}>Xplaind · Understand</p>
       <p className={cn(fs[42], "absolute top-69 left-23 w-390.5 text-center leading-49.75 font-bold text-[#f5f5f7]")}>
@@ -483,11 +505,15 @@ function XplaindTile() {
 
 /** Small icon tile with a two-line caption (9212:9423 / 9212:9427). */
 function IconTile({
+  at,
+  revealAt,
   glow,
   icon,
   iconClassName,
   children,
 }: {
+  at: [number, number]
+  revealAt: number
   /** Figma's radial glow behind the icon, as a background image. */
   glow: string
   icon: StaticImageData
@@ -495,7 +521,7 @@ function IconTile({
   children: React.ReactNode
 }) {
   return (
-    <Tile w={210.547} h={237.344} style={{ backgroundImage: `${glow}, linear-gradient(#0e0e0f, #0e0e0f)` }}>
+    <Tile w={210.547} h={237.344} at={at} revealAt={revealAt} style={{ backgroundImage: `${glow}, linear-gradient(#0e0e0f, #0e0e0f)` }}>
       <Icon src={icon} className={iconClassName} />
       <p className={cn(fs[22], "absolute top-157 left-23 w-164.5 text-center leading-26.75 font-medium text-[#f5f5f7]")}>
         {children}
@@ -511,7 +537,7 @@ const amberGlow = `url("data:image/svg+xml;utf8,<svg viewBox='0 0 210.55 237.34'
 /** "4 ways in" (9212:9357): the four format icons in a pill. */
 function WaysInTile() {
   return (
-    <Tile w={436.406} h={237.344} wide>
+    <Tile w={436.406} h={237.344} at={[451.72, 757.97]} revealAt={0.56} wide>
       <div
         aria-hidden
         className="absolute top-34.5 left-[calc(50%+var(--spacing)*0.4)] flex -translate-x-1/2 items-center justify-center gap-34.5 overflow-hidden rounded-full border-[length:calc(var(--spacing)*1.436)] border-[#a9a9a9]/10 bg-linear-to-b from-[#1f1f24] to-[#0d0d0d] px-30.5 py-22 shadow-[0_0_calc(var(--spacing)*38.281)_0_#1b1b1c]"
@@ -541,7 +567,7 @@ function WaysInTile() {
 /** "1 space" (9212:9386): a blue chip and a silver three-line headline. */
 function OneSpaceTile() {
   return (
-    <Tile w={528.281} h={237.344} wide>
+    <Tile w={528.281} h={237.344} at={[903.44, 757.97]} revealAt={0.37} wide>
       <div
         aria-hidden
         className="absolute top-44 left-49.75 size-149.25 rounded-[calc(var(--spacing)*19.141)] bg-linear-to-b from-[#3979ff]/10 to-[rgba(10,28,86,0.25)] text-center text-white"
@@ -569,7 +595,7 @@ function LessScrollingTile() {
     ["bg-white/60", "bg-white/50", "bg-white/50", "bg-white/20", "bg-white/5"],
   ]
   return (
-    <Tile w={352.188} h={237.344} wide className="bg-linear-to-b from-[#1a1a1d] to-[#202024]">
+    <Tile w={352.188} h={237.344} at={[1447.03, 757.97]} revealAt={0.33} wide className="bg-linear-to-b from-[#1a1a1d] to-[#202024]">
       <div
         aria-hidden
         className="absolute top-17.75 left-135.5 h-131 w-67 rounded-[calc(var(--spacing)*12.241)] border-[length:calc(var(--spacing)*1.749)] border-[#4a4a52] bg-linear-to-b from-[#2c2c30] to-[rgba(17,17,20,0)]"
@@ -617,36 +643,36 @@ export function BriefingBentoSection() {
           }
         />
 
-        <FadeIn className="@container mx-auto mt-10 w-full max-w-[32rem] lg:mt-[4.2rem] lg:max-w-none">
-          <div className={cn("grid grid-flow-dense grid-cols-2 gap-3 lg:aspect-[1799.22/995.31] lg:grid-cols-[436.406fr_1347.5fr]", gap)}>
+        <div className="mt-10 lg:mt-[4.2rem]">
+          <BentoReveal className={cn("grid grid-flow-dense grid-cols-2 gap-3 md:aspect-[1799.22/995.31] md:grid-cols-[436.406fr_1347.5fr]", gap)}>
             {/* Left column */}
-            <div className={cn(group, "lg:grid-rows-[405.781fr_153.125fr_405.781fr]")}>
+            <div className={cn(group, "md:grid-rows-[405.781fr_153.125fr_405.781fr]")}>
               <AskNiaTile />
               <VoteTile />
               <WatchTile />
             </div>
 
             {/* Everything right of it: the upper block, then the bottom row */}
-            <div className={cn(group, "lg:grid-rows-[742.656fr_237.344fr]")}>
-              <div className={cn(group, "lg:grid-cols-[895.781fr_436.406fr]")}>
-                <div className={cn(group, "lg:grid-rows-[237.344fr_490fr]")}>
-                  <div className={cn(group, "lg:grid-cols-[256.484fr_352.188fr_256.484fr]")}>
+            <div className={cn(group, "md:grid-rows-[742.656fr_237.344fr]")}>
+              <div className={cn(group, "md:grid-cols-[895.781fr_436.406fr]")}>
+                <div className={cn(group, "md:grid-rows-[237.344fr_490fr]")}>
+                  <div className={cn(group, "md:grid-cols-[256.484fr_352.188fr_256.484fr]")}>
                     <PlaceToStopTile />
                     <LightDarkTile />
                     <MakeItYoursTile />
                   </div>
                   <HundredTile />
                 </div>
-                <div className={cn(group, "lg:grid-rows-3")}>
+                <div className={cn(group, "md:grid-rows-3")}>
                   <ListenTile />
                   <XplaindTile />
-                  <div className={cn(group, "lg:grid-cols-2")}>
-                    <IconTile glow={blueGlow} icon={iconBookmark} iconClassName="top-46 left-70.75 size-69">
+                  <div className={cn(group, "md:grid-cols-2")}>
+                    <IconTile at={[1362.81, 505.31]} revealAt={0.61} glow={blueGlow} icon={iconBookmark} iconClassName="top-46 left-70.75 size-69">
                       Save a story
                       <br />
                       for later
                     </IconTile>
-                    <IconTile glow={amberGlow} icon={iconFlame} iconClassName="top-54.5 left-65 size-80.5">
+                    <IconTile at={[1588.67, 505.31]} revealAt={0.67} glow={amberGlow} icon={iconFlame} iconClassName="top-54.5 left-65 size-80.5">
                       Keep your
                       <br />
                       habit going
@@ -654,14 +680,14 @@ export function BriefingBentoSection() {
                   </div>
                 </div>
               </div>
-              <div className={cn(group, "lg:grid-cols-[436.406fr_528.281fr_352.188fr]")}>
+              <div className={cn(group, "md:grid-cols-[436.406fr_528.281fr_352.188fr]")}>
                 <WaysInTile />
                 <OneSpaceTile />
                 <LessScrollingTile />
               </div>
             </div>
-          </div>
-        </FadeIn>
+          </BentoReveal>
+        </div>
       </div>
     </section>
   )
