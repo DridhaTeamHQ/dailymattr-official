@@ -4,14 +4,13 @@ import { cn } from "cn";
 
 import { formatItems } from "./nav-config";
 
-// Radial glows layered over the base gradient — exported straight from Figma
-// node 8856:12357 so the NIA panel lighting matches the design pixel for pixel.
-const niaPanelBackground = [
-  `url("data:image/svg+xml;utf8,<svg viewBox='0 0 340 296' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%' width='100%' fill='url(%23grad)' opacity='1'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(0 -16.28 -20.4 0 61.2 35.52)'><stop stop-color='rgba(108,140,255,0.55)' offset='0'/><stop stop-color='rgba(108,140,255,0)' offset='0.7'/></radialGradient></defs></svg>")`,
-  `url("data:image/svg+xml;utf8,<svg viewBox='0 0 340 296' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%' width='100%' fill='url(%23grad)' opacity='1'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(0 -17.76 -18.7 0 312.8 281.2)'><stop stop-color='rgba(178,92,255,0.65)' offset='0'/><stop stop-color='rgba(178,92,255,0)' offset='0.7'/></radialGradient></defs></svg>")`,
-  `url("data:image/svg+xml;utf8,<svg viewBox='0 0 340 296' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'><rect x='0' y='0' height='100%' width='100%' fill='url(%23grad)' opacity='1'/><defs><radialGradient id='grad' gradientUnits='userSpaceOnUse' cx='0' cy='0' r='10' gradientTransform='matrix(0 -11.84 -13.6 0 238 103.6)'><stop stop-color='rgba(57,121,255,0.35)' offset='0'/><stop stop-color='rgba(57,121,255,0)' offset='0.7'/></radialGradient></defs></svg>")`,
-  "linear-gradient(162.41824684353088deg, rgb(18, 10, 58) 8.4861%, rgb(26, 11, 79) 45.849%, rgb(42, 15, 110) 91.514%)",
-].join(", ");
+// The NIA card shows the phone photo from the NIA page's "Responsible answers" section,
+// placed so the phone sits on the right and the copy stays on the darker left.
+const NIA_PHOTO = "/nia/responsible-answers.png";
+
+// Darkens the left side behind the copy, fading out before the phone.
+const niaPhotoShade =
+  "linear-gradient(90deg, rgba(8,8,10,0.85) 0%, rgba(8,8,10,0.55) 40%, rgba(8,8,10,0) 65%)";
 
 /**
  * NIA copy and format rows slide in from the right and fade in one after another when the
@@ -53,10 +52,18 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
       <Link
         href="/nia"
         aria-label="NIA, your AI assistant"
-        className="flex flex-col items-start self-stretch overflow-clip rounded-[1rem] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
-        style={{ backgroundImage: niaPanelBackground }}
+        className="relative isolate flex flex-col items-start self-stretch overflow-clip rounded-[1rem] bg-[#0b0b0d] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
         data-node-id="8856:12357"
       >
+        <Image
+          src={NIA_PHOTO}
+          alt=""
+          width={2650}
+          height={1121}
+          sizes="826px"
+          className="pointer-events-none absolute top-[-1rem] left-[-9rem] -z-10 h-[21.875rem] w-auto max-w-none"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10" style={{ backgroundImage: niaPhotoShade }} />
         <div
           className={cn("flex shrink-0 items-center gap-2", staggerIn(open, 0).className)}
           style={staggerIn(open, 0).style}
