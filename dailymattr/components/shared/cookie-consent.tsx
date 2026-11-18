@@ -43,7 +43,7 @@ function subscribe(onChange: () => void) {
 const ANSWERED = "answered"
 
 /**
- * Cookie choice popup, bottom-right; shown until the visitor picks an option.
+ * Cookie choice popup, bottom-left; shown until the visitor picks an option.
  * NIA pins the root font size to 16px, so there it zooms by the laptop scale to match other pages.
  */
 export function CookieConsentPopup() {
@@ -67,7 +67,7 @@ export function CookieConsentPopup() {
       aria-labelledby="cookie-consent-title"
       aria-describedby="cookie-consent-body"
       className={cn(
-        "fixed inset-x-4 bottom-4 z-[60] rounded-xl bg-background p-5 shadow-lg ring-1 ring-foreground/10 transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-opacity sm:inset-x-auto sm:right-6 sm:bottom-6 sm:w-[24rem] [html:has(.nia-layout)_&]:lg:[zoom:var(--site-scale-auto,1)]",
+        "fixed inset-x-4 bottom-4 z-[60] rounded-xl bg-background p-5 shadow-lg ring-1 ring-foreground/10 transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-opacity sm:inset-x-auto sm:left-6 sm:bottom-6 sm:w-[24rem] [html:has(.nia-layout)_&]:lg:[zoom:var(--site-scale-auto,1)]",
         entered ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       )}
     >
