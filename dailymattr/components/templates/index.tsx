@@ -1,43 +1,79 @@
+import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { PANEL_WIDTH } from "@/components/shared/layout"
-import { Card, Carousel } from "@/components/ui/apple-cards-carousel"
-import { templateCards } from "./templates"
+import { Carousel } from "@/components/ui/apple-cards-carousel"
 import { FadeIn } from "@/components/shared/fade-in"
 
-// Figma frame: max width 1540, vertical auto layout, padding 0 × 80. The card row uses the
-// wide panel column (78.5% of the screen) with 300 × 420 cards, ~130px below the heading.
+// Figma 8859:13168 "Happening now" — header block (24px gaps) 80px above a full-width row of
+// 300 × 478 story cards with 20px gaps. Each story image already carries its headline and date.
+type Story = { tag: string; src?: string; href: string }
+
+const stories: Story[] = [
+  { tag: "India", src: "/happening-now/story-1.png", href: "/" },
+  { tag: "India", src: "/happening-now/story-2.png", href: "/" },
+  // Figma leaves this card as an empty #2a2b30 fill.
+  { tag: "India", href: "/" },
+  { tag: "India", src: "/happening-now/story-3.png", href: "/" },
+  { tag: "India", src: "/happening-now/story-1.png", href: "/" },
+  { tag: "India", src: "/happening-now/story-1.png", href: "/" },
+  { tag: "India", src: "/happening-now/story-1.png", href: "/" },
+]
+
+function StoryCard({ story }: { story: Story }) {
+  return (
+    <Link
+      href={story.href}
+      className="group relative block aspect-[300/478] w-[13.75rem] overflow-hidden rounded-2xl bg-[#2a2b30] sm:w-[18.75rem]"
+    >
+      {story.src && (
+        // Figma: the image layer is 556px tall, starting 52px above the 478px card, object-cover.
+        <Image
+          src={story.src}
+          alt=""
+          fill
+          sizes="300px"
+          className="top-[-10.88%]! h-[116.32%]! object-cover"
+        />
+      )}
+      <span className="absolute top-3 left-3 rounded-lg bg-black/20 px-2 py-1.5 text-[0.8125rem] leading-none tracking-[0.05rem] text-white uppercase backdrop-blur-[20px]">
+        {story.tag}
+      </span>
+      <span className="absolute right-4 bottom-4 flex h-10 items-center gap-2 rounded-[0.8125rem] bg-white pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem] text-black drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)] transition-transform group-hover:-translate-y-0.5">
+        Read the story
+        <img src="/happening-now/arrow-up-right.svg" alt="" width={20} height={21} />
+      </span>
+    </Link>
+  )
+}
+
 export function TemplatesSection() {
   return (
-    <section className="flex w-full flex-col items-center gap-20 px-4 sm:px-6 lg:px-16 py-20 lg:gap-32">
-      <FadeIn className="flex max-w-4xl flex-col items-center text-center">
-        {/* Figma 8585:9969 — 48/57.6 −1.92px, Inter Tight Semibold #292929 to match the other section headings */}
-        <h2 className="font-tight text-3xl leading-tight font-semibold tracking-[-0.0625rem] text-[#292929] sm:text-4xl lg:text-5xl lg:tracking-[-0.12rem]">
-          Tailored solutions for deskless industries
-        </h2>
-        <p className="mt-6 text-base font-medium tracking-[-0.025rem] text-[#1c1b17] lg:text-xl lg:leading-7">
-          Discover how our customers use Bounti
-          <br />
-          <span className="text-[#b2b2b2]">to improve their deskless workforce</span>
+    <section className="flex w-full flex-col items-center gap-20 py-20">
+      <FadeIn className="flex flex-col items-center gap-6 px-6 text-center">
+        <p className="text-lg leading-[1.125rem] font-medium text-[#3979ff] uppercase">
+          Happening now
         </p>
-        <Button
-          nativeButton={false}
-          render={<Link href="/templates" />}
-          className="mt-10 h-10 gap-2 rounded-lg bg-foreground pr-2 pl-4 text-base leading-6 font-medium tracking-[-0.01rem] text-background hover:bg-foreground/85"
+        <h2 className="font-tight text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1b17] sm:text-4xl lg:text-5xl lg:leading-[3.6rem] lg:tracking-[-0.12rem]">
+          Start with today&rsquo;s stories.
+        </h2>
+        <p className="max-w-[28.375rem] text-base tracking-[-0.025rem] text-[#1c1b17] lg:text-xl lg:leading-7">
+          Explore the latest updates, then follow the stories that catch your attention.
+        </p>
+        <Link
+          href="/"
+          className="flex h-10 items-center gap-2 rounded-[0.8125rem] bg-[#3979ff] pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)] hover:bg-[#3979ff]/90"
         >
-          Browse Templates
-          <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-background/15">
-            <ArrowUpRight className="size-3" />
-          </span>
-        </Button>
+          See all latest stories
+          <img src="/happening-now/arrow-up-right-white.svg" alt="" width={20} height={20} />
+        </Link>
       </FadeIn>
 
-      <FadeIn className={PANEL_WIDTH}>
+      {/* Card row bleeds to the full screen width. */}
+      <FadeIn className="w-full">
         <Carousel
-          items={templateCards.map((card, index) => (
-            <Card key={card.title} card={card} index={index} layout />
+          className="[&>div]:rounded-none [&>div>div]:gap-5"
+          items={stories.map((story, index) => (
+            <StoryCard key={index} story={story} />
           ))}
         />
       </FadeIn>
