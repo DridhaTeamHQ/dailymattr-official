@@ -107,12 +107,12 @@ export function LanguageSwitcher() {
               />
             ))}
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="w-48 p-1 [html:has(.nia-layout)_&]:lg:[zoom:var(--site-scale-auto,1)]">
+          <NavigationMenuContent className="w-56 p-1.5 [html:has(.nia-layout)_&]:lg:[zoom:var(--site-scale-auto,1)]">
             <ul className="flex flex-col">
               {languages.map((l, i) => (
                 <li key={l.code}>
                   {/* Hairline between rows, inset like the Features menu's dividers */}
-                  {i > 0 && <div aria-hidden="true" className="mx-2 my-0.5 h-px bg-border" />}
+                  {i > 0 && <div aria-hidden="true" className="mx-2.5 my-0.5 h-px bg-border" />}
                   <NavigationMenuLink
                     active={l.code === lang}
                     render={<button type="button" />}
@@ -120,11 +120,11 @@ export function LanguageSwitcher() {
                       saveRegion(l.code)
                       setOpen(null)
                     }}
-                    className="w-full gap-2.5 px-2 py-1.5 text-left"
+                    className="w-full gap-3 px-2.5 py-2 text-left text-[0.9375rem]"
                   >
-                    <Image src={l.image} alt="" width={18} height={18} className="size-[1.125rem] shrink-0" />
+                    <Image src={l.image} alt="" width={22} height={22} className="size-[1.375rem] shrink-0" />
                     <span className="flex-1">{l.label}</span>
-                    {l.code === lang && <CheckIcon className="size-4" />}
+                    {l.code === lang && <CheckIcon className="size-[1.125rem]" />}
                   </NavigationMenuLink>
                 </li>
               ))}
