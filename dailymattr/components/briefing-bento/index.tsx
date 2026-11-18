@@ -1,7 +1,6 @@
 import Image, { type StaticImageData } from "next/image"
 
 import { cn } from "@/lib/utils"
-import { SITE_GUTTER } from "@/components/shared/layout"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { FadeIn } from "@/components/shared/fade-in"
 import appScreens from "@/public/home/bento/app-screens.png"
@@ -17,10 +16,7 @@ import surprisedReader from "@/public/home/bento/surprised-reader.png"
 // frame (72px = 72 / 1824 = 3.947cqw), so text, padding and crops keep the Figma proportions
 // at any width. Small text has a rem floor so it stays readable on laptops.
 //
-// Desktop: the whole panel fits one screen below the sticky header. The bento's width is the
-// smaller of the row between the gutters and what its 1824:873 shape allows in the height
-// left after the header (5rem), panel padding (2.5rem × 2), heading (8.125rem) and the gap
-// above the bento (2.5rem): 100svh − 21rem.
+// Desktop: the bento spans the full panel width, 60px in from each side.
 
 const tile = "relative overflow-hidden rounded-[1rem] bg-[#121212]"
 
@@ -92,8 +88,8 @@ const square = "aspect-[16/10] md:aspect-square"
 export function BriefingBentoSection() {
   return (
     <section className="w-full py-8 lg:py-12">
-      {/* The black panel runs edge to edge with rounded corners; the bento sits in the gutters. */}
-      <div className={cn("w-full bg-black pt-16 pb-12 lg:rounded-[1rem] lg:py-10", SITE_GUTTER)}>
+      {/* The black panel runs edge to edge with rounded corners; the bento fills it, 60px in from each side. */}
+      <div className="w-full bg-black px-4 pt-16 pb-12 sm:px-6 lg:rounded-[1rem] lg:px-[60px] lg:py-10">
         <SectionHeading
           inverted
           className="mx-auto"
@@ -107,12 +103,7 @@ export function BriefingBentoSection() {
           }
         />
 
-        <FadeIn
-          className={cn(
-            "@container mx-auto mt-12 flex w-full flex-col gap-3 md:gap-[0.658cqw] lg:mt-10",
-            "lg:w-[min(100%,calc((100svh-21rem)*1824/873))]"
-          )}
-        >
+        <FadeIn className="@container mx-auto mt-12 flex w-full flex-col gap-3 md:gap-[0.658cqw] lg:mt-10">
           {/* 100 · app screens · 3 ways in */}
           <div className={cn(row, "md:grid-cols-[754.5fr_283fr_754.5fr]")}>
             <div className={cn(tile, "flex min-h-[13rem] flex-col justify-center p-6 md:min-h-0 md:px-[3.509cqw] md:py-0")}>
