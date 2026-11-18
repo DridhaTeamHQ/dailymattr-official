@@ -5,6 +5,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { regionScript } from "@/components/navbar/nav-config";
+import { CookieConsentPopup } from "@/components/shared/cookie-consent";
 import { RouteTheme } from "@/components/shared/route-theme";
 import { SmoothScroll } from "@/components/shared/smooth-scroll";
 import { siteScaleScript } from "@/lib/site-scale";
@@ -62,6 +64,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="site-scale" strategy="beforeInteractive">
           {siteScaleScript}
         </Script>
+        {/* Saved header region, so its image is right on first paint (see nav-config.ts) */}
+        {/* Plain inline script (not next/script) so it runs during HTML parsing, before paint */}
+        <script id="site-region" dangerouslySetInnerHTML={{ __html: regionScript }} />
         {/* Organization + WebSite structured data for search engines */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(siteJsonLd()) }} />
         <SmoothScroll>
@@ -71,6 +76,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Footer />
           </RouteTheme>
         </SmoothScroll>
+        <CookieConsentPopup />
       </body>
     </html>
   );

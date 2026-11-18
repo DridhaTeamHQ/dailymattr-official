@@ -1,15 +1,17 @@
 import Image from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { Separator } from "@/components/ui/separator"
 import ambitionBox from "@/public/carousal/ambition-box.png"
 import clutch from "@/public/carousal/clutch.png"
 import glassdoor from "@/public/carousal/glassdoor.svg"
+import goodFirms from "@/public/carousal/Good Firms 1.svg"
 import superbCompanies from "@/public/carousal/Superb Companies 2.svg"
 import yourStory from "@/public/carousal/headerV3_YS 1.svg"
 import tracxn from "@/public/carousal/tracxn-logo-full.svg"
 
 // Press logos, in the Figma order (Tracxn · YourStory · Superb Companies · AmbitionBox ·
-// Glassdoor · Clutch). Heights are the Figma sizes in rem (40px / 32px / 28px), so they scale with the laptop root font size like the rest
+// Glassdoor · Clutch · Goodfirms). Heights are the Figma sizes in rem (40px / 32px / 28px), so they scale with the laptop root font size like the rest
 // of the site; widths follow each SVG's own aspect ratio.
 const logos = [
   { src: tracxn, alt: "Tracxn", className: "h-8" },
@@ -18,6 +20,7 @@ const logos = [
   { src: ambitionBox, alt: "AmbitionBox", className: "h-10" },
   { src: glassdoor, alt: "Glassdoor", className: "h-10" },
   { src: clutch, alt: "Clutch", className: "h-8" },
+  { src: goodFirms, alt: "Goodfirms", className: "h-8" },
 ]
 
 // Enough copies of the logos to overflow a 1920px screen, so one set always fills the row
@@ -48,7 +51,7 @@ function LogoSet({ hidden }: { hidden?: boolean }) {
  */
 export function RecognizedInSection() {
   return (
-    <section aria-labelledby="recognized-in" className="w-full overflow-hidden py-12 lg:py-16">
+    <section aria-labelledby="recognized-in" className="w-full overflow-hidden pt-12 lg:pt-16">
       <FadeIn className="flex flex-col items-center gap-10 lg:gap-14">
         <h2
           id="recognized-in"
@@ -64,6 +67,11 @@ export function RecognizedInSection() {
           </div>
         </div>
       </FadeIn>
+
+      {/* Hairline closing the strip, inset to the page's side gutters (as in the Figma frame) */}
+      <div className="px-4 pt-12 sm:px-6 lg:px-16 lg:pt-[4.75rem]">
+        <Separator />
+      </div>
     </section>
   )
 }

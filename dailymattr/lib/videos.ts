@@ -54,9 +54,8 @@ export const videos = {
   /** Daily routine section on the home page. */
   dayByDay: localVideo("day-by-day", 1920, 1080, { webm: false }),
   /** Home "Follow your curiosity" explainers gallery (16:9, matches the open panel), with sound. */
-  curiosity1: localVideo("curiosity-1", 1920, 1080),
-  customerStory2: localVideo("customer-story-2", 1920, 1080),
-  /** Longer cut of the customer story, on the explainers gallery's "Technology & AI" panel. */
+  customerStory2: localVideo("customer-story-2", 1024, 576),
+  /** 1:11 customer story; also used for the gallery panels that used to play curiosity-1. */
   customerStory2V2: localVideo("customer-story-2-v2", 1920, 1080),
   /** Pix page hero. */
   pixEntry: localVideo("pix-entry", 1920, 1080),

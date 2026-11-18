@@ -21,6 +21,8 @@ type SiteVideoProps = Omit<
    */
   sound?: boolean
   onSoundBlocked?: () => void
+  /** Start again from the first frame every time the video scrolls back into view. */
+  restartOnEnter?: boolean
 }
 
 /** How far outside the screen a video starts loading, so it is ready as it scrolls in. */
@@ -39,6 +41,7 @@ export function SiteVideo({
   playing,
   sound = false,
   onSoundBlocked,
+  restartOnEnter = false,
   ...props
 }: SiteVideoProps) {
   const asset = typeof video === "string" ? placeholderVideo(video) : video
@@ -88,6 +91,7 @@ export function SiteVideo({
     // React does not reliably reflect `muted` as an attribute; autoplay needs it set.
     el.muted = !sound
     if (!shouldPlay) return void el.pause()
+    if (restartOnEnter) el.currentTime = 0
     el.play().catch(() => {
       // Unmuted autoplay refused (no click/tap on the page yet): fall back to muted.
       if (el.muted) return
@@ -95,7 +99,7 @@ export function SiteVideo({
       onSoundBlockedRef.current?.()
       el.play().catch(() => {})
     })
-  }, [shouldPlay, sound])
+  }, [shouldPlay, sound, restartOnEnter])
 
   return (
     <video

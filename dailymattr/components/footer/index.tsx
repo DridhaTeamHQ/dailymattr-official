@@ -10,23 +10,25 @@ import { footerGroups } from "./footer-links"
 /**
  * Site footer, from the landing-page Figma frame: brand + newsletter sign-up on the left,
  * five link columns on the right, copyright under a hairline. Colours come from theme
- * tokens so it is light on regular pages; inside `.theme-nia` it switches to the dark
- * values and zooms with the rest of the NIA page (see components/nia/nia-scale.tsx).
+ * tokens so it is light on regular pages; inside `.theme-nia` only the colours go dark.
+ * NIA pins its root font to 16px, so there it is zoomed by the laptop ratio
+ * (--site-scale-auto) to come out the same size as on every other page.
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:px-16 lg:border-t-0 lg:pt-6 [main:has(>[data-full-bleed]:last-child)+&]:border-t-0 lg:[main:has(>[data-full-bleed]:last-child)+&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:border-t [.nia-layout_&]:lg:pt-24 [.nia-layout_&]:font-sans [.nia-layout_&]:lg:[zoom:var(--nia-scale,1)]">
-      {/* Lines up with the wide panels above (PANEL_WIDTH); the NIA page keeps its 1200px column */}
-      <div className={cn(PANEL_WIDTH, "flex flex-col [.nia-layout_&]:max-w-[75rem] [.nia-layout_&]:lg:w-full")}>
+    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:px-16 lg:border-t-0 lg:pt-6 [main:has(>[data-full-bleed]:last-child)+&]:border-t-0 lg:[main:has(>[data-full-bleed]:last-child)+&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
+      {/* Lines up with the wide panels above (PANEL_WIDTH) */}
+      <div className={cn(PANEL_WIDTH, "flex flex-col")}>
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-20">
           {/* Brand on top, newsletter sign-up pinned to the bottom of the row */}
           <div className="flex min-w-0 flex-col justify-between gap-12 lg:self-stretch">
             <div className="flex flex-col gap-4">
               <Link href="/" aria-label="dailymattr home" className="block w-fit">
-                <Image src="/footer/logo.svg" alt="dailymattr" width={150} height={31} className="block" />
+                <Image src="/footer/logo.svg" alt="dailymattr" width={150} height={31} className="block [.nia-layout_&]:lg:[zoom:calc(1/var(--site-scale-auto,1))]" />
               </Link>
-              <p className="max-w-84 text-base leading-6 text-muted-foreground [.theme-nia_&]:text-white/55">
-                The mobile training and operations platform for your frontline staff.
+              <p className="max-w-96 text-base leading-6 text-muted-foreground [.theme-nia_&]:text-white/55">
+                dailymattr brings you the story behind the headline — with context, clarity, and
+                perspective that help you understand what really matters.
               </p>
             </div>
 

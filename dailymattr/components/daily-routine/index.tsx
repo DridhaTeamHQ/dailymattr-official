@@ -53,6 +53,8 @@ export function DailyRoutineSection() {
         <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">
           <SiteVideo
             video={videos.dayByDay}
+            // Plays from the start each time the section scrolls into view.
+            restartOnEnter
             // Slight zoom crops the faint encoding seam along the video's bottom edge
             className="block size-full scale-[1.01] object-cover"
           />

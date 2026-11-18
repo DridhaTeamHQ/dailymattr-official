@@ -3,7 +3,8 @@ import { ArrowRight, Sparkles } from "lucide-react"
 
 export function AnnouncementBar() {
   return (
-    <div className="flex h-9 items-center justify-center bg-primary px-4 text-sm font-medium text-primary-foreground">
+    // NIA pins its root to 16px; zoom by the laptop ratio there so the bar matches other pages.
+    <div className="flex h-9 items-center justify-center bg-primary px-4 text-sm font-medium text-primary-foreground [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
       <Sparkles className="mr-1.5 size-3.5 shrink-0" />
       <span className="truncate">Read, watch and listen to what matters today.</span>
       <Link

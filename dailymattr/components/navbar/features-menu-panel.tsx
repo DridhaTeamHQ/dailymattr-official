@@ -15,7 +15,7 @@ const niaPanelBackground = [
 
 /**
  * NIA copy and format rows slide in from the right and fade in one after another when the
- * menu opens (both columns run side by side, then "Explore formats" last).
+ * menu opens (both columns run side by side).
  * On close the delay drops to 0 so they reset together under the panel's own fade.
  */
 const ROW_BASE_DELAY = 220;
@@ -40,12 +40,12 @@ const panelShadow =
 
 /**
  * The Features mega-menu card. Figma: "Container" — node 8856:12356.
- * 780 × 320 overall: a 340px NIA promo panel beside a 404px format list.
+ * A 340px NIA promo panel beside a 404px format list; the card is as tall as the list.
  */
 export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
   return (
     <div
-      className="relative grid grid-cols-[21.25rem_25.25rem] grid-rows-[18.5rem] gap-3 overflow-clip rounded-[1.5rem] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
+      className="relative grid grid-cols-[21.25rem_25.25rem] gap-3 overflow-clip rounded-[1.5rem] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
       style={{ boxShadow: panelShadow }}
       data-node-id="8856:12356"
     >
@@ -53,7 +53,7 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
       <Link
         href="/nia"
         aria-label="NIA, your AI assistant"
-        className="flex min-h-[18.5rem] flex-col items-start self-stretch overflow-clip rounded-[1rem] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
+        className="flex flex-col items-start self-stretch overflow-clip rounded-[1rem] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
         style={{ backgroundImage: niaPanelBackground }}
         data-node-id="8856:12357"
       >
@@ -166,31 +166,6 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
               </div>
             );
           })}
-        </div>
-
-        {/* "Explore formats" follows the rows as the last step of the stagger */}
-        <div
-          className={cn(
-            "flex min-h-px w-full flex-1 flex-col items-start justify-end",
-            staggerIn(open, formatItems.length + 1).className,
-          )}
-          style={staggerIn(open, formatItems.length + 1).style}
-        >
-          <Link
-            href="/formats"
-            className="flex h-[2.3125rem] w-full shrink-0 items-center justify-between border-t border-solid border-[#eef0f3] [.theme-nia_&]:border-white/8 px-[0.875rem] pt-3 pb-1"
-          >
-            <span className="text-sm leading-5 font-medium whitespace-nowrap text-[#3979ff]">
-              Explore formats
-            </span>
-            <Image
-              src="/nav-menu/arrow-blue.svg"
-              alt=""
-              width={14}
-              height={14}
-              className="block shrink-0 transition-transform duration-200 hover:translate-x-0.5"
-            />
-          </Link>
         </div>
       </div>
 

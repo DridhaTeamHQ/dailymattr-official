@@ -92,11 +92,13 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
   return (
     // On laptops the page's rem sizes shrink to --site-scale (e.g. 0.8, see globals.css). From
     // 1280px the nav is scaled back up to 90% so it reads a little larger; below that it keeps
-    // the page size so all its links fit. At scale 1 (desktop, NIA) it stays 1:1.
+    // the page size so all its links fit. At scale 1 (desktop) it stays 1:1.
+    // NIA pins its root to 16px, so there the nav is zoomed by the laptop ratio instead
+    // (--site-scale-auto, floored at 90% from 1280px): the same size as on every other page.
     <motion.header
       ref={ref}
       style={{ y, opacity }}
-      className="sticky top-0 z-50 w-full bg-background will-change-transform xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))]"
+      className="sticky top-0 z-50 w-full bg-background will-change-transform xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)] [.nia-layout_&]:xl:[zoom:max(0.9,var(--site-scale-auto,1))]"
     >
       {children}
     </motion.header>

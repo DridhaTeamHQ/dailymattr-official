@@ -27,9 +27,8 @@ const VIDEOS = [
   { name: "day-by-day", input: "Day_by_day_video.mp4", h264Crf: 26, webm: false },
   { name: "pix-entry", input: "pix_entry_video.mp4", h264Crf: 26, vp9Crf: 36 },
   // Explainers gallery on the home page, played with sound.
-  { name: "curiosity-1", input: "curiosity_1.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
-  { name: "customer-story-2", input: "dailymattr_Customer_Story_2.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
-  // Longer 1:11 cut of the same story; only the gallery's "Technology & AI" panel plays it.
+  { name: "customer-story-2", input: "dailymattr_Customer_Story_2_new.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
+  // 1:11 customer story; also stands in for the curiosity explainer panels.
   { name: "customer-story-2-v2", input: "dailymattr_Customer_Story_2_v2.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
   // "A whole world of stories" cards on the home page: 9:16 brand stories, played with sound on
   // hover. Masters are 1080x1920; the cards are under 300px wide, so 720 wide is plenty for 2x
