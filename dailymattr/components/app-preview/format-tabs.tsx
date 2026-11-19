@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useEffect, useId, useState } from "react"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -8,12 +8,16 @@ import { CONTENT_WIDTH } from "@/components/shared/layout"
 import { cn } from "@/lib/utils"
 import { SiteVideo } from "@/components/shared/site-video"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { usePinnedSteps } from "./expand-on-scroll"
 import { formats } from "./formats"
 
 // Figma 8859:12712: media opens to 1792 × 1008. Tab bar 1075.2 × 78.4, centred, 37px above the
 // bottom, padding 5.6, six 177.3 × 67.2 tabs, radius 16 (phones and tablets keep a full-width
 // bar 24px in). Duration badge 81 × 30 at (24, 25). Subtitles show once the box is wide enough
 // to fit them (640px: the 800px box on a 1280px laptop, as in Figma).
+//
+// Desktop: while ExpandOnScroll pins the preview, the scroll picks the tab, one per step, Pix
+// to Polls; clicking a tab scrolls to its step, so the two never disagree.
 const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
 export function FormatTabs() {
@@ -26,10 +30,24 @@ export function FormatTabs() {
   const [durations, setDurations] = useState<Record<string, number>>({})
   const duration = durations[activeFormat.value]
 
+  // Follow the scroll's step while pinned (skipping the steps a tab click scrolls past).
+  const pinned = usePinnedSteps()
+  useEffect(() => {
+    if (!pinned) return
+    const follow = (index: number) => {
+      if (!pinned.jumping.current) setActive(formats[index].value)
+    }
+    follow(pinned.step.get())
+    return pinned.step.on("change", follow)
+  }, [pinned])
+
   return (
     <Tabs
       value={active}
-      onValueChange={(value) => setActive(value as string)}
+      onValueChange={(value) => {
+        setActive(value as string)
+        if (pinned) pinned.goTo(formats.findIndex((f) => f.value === value))
+      }}
       // At lg and up the width follows --expand-w (set by ExpandOnScroll as the section
       // scrolls in), falling back to the starting width (START_W) when it isn't set.
       className={cn(

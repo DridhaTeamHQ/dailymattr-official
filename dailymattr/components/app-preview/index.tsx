@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { SectionHeading } from "@/components/shared/section-heading"
 import { ExpandOnScroll } from "./expand-on-scroll"
 import { FormatTabs } from "./format-tabs"
+import { formats } from "./formats"
 import { FadeIn } from "@/components/shared/fade-in"
 import { SITE_GUTTER } from "@/components/shared/layout"
 import { cn } from "@/lib/utils"
@@ -35,7 +36,8 @@ export function AppPreviewSection() {
         </Button>
       </SectionHeading>
 
-      <ExpandOnScroll>
+      {/* Desktop: pins the preview and steps through one tab per 40vh of scroll */}
+      <ExpandOnScroll steps={formats.length}>
         <FadeIn className="w-full">
           <FormatTabs />
         </FadeIn>
