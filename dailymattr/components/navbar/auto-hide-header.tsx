@@ -16,6 +16,8 @@ const SCROLL_DISTANCE = 300
 // Above this speed (px/s) the bar stops tracking the scroll and plays a timed glide instead,
 // so a fast flick doesn't make it vanish in a single frame.
 const FAST_SCROLL = 1500
+// How long the scroll has to rest (ms) before a half-hidden bar finishes sliding.
+const SETTLE_DELAY = 150
 
 // Normal scrolling: a light spring that follows the scroll position.
 const FOLLOW = { type: "spring", stiffness: 220, damping: 32, mass: 0.6 } as const
@@ -25,12 +27,19 @@ const GLIDE = { duration: 0.8, ease: [0.45, 0, 0.25, 1] } as const
 /**
  * Sticky header that moves with the scroll: scrolling down slides it up gradually until it
  * is out of view, and scrolling up slides it back the same way. A fast scroll plays a smooth
- * timed glide instead of jumping.
+ * timed glide instead of jumping. It never rests half-hidden: once the scroll stops, it
+ * finishes sliding the way the scroll was going (out when heading down, back in when heading
+ * up), and near the top of the page it always comes back in.
  */
 export function AutoHideHeader({ children }: { children: React.ReactNode }) {
   const { scrollY } = useScroll()
   // Where the scroll says the bar should be: 0 = fully shown, 1 = fully hidden.
   const target = useRef(0)
+  // The way the last scroll went (1 = down, -1 = up), and the timer that settles the bar.
+  const direction = useRef(1)
+  const settleTimer = useRef<number | undefined>(undefined)
+  // Announcement bar + nav height; scrolled less than this, the bar always settles shown.
+  const chromeHeight = useRef(0)
   // What is drawn.
   const progress = useMotionValue(0)
   const glide = useRef<{ controls: AnimationPlaybackControls; to: number } | null>(null)
@@ -48,6 +57,7 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
     const measure = () => {
       const height =
         header.getBoundingClientRect().height + (banner?.getBoundingClientRect().height ?? 0)
+      chromeHeight.current = height
       document.documentElement.style.setProperty("--chrome-height", `${height}px`)
     }
     measure()
@@ -61,10 +71,25 @@ export function AutoHideHeader({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  useEffect(() => () => window.clearTimeout(settleTimer.current), [])
+
+  // Once the scroll rests, a half-hidden bar slides the rest of the way.
+  const settle = () => {
+    const t = target.current
+    if (t === 0 || t === 1) return
+    const next = scrollY.get() <= chromeHeight.current ? 0 : direction.current > 0 ? 1 : 0
+    target.current = next
+    glide.current = null
+    animate(progress, next, FOLLOW)
+  }
+
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious() ?? current
     const delta = current - previous
     if (delta === 0) return
+    direction.current = delta > 0 ? 1 : -1
+    window.clearTimeout(settleTimer.current)
+    settleTimer.current = window.setTimeout(settle, SETTLE_DELAY)
     const fast = Math.abs(scrollY.getVelocity()) > FAST_SCROLL
 
     let next = Math.min(1, Math.max(0, target.current + delta / SCROLL_DISTANCE))
