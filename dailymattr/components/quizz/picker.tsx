@@ -48,8 +48,15 @@ export function QuizPicker() {
           // One line from laptop width up; phones and tablets wrap it.
           className="text-3xl leading-9 font-extrabold tracking-[-0.025em] text-balance text-ink sm:text-4xl sm:leading-[2.75rem] lg:text-display lg:leading-[3rem] lg:whitespace-nowrap"
         >
-          {intro.title.before}
-          <span className="text-brand-blue">{intro.title.accent}</span>
+          {intro.title.map((part) =>
+            "accent" in part && part.accent ? (
+              <span key={part.text} className="text-brand-blue">
+                {part.text}
+              </span>
+            ) : (
+              part.text
+            )
+          )}
         </h1>
 
         <section aria-labelledby="pick-heading" className="flex flex-col gap-4">
