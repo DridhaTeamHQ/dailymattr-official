@@ -173,7 +173,7 @@ These pages have no old URL. Keep their slugs as they are.
 | `/formats/qix/` | Qix – Short Video Explainers | Exists |
 | `/formats/trax/` | Trax – Listen to the News | Exists |
 | `/formats/xplaind/` | Xplaind – Explainers | To build (already linked) |
-| `/newsroom/` | Newsroom | Exists |
+| `/benchmark/` | Benchmark (was `/newsroom/`) | Exists (linked from the nav and the footer's Inside DailyMattr → Benchmark) |
 | `/advertise/` | Advertise | Exists (linked from the footer's Support → Advertise) |
 
 ---

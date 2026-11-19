@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 /** Routes whose shared chrome (navbar + footer) switches to the dark NIA colours. */
-const DARK_ROUTES = ["/nia", "/newsroom"]
+const DARK_ROUTES = ["/nia", "/benchmark"]
 /** Routes that also take NIA's own sizing (fixed 16px root, zoomed footer layout). */
 const NIA_LAYOUT_ROUTES = ["/nia"]
 

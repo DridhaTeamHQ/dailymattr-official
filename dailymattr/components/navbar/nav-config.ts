@@ -8,6 +8,7 @@ export const leftLinks: NavItem[] = [
 
 export const rightLinks: NavItem[] = [
   { label: "Inside dailymattr", href: "/inside" },
+  { label: "Benchmark", href: "/benchmark" },
   { label: "About", href: "/about" },
 ]
 

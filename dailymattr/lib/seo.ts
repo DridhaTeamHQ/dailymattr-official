@@ -66,7 +66,7 @@ export const defaultSeo: Record<string, PageSeo> = {
     priority: 0.6,
     changeFrequency: "monthly",
   },
-  "/newsroom": {
+  "/benchmark": {
     title: "Newsroom",
     description:
       "The people, the process and the stories behind dailyMattr: how our editorial team researches, checks and explains the news with facts and context.",

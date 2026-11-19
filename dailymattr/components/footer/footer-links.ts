@@ -31,7 +31,7 @@ export const footerGroups: FooterGroup[] = [
     links: [
       { label: "About", href: "/about" },
       ...toLinks(["Editorial"]),
-      { label: "Newsroom", href: "/newsroom" },
+      { label: "Benchmark", href: "/benchmark" },
       ...toLinks(["Careers", "Contact"]),
     ],
   },
