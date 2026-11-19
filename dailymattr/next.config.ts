@@ -5,7 +5,17 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.*.*"],
   // Dummy photos (lib/dummy-media.ts) — remove with them.
   images: {
-    remotePatterns: [{ hostname: "picsum.photos" }, { hostname: "fastly.picsum.photos" }],
+    remotePatterns: [
+      { hostname: "picsum.photos" },
+      { hostname: "fastly.picsum.photos" },
+      // Story photos in the dailymattr media bucket (News IQ, components/quizz/content.ts).
+      {
+        protocol: "https",
+        hostname: "coggfnbqqyiqfsxvtaym.supabase.co",
+        pathname: "/storage/v1/object/public/pix-media/**",
+        search: "",
+      },
+    ],
   },
   experimental: {
     agentFeedback: true,

@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { editions, quizPath } from "@/components/quizz/content"
 import { site } from "./site"
 
 /**
@@ -86,6 +87,26 @@ export const defaultSeo: Record<string, PageSeo> = {
     priority: 0.5,
     changeFrequency: "monthly",
   },
+  "/quizz": {
+    title: "News IQ – Take a Quiz on Today's News",
+    description:
+      "Pick one of today's stories and answer three questions. Get your Awareness score, your thinking style, and what the reporting actually says.",
+    priority: 0.6,
+    changeFrequency: "daily",
+  },
+  // One quiz page per News IQ story (/quizz/<slug>), with the story photo as its share image.
+  ...Object.fromEntries(
+    editions.map((e): [string, PageSeo] => [
+      quizPath(e.slug),
+      {
+        title: `${e.shareHeadline} – News IQ Quiz`,
+        description: `Three questions on "${e.headline}". Get your Awareness score and see what the reporting says.`,
+        image: e.image.src,
+        priority: 0.5,
+        changeFrequency: "weekly",
+      },
+    ])
+  ),
 }
 
 /** The SEO entry for a route. The single place to connect the CMS. */

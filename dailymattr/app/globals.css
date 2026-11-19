@@ -92,6 +92,27 @@
 }
 
 /*
+ * News IQ (/quizz) colours, from the dailymattr brand book v1. brand-blue (#3979ff, the logo's
+ * blue) passes against white only at 24px and up, so small blue text and white-on-blue buttons
+ * use brand-blue-deep instead.
+ */
+@theme {
+  --color-brand-blue: #3979ff;
+  --color-brand-blue-deep: #1f4fd1;
+  --color-brand-blue-deep-hover: #1a43b3;
+  --color-brand-blue-soft: #eaf1ff;
+  --color-accent-yellow: #ffeb7a;
+  --color-ink: #111418;
+  --color-ink-muted: #5b6472;
+  --color-paper: #f4f5f7;
+  --color-hairline: #d9dde3;
+  /* Borders of controls (options, secondary buttons): 3:1 on white. */
+  --color-line-strong: #8b94a3;
+  /* Progress and meter tracks, disabled button fill. */
+  --color-track: #eceef2;
+}
+
+/*
  * Laptop sizing, no zoom: every size in the site is in rem (Tailwind's scale, and arbitrary
  * values like py-[6.25rem]), so on 1024–1600px screens the root font size shrinks with the
  * screen: 1vw = width / 1600 × 16px, never below 12px. A 1280px laptop gets 12.8px = 80% of
