@@ -3,14 +3,14 @@
  * story (and the related stories it links to) and gets its own page at /quizz/<slug>. Add,
  * remove or reorder entries in `editions` and the picker, routes, metadata and sitemap follow.
  *
- * Questions are a quiz on the story itself (no "how would you report this" questions). Every
- * question has one answer that matches the reporting; the other options are believable
- * mix-ups of the story's own facts, and the right answer's position varies.
+ * Questions test what the reader knows about the story's topic, not how it was reported.
+ * Every question has one right answer; the other options are believable mix-ups of the
+ * story's own facts, and the right answer's position varies.
  *
  * Each option carries:
- *   aw   closeness to the reported facts, 0 to 3
+ *   aw   closeness to the facts, 0 to 3
  *   lens the thinking style the answer reflects
- *   note what the reporting says (shown in the report, never as "wrong")
+ *   note the right answer explained (shown with the result, never as "wrong")
  */
 
 export type LensKey = "data" | "systems" | "skeptic" | "optimist"
@@ -90,7 +90,7 @@ export const editions: Edition[] = [
       "Dhoni is done as an IPL player, not as a CSK figure. After five titles and a record 226 matches as captain, he moves into a mentor's role from 2027.",
     questions: [
       {
-        lensLabel: "Reading the number",
+        lensLabel: "The numbers",
         text: "Dhoni's captaincy record reads 133 wins in 226 matches. What does the 226 count?",
         options: [
           {
@@ -215,7 +215,7 @@ export const editions: Edition[] = [
       "Anthropic's debut set a new record: a $1.5 trillion valuation, above SpaceX's. The IPO raised $81.3 billion; a separate $26 billion private placement takes the whole deal to $107.3 billion.",
     questions: [
       {
-        lensLabel: "Reading the number",
+        lensLabel: "The numbers",
         text: "Anthropic raised $81.3 billion and is valued at $1.5 trillion. What does the $1.5 trillion measure?",
         options: [
           {
@@ -245,7 +245,7 @@ export const editions: Edition[] = [
         ],
       },
       {
-        lensLabel: "Reading the detail",
+        lensLabel: "The details",
         text: "Where did Anthropic's share price land compared with its target range of $70–$78?",
         options: [
           {
@@ -288,7 +288,7 @@ export const editions: Edition[] = [
             text: "Early investors selling their own shares on day one",
             aw: 1,
             lens: "skeptic",
-            note: "That isn't in the reporting. The extra $26 billion came from a separate private placement.",
+            note: "That isn't where it came from. The extra $26 billion was a separate private placement.",
           },
           {
             text: "The share price rising on the first day of trading",
@@ -340,7 +340,7 @@ export const editions: Edition[] = [
       "You can reach more of your PF, and sooner: only 10% has to stay in the account, and the wait after losing a job drops from 12 months to two. EPFO's withdrawal rules still apply.",
     questions: [
       {
-        lensLabel: "Reading the number",
+        lensLabel: "The numbers",
         text: "With the minimum balance cut to 10%, how much of their eligible PF savings can employees withdraw?",
         options: [
           {
@@ -365,12 +365,12 @@ export const editions: Edition[] = [
             text: "All of it, once they've been out of work for two months",
             aw: 1,
             lens: "optimist",
-            note: "The reporting doesn't say the whole balance can come out. The new limit is up to 90% of eligible savings.",
+            note: "Not the whole balance. The new limit is up to 90% of eligible savings, within the rules.",
           },
         ],
       },
       {
-        lensLabel: "Reading the detail",
+        lensLabel: "The details",
         text: "How long does someone now have to be out of work before they can withdraw their PF?",
         options: [
           {
@@ -473,7 +473,7 @@ export const editions: Edition[] = [
       "The 'peace declaration' commits the three powers to nuclear-risk talks, steadier energy supplies and UN reform. It says nothing about Russia's war in Ukraine.",
     questions: [
       {
-        lensLabel: "Reading the text",
+        lensLabel: "The agreement",
         text: "What does the joint declaration commit the three countries to on nuclear weapons?",
         options: [
           {
@@ -533,7 +533,7 @@ export const editions: Edition[] = [
         ],
       },
       {
-        lensLabel: "Reading the detail",
+        lensLabel: "The details",
         text: "What did the three leaders pledge on energy?",
         options: [
           {
@@ -573,57 +573,60 @@ export const quizPath = (slug: string) => `${QUIZ_HOME}/${slug}`
 
 export const getEdition = (slug: string) => editions.find((e) => e.slug === slug)
 
-/** Thinking styles. Told apart by label and monogram, never by colour. */
+/**
+ * Thinking styles: how the reader's knowledge shows up in their picks. Told apart by label and
+ * monogram, never by colour.
+ */
 export const lenses: Record<LensKey, { name: string; short: string; mono: string; desc: string }> = {
   data: {
     name: "The Data Detective",
     short: "Data Detective",
     mono: "DD",
-    desc: "You go for the precise number and what it measures. Headlines don't fool you easily: you read the fine print.",
+    desc: "You remember the exact figures and what each one stands for. Numbers are where you shine.",
   },
   systems: {
     name: "The Big-Picture Thinker",
     short: "Big-Picture",
     mono: "BP",
-    desc: "You connect numbers to people, causes and scale. You see the story behind the statistic.",
+    desc: "You know why the story matters and how its pieces connect. Locking in the exact figures will make you unbeatable.",
   },
   skeptic: {
-    name: "The Healthy Skeptic",
-    short: "Skeptic",
-    mono: "HS",
-    desc: "You question the source before you trust the claim. Pair that instinct with the data and you're hard to mislead.",
+    name: "The Careful Doubter",
+    short: "Doubter",
+    mono: "CD",
+    desc: "When you're unsure, you lean towards the cautious answer. Pinning down the key facts will turn that caution into confidence.",
   },
   optimist: {
-    name: "The Headline Optimist",
-    short: "Optimist",
-    mono: "HO",
-    desc: "You take news at face value and move fast. Pausing on what a number really measures will sharpen your read.",
+    name: "The Quick Thinker",
+    short: "Quick Thinker",
+    mono: "QT",
+    desc: "You go with the answer that sounds right at first glance. Slowing down on the details will lift your score.",
   },
 }
 
 export const lensOrder: LensKey[] = ["data", "systems", "skeptic", "optimist"]
 
-/** Result bands, highest first. Describe the reading, not the reader. */
+/** Result bands, highest first: how well the reader knows the story. */
 export const bands = [
   {
     min: 89,
-    name: "Close to the reporting",
-    desc: "You read past the headline and got the facts right. You're the friend people should check with before forwarding.",
+    name: "You're well aware",
+    desc: "You know this story inside out: the numbers, the details and why they matter.",
   },
   {
     min: 56,
-    name: "Mostly there",
-    desc: "You've got the big picture. A couple of details tripped you up, and the review shows where.",
+    name: "Mostly aware",
+    desc: "You know the big picture. A couple of details tripped you up, and your answers below show which.",
   },
   {
     min: 23,
-    name: "Some gaps",
-    desc: "You caught the gist, but the numbers behind the story tell a different tale. Worth a second look below.",
+    name: "Partly aware",
+    desc: "You know the gist, but some key facts slipped past you. Your answers below fill in the gaps.",
   },
   {
     min: 0,
-    name: "New to this story",
-    desc: "This one was new territory. The review gets you up to speed in under a minute.",
+    name: "Just catching up",
+    desc: "This story was new to you. Your answers below get you up to speed in a minute.",
   },
 ] as const
 

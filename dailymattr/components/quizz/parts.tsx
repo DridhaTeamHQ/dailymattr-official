@@ -487,7 +487,7 @@ export function ScoreCard({
     // match the thinking style card beside it.
     <section className="flex flex-col overflow-hidden rounded-[1.5rem] bg-brand-blue text-center text-white">
       <div className="flex justify-between gap-2 px-4 pt-4">
-        <Pill>Your News IQ report</Pill>
+        <Pill>Your News IQ score</Pill>
         <Pill>{tag}</Pill>
       </div>
       <div className="relative mx-auto mt-2.5 mb-1.5 size-42" aria-hidden>
@@ -520,7 +520,7 @@ export function ScoreCard({
         tabIndex={-1}
         className="px-5 pt-1 pb-5 text-3xl leading-8 font-extrabold tracking-[-0.025em] text-balance text-accent-yellow outline-none"
       >
-        <span className="sr-only">Your News IQ report: {pct}% Awareness. </span>
+        <span className="sr-only">Your News IQ score: {pct}% Awareness. </span>
         {band}
       </h1>
       <p className="mt-auto bg-brand-blue-deep px-5 pt-3.5 pb-4 text-left text-md leading-[1.375rem]">{bandDesc}</p>
@@ -595,8 +595,8 @@ export function StyleCard({ lens, tally, total }: { lens: LensKey; tally: Record
 }
 
 /**
- * One answer against the reporting: never "wrong", just how close. On desktop the question and
- * your answer sit on the left and what the reporting says on the right.
+ * One answer and how close it was: never "wrong", just how close, with the right answer
+ * explained. On desktop the question and your answer sit on the left, the answer on the right.
  */
 export function ReviewItem({ n, question, pick }: { n: number; question: Question; pick: QuizOption }) {
   return (
@@ -631,7 +631,7 @@ export function ReviewItem({ n, question, pick }: { n: number; question: Questio
       </div>
       <div className="grid content-start gap-1 text-md leading-[1.375rem] text-ink lg:gap-2 lg:rounded-[0.75rem] lg:bg-brand-blue-soft lg:px-4 lg:py-3.5">
         <span className="text-xs leading-4 font-semibold tracking-[0.06em] text-brand-blue-deep uppercase">
-          What the reporting says
+          The answer
         </span>
         {pick.note}
       </div>

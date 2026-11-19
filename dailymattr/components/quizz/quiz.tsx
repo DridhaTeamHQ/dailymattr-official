@@ -36,13 +36,13 @@ const STEPS: React.ReactNode[] = [
   "Answer 3 questions. Go with your gut.",
   <>
     Get your <strong className="font-semibold">Awareness score</strong>, your{" "}
-    <strong className="font-semibold">thinking style</strong>, and what the reporting actually says.
+    <strong className="font-semibold">thinking style</strong>, and the right answer to every question.
   </>,
 ]
 
 /**
  * One story's quiz at /quizz/<slug>: a start screen with the story's photo and headline, three
- * questions, then the report. The story brief is a sheet away ("Read the brief"). UI only:
+ * questions, then the score. The story brief is a sheet away ("Read the brief"). UI only:
  * answers live in component state and nothing is sent anywhere.
  */
 export function Quiz({ slug }: { slug: string }) {
@@ -155,8 +155,7 @@ export function Quiz({ slug }: { slug: string }) {
                   {edition.headline}
                 </h1>
                 <p className="text-base leading-6 text-ink-muted lg:text-lg lg:leading-7">
-                  One story. Three questions. No wrong answers, just a report on how you think and how close you are
-                  to the facts.
+                  Three questions on this story. Find out how well you know it, and pick up the facts you missed.
                 </p>
               </div>
               <ol className="grid gap-3">
@@ -221,7 +220,7 @@ export function Quiz({ slug }: { slug: string }) {
             <ActionBar>
               <BackButton onClick={goBack} aria-label={idx === 0 ? "Back to the story" : "Previous question"} />
               <PrimaryButton onClick={goNext} disabled={answer === undefined}>
-                {isLast ? "See my report" : "Next"}
+                {isLast ? "See my score" : "Next"}
               </PrimaryButton>
             </ActionBar>
           </>
@@ -243,7 +242,7 @@ export function Quiz({ slug }: { slug: string }) {
                 <StyleCard lens={result.lens} tally={result.tally} total={total} />
               </div>
               <section className={cn(CARD, "lg:gap-5 lg:p-7")}>
-                <Eyebrow>Your answers vs the reporting</Eyebrow>
+                <Eyebrow>Your answers</Eyebrow>
                 <div className="grid gap-4 lg:gap-6">
                   {edition.questions.map((q, i) => (
                     <ReviewItem key={q.text} n={i + 1} question={q} pick={result.picks[i]} />

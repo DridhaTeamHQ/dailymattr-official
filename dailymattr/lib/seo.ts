@@ -90,7 +90,7 @@ export const defaultSeo: Record<string, PageSeo> = {
   "/quizz": {
     title: "News IQ – Take a Quiz on Today's News",
     description:
-      "Pick one of today's stories and answer three questions. Get your Awareness score, your thinking style, and what the reporting actually says.",
+      "Pick one of today's stories and answer three questions to test how well you know it. Get your Awareness score, your thinking style, and every answer explained.",
     priority: 0.6,
     changeFrequency: "daily",
   },
@@ -100,7 +100,7 @@ export const defaultSeo: Record<string, PageSeo> = {
       quizPath(e.slug),
       {
         title: `${e.shareHeadline} – News IQ Quiz`,
-        description: `Three questions on "${e.headline}". Get your Awareness score and see what the reporting says.`,
+        description: `Three questions on "${e.headline}". Test how well you know the story and get your Awareness score.`,
         image: e.image.src,
         priority: 0.5,
         changeFrequency: "weekly",

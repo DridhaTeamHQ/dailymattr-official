@@ -3,7 +3,7 @@ import { bands, lensOrder, type Edition, type LensKey } from "./content"
 /**
  * Awareness = total closeness ÷ (3 × questions), as a rounded percentage.
  * Thinking style = the lens picked most often; on a tie, the lens of the tied pick that was
- * closest to the reporting, and if that ties too, the earlier question's.
+ * closest to the facts, and if that ties too, the earlier question's.
  */
 export function scoreQuiz(edition: Edition, answers: number[]) {
   const picks = edition.questions.map((q, i) => q.options[answers[i]])
