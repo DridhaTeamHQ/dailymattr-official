@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "videos": "node scripts/encode-videos.mjs"
+    "videos": "node scripts/encode-videos.mjs",
+    "logo-sprite": "node scripts/encode-logo-sprite.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

@@ -12,6 +12,7 @@ import {
   type MotionValue,
 } from "motion/react"
 
+import { useNavHeight } from "@/components/navbar/nav-height"
 import { cn } from "@/lib/utils"
 
 /**
@@ -33,7 +34,8 @@ const HERO = { x: 451.72, y: 252.66, w: 895.781, h: 490 }
 const HERO_CX = HERO.x + HERO.w / 2
 const HERO_CY = HERO.y + HERO.h / 2
 
-// The track is 100vh (the pinned stage) + 170vh of scroll; see the h-[270vh] class below.
+// The track is the pinned stage (the screen below the navbar) + 170vh of scroll; see its
+// h-[calc(270vh-var(--nav-height))] class below.
 // The reveal runs over the middle of that scroll, holding a moment at each end.
 const START = 0.05
 const END = 0.95
@@ -81,7 +83,9 @@ export function BentoReveal({ className, children }: { className: string; childr
   const reduceMotion = useReducedMotion()
   const on = desktop && !reduceMotion
 
-  const { scrollYProgress } = useScroll({ target: track, offset: ["start start", "end end"] })
+  // From the stage pinning below the navbar to it releasing.
+  const navHeight = useNavHeight()
+  const { scrollYProgress } = useScroll({ target: track, offset: [`start ${navHeight}px`, "end end"] })
   /** Grid scale that gives the hero its starting size; measured below. */
   const startScale = useMotionValue(1)
   const shrink = useTransform(scrollYProgress, SHRINK_AT, SHRINK)
@@ -117,16 +121,16 @@ export function BentoReveal({ className, children }: { className: string; childr
 
   return (
     <RevealContext.Provider value={{ progress: scrollYProgress, on }}>
-      <div ref={track} className="group/bento md:motion-safe:h-[270vh]">
+      <div ref={track} className="group/bento md:motion-safe:h-[calc(270vh-var(--nav-height,4rem))]">
         {/* Full-bleed stage: -mx cancels the panel's side padding (index.tsx: 1.5rem, 3.3rem
             from lg) so the hero can fill the screen edge to edge; the bento inside puts the
-            margin back. It is sized to fit the screen height, so the finished bento is seen
-            whole while pinned. */}
+            margin back. It pins just below the navbar and fills the rest of the screen, and
+            the bento is sized to fit that height, so the finished bento is seen whole. */}
         <div
           ref={stage}
-          className="md:motion-safe:sticky md:motion-safe:top-0 md:motion-safe:-mx-6 md:motion-safe:flex md:motion-safe:h-screen md:motion-safe:items-center md:motion-safe:overflow-hidden lg:motion-safe:-mx-[3.3rem]"
+          className="md:motion-safe:sticky md:motion-safe:top-[var(--nav-height,4rem)] md:motion-safe:-mx-6 md:motion-safe:flex md:motion-safe:h-[calc(100vh-var(--nav-height,4rem))] md:motion-safe:items-center md:motion-safe:overflow-hidden lg:motion-safe:-mx-[3.3rem]"
         >
-          <div className="@container mx-auto w-full max-w-[32rem] md:max-w-none md:motion-safe:w-[min(100%_-_3rem,(100vh_-_5rem)*1.80771)] lg:motion-safe:w-[min(100%_-_6.6rem,(100vh_-_5rem)*1.80771)]">
+          <div className="@container mx-auto w-full max-w-[32rem] md:max-w-none md:motion-safe:w-[min(100%_-_3rem,(100vh_-_var(--nav-height,4rem)_-_5rem)*1.80771)] lg:motion-safe:w-[min(100%_-_6.6rem,(100vh_-_var(--nav-height,4rem)_-_5rem)*1.80771)]">
             <motion.div
               ref={grid}
               className={cn(className, "group-data-[animating]/bento:will-change-transform")}

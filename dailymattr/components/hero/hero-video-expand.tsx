@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react"
 
+import { useNavHeight } from "@/components/navbar/nav-height"
 import { ScrubVideo } from "@/components/shared/scrub-video"
 import { SiteVideo } from "@/components/shared/site-video"
 import type { VideoAsset } from "@/lib/videos"
@@ -169,22 +170,31 @@ function WidenOnScroll({ ratio, video }: { ratio: number; video: RenderVideo }) 
   )
 }
 
-/** Desktop: grow to full screen, a brief hold, then scroll on — pinned while it plays. */
+/**
+ * Desktop: grow to full screen, a brief hold, then scroll on — pinned while it plays.
+ * "Full screen" is the part of the screen below the pinned navbar: the stage pins just under
+ * it, and every distance here is measured in that space.
+ */
 function PinnedExpand({ size, video }: { size: Size; video: RenderVideo }) {
   const ref = useRef<HTMLDivElement>(null)
-  const { h } = size
+  const navHeight = useNavHeight()
+  const stage = { ...size, h: size.h - navHeight }
+  const { h } = stage
   // The clip runs from the top of the page (first frame) to the pin releasing (last frame).
   const videoProgress = usePageProgress(ref, size, "pin")
 
   // One scroll value drives every stage, so they can never get out of step. It runs from the
-  // card sitting 80% down the screen (0) to the moment the pin releases (1).
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end end"] })
+  // card sitting 80% down the space below the navbar (0) to the moment the pin releases (1).
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: [`start ${navHeight + h * 0.8}px`, "end end"],
+  })
 
   // No shrink: once full screen it stays full screen and, when the pin releases, scrolls up
   // with the page. Scrolling back to the top reverses the grow, back down to the card.
   const boxAt = (p: number): Box => {
-    const full = fullBox(size)
-    if (p <= GROW_END) return mixBox(cardBox(size, "top"), full, ease(clamp01(p / GROW_END)))
+    const full = fullBox(stage)
+    if (p <= GROW_END) return mixBox(cardBox(stage, "top"), full, ease(clamp01(p / GROW_END)))
     return full
   }
   /** 0 when full-screen, 1 when a card: drives the corner radius. */
@@ -197,9 +207,12 @@ function PinnedExpand({ size, video }: { size: Size; video: RenderVideo }) {
   const radius = useTransform(scrollYProgress, (p) => 12 * size.r * cardness(p))
 
   return (
-    // Pinned for the hold; the grow happens while the card rises to the top.
+    // Pinned for the hold; the grow happens while the card rises to the navbar.
     <div ref={ref} className="relative mt-14" style={{ height: h * (1 + HOLD) }}>
-      <div className="pointer-events-none sticky top-0 overflow-hidden" style={{ height: h }}>
+      <div
+        className="pointer-events-none sticky overflow-hidden"
+        style={{ top: navHeight, height: h }}
+      >
         <motion.div
           className="pointer-events-auto absolute top-0 left-0 overflow-hidden"
           style={{ x, y, width, height, borderRadius: radius }}
