@@ -4,8 +4,9 @@
  * remove or reorder entries in `editions` and the picker, routes, metadata and sitemap follow.
  *
  * Questions test what the reader knows about the story's topic, not how it was reported.
- * Every question has one right answer; the other options are believable mix-ups of the
- * story's own facts, and the right answer's position varies.
+ * Medium difficulty: each question asks one straightforward fact from the brief, with short,
+ * direct options. The wrong options are other real figures or facts from the same story, so
+ * they are close enough to make the reader think. The right answer's position varies.
  *
  * Each option carries:
  *   aw   closeness to the facts, 0 to 3
@@ -90,92 +91,72 @@ export const editions: Edition[] = [
       "Dhoni is done as an IPL player, not as a CSK figure. After five titles and a record 226 matches as captain, he moves into a mentor's role from 2027.",
     questions: [
       {
-        lensLabel: "The numbers",
-        text: "Dhoni's captaincy record reads 133 wins in 226 matches. What does the 226 count?",
+        lensLabel: "The titles",
+        text: "How many IPL titles did Dhoni win as CSK captain?",
+        options: [
+          { text: "Four", aw: 2, lens: "skeptic", note: "Close. Dhoni led Chennai Super Kings to five IPL titles." },
+          { text: "Five", aw: 3, lens: "data", note: "Right. Dhoni led Chennai Super Kings to five IPL titles." },
+          { text: "Six", aw: 1, lens: "optimist", note: "One too many. Dhoni won five IPL titles as CSK captain." },
+          { text: "Seven", aw: 0, lens: "systems", note: "Fewer than that. Dhoni won five IPL titles as CSK captain." },
+        ],
+      },
+      {
+        lensLabel: "What's next",
+        text: "What role will Dhoni take at CSK in 2027?",
         options: [
           {
-            text: "IPL matches CSK won with him in the side, as captain or player",
+            text: "Head coach",
             aw: 1,
-            lens: "optimist",
-            note: "The wins are the 133. The 226 counts matches he captained.",
-          },
-          {
-            text: "All his IPL appearances, including seasons when someone else led CSK",
-            aw: 2,
             lens: "systems",
-            note: "Close, but it counts only matches as captain. That figure is a record for any IPL skipper.",
+            note: "Not head coach. He returns to Chennai Super Kings as mentor for the 2027 season.",
           },
           {
-            text: "IPL matches he captained, the most by any skipper in the league",
-            aw: 3,
-            lens: "data",
-            note: "Right. 226 matches as captain is the most by any IPL skipper, and he won 133 of them.",
+            text: "Captain",
+            aw: 0,
+            lens: "optimist",
+            note: "He has retired as a player, so he won't captain. He returns as CSK's mentor for 2027.",
           },
           {
-            text: "T20 matches he captained across the IPL and for India",
+            text: "Team director",
             aw: 1,
             lens: "skeptic",
-            note: "The figure is IPL only: 226 matches as Chennai Super Kings captain.",
+            note: "Not a director's role. He returns to Chennai Super Kings as mentor for the 2027 season.",
+          },
+          {
+            text: "Mentor",
+            aw: 3,
+            lens: "data",
+            note: "Right. After retiring as a player, he returns to Chennai Super Kings as mentor for 2027.",
           },
         ],
       },
       {
-        lensLabel: "Following the money",
-        text: "How did Dhoni's IPL salary change over his last seasons?",
+        lensLabel: "The record",
+        text: "In how many IPL matches did Dhoni captain CSK?",
         options: [
           {
-            text: "₹12 crore a season in 2018–2021, ₹15 crore in 2022–2024, then ₹4 crore in 2025",
+            text: "133",
+            aw: 2,
+            lens: "optimist",
+            note: "133 is how many he won. He captained CSK in 226 matches, more than any other IPL captain.",
+          },
+          {
+            text: "180",
             aw: 1,
             lens: "skeptic",
-            note: "Right numbers, wrong order. He earned ₹15 crore a season first, then ₹12 crore.",
+            note: "More than that. He captained CSK in 226 matches, more than any other IPL captain.",
           },
           {
-            text: "₹15 crore a season in 2018–2021, ₹12 crore in 2022–2024, then ₹4 crore in 2025",
+            text: "226",
             aw: 3,
             lens: "data",
-            note: "Exactly. His pay rose from ₹6.03 crore in 2008 to a ₹15 crore peak, then stepped down twice.",
+            note: "Right. 226 matches as captain, with 133 wins. No IPL captain has led in more matches.",
           },
           {
-            text: "₹15 crore a season through 2024, then ₹4 crore in 2025",
-            aw: 2,
-            lens: "systems",
-            note: "Nearly. There was a step in between: ₹12 crore a season from 2022 to 2024.",
-          },
-          {
-            text: "It held at ₹15 crore every season until he retired",
-            aw: 0,
-            lens: "optimist",
-            note: "It fell twice: to ₹12 crore for 2022–2024 and to ₹4 crore in 2025.",
-          },
-        ],
-      },
-      {
-        lensLabel: "Connecting the dots",
-        text: "Why had R Ashwin suggested CSK release Dhoni before the IPL 2027 auction?",
-        options: [
-          {
-            text: "So Dhoni could join another franchise for one final season",
-            aw: 0,
-            lens: "optimist",
-            note: "Ashwin didn't suggest a move elsewhere. He said Dhoni could take a consultant or support-staff role at CSK.",
-          },
-          {
-            text: "Because Dhoni's ₹4 crore alone would give CSK a ₹40–45 crore purse",
+            text: "250",
             aw: 1,
-            lens: "skeptic",
-            note: "₹4 crore is only part of it. Ashwin said releasing other players as well could build a ₹40–45 crore purse.",
-          },
-          {
-            text: "To give a new captain a bigger auction budget to rebuild with",
-            aw: 2,
             lens: "systems",
-            note: "That's the wider aim, but his point was specific: releasing Dhoni frees ₹4 crore if he isn't playing in 2027.",
-          },
-          {
-            text: "If he wasn't playing in 2027, releasing him would free ₹4 crore for the auction",
-            aw: 3,
-            lens: "data",
-            note: "Right. Ashwin said releasing Dhoni would free ₹4 crore, and releasing other players could take CSK's purse to ₹40–45 crore.",
+            note: "Fewer than that. He captained CSK in 226 matches and won 133 of them.",
           },
         ],
       },
@@ -215,93 +196,83 @@ export const editions: Edition[] = [
       "Anthropic's debut set a new record: a $1.5 trillion valuation, above SpaceX's. The IPO raised $81.3 billion; a separate $26 billion private placement takes the whole deal to $107.3 billion.",
     questions: [
       {
-        lensLabel: "The numbers",
-        text: "Anthropic raised $81.3 billion and is valued at $1.5 trillion. What does the $1.5 trillion measure?",
+        lensLabel: "The money",
+        text: "How much did Anthropic raise through its IPO?",
         options: [
           {
-            text: "The total investors put in, including the private placement",
-            aw: 1,
-            lens: "systems",
-            note: "That's the $107.3 billion total deal. $1.5 trillion is the value of the whole company.",
-          },
-          {
-            text: "The value of the whole company at the $83 IPO share price",
-            aw: 3,
-            lens: "data",
-            note: "Right. The valuation prices every share at $83. The cash raised from the shares sold was $81.3 billion.",
-          },
-          {
-            text: "The cash Anthropic holds after the listing",
+            text: "$1.5 trillion",
             aw: 0,
             lens: "optimist",
-            note: "The cash raised was $81.3 billion. $1.5 trillion is what the whole company is worth at $83 a share.",
+            note: "That's the company's valuation. The IPO itself raised $81.3 billion.",
           },
           {
-            text: "SpaceX's valuation, the record Anthropic's debut overtook",
+            text: "$107.3 billion",
+            aw: 2,
+            lens: "systems",
+            note: "That's the whole deal, which includes a separate $26 billion private placement. The IPO raised $81.3 billion.",
+          },
+          {
+            text: "$81.3 billion",
+            aw: 3,
+            lens: "data",
+            note: "Right. The IPO raised $81.3 billion, and a separate $26 billion private placement took the deal to $107.3 billion.",
+          },
+          {
+            text: "$26 billion",
             aw: 1,
             lens: "skeptic",
-            note: "$1.5 trillion is Anthropic's own valuation. It passed SpaceX's previous record for the largest debut.",
+            note: "That's the separate private placement. The IPO itself raised $81.3 billion.",
           },
         ],
       },
       {
-        lensLabel: "The details",
-        text: "Where did Anthropic's share price land compared with its target range of $70–$78?",
+        lensLabel: "The record",
+        text: "Whose record for the largest stock-market debut did Anthropic beat?",
         options: [
           {
-            text: "$78, at the top of the range",
+            text: "SpaceX",
+            aw: 3,
+            lens: "data",
+            note: "Right. At a $1.5 trillion valuation, Anthropic passed SpaceX's previous record.",
+          },
+          {
+            text: "OpenAI",
+            aw: 1,
+            lens: "optimist",
+            note: "Not OpenAI. The previous record for the largest stock-market debut was SpaceX's.",
+          },
+          {
+            text: "Saudi Aramco",
+            aw: 1,
+            lens: "skeptic",
+            note: "Not Aramco. The record Anthropic beat was SpaceX's.",
+          },
+          {
+            text: "Alibaba",
+            aw: 1,
+            lens: "systems",
+            note: "Not Alibaba. The record Anthropic beat was SpaceX's.",
+          },
+        ],
+      },
+      {
+        lensLabel: "The share price",
+        text: "At what price were Anthropic's shares sold in the IPO?",
+        options: [
+          {
+            text: "$78",
             aw: 2,
             lens: "skeptic",
-            note: "Higher still. The shares were priced at $83, above the whole range.",
+            note: "That's the top of the target range. The shares sold above it, at $83.",
           },
           {
-            text: "$74, in the middle of the range",
-            aw: 1,
-            lens: "systems",
-            note: "It went above the range, to $83.",
-          },
-          {
-            text: "$70, at the bottom of the range, to make sure every share sold",
-            aw: 0,
-            lens: "optimist",
-            note: "The opposite. Demand let Anthropic price above the range, at $83.",
-          },
-          {
-            text: "$83, above the top of the range",
+            text: "$83",
             aw: 3,
             lens: "data",
-            note: "Exactly. Pricing at $83, above the $70–$78 range, points to strong demand for the shares.",
+            note: "Right. $83 a share, above the initial target range of $70–$78.",
           },
-        ],
-      },
-      {
-        lensLabel: "Connecting the dots",
-        text: "The total deal came to $107.3 billion, but the IPO raised $81.3 billion. Where did the other $26 billion come from?",
-        options: [
-          {
-            text: "A separate private placement alongside the IPO",
-            aw: 3,
-            lens: "data",
-            note: "Right. $81.3 billion from the IPO plus a $26 billion private placement makes $107.3 billion.",
-          },
-          {
-            text: "Early investors selling their own shares on day one",
-            aw: 1,
-            lens: "skeptic",
-            note: "That isn't where it came from. The extra $26 billion was a separate private placement.",
-          },
-          {
-            text: "The share price rising on the first day of trading",
-            aw: 0,
-            lens: "optimist",
-            note: "A price rise doesn't add money to the deal. The $26 billion was a separate private placement.",
-          },
-          {
-            text: "A loan Anthropic took out to fund the listing",
-            aw: 1,
-            lens: "systems",
-            note: "No borrowing is mentioned. The $26 billion came from a private placement alongside the IPO.",
-          },
+          { text: "$90", aw: 1, lens: "optimist", note: "Lower than that. The shares sold at $83." },
+          { text: "$95", aw: 0, lens: "systems", note: "Lower than that. The shares sold at $83, above the $70–$78 range." },
         ],
       },
     ],
@@ -340,93 +311,58 @@ export const editions: Edition[] = [
       "You can reach more of your PF, and sooner: only 10% has to stay in the account, and the wait after losing a job drops from 12 months to two. EPFO's withdrawal rules still apply.",
     questions: [
       {
+        lensLabel: "The new rule",
+        text: "What is the new minimum balance members must keep in their PF account?",
+        options: [
+          { text: "10%", aw: 3, lens: "data", note: "Right. The minimum balance drops from 25% to 10%." },
+          { text: "15%", aw: 1, lens: "systems", note: "Lower than that. The minimum balance is now 10%, down from 25%." },
+          { text: "20%", aw: 1, lens: "optimist", note: "Lower than that. The minimum balance is now 10%, down from 25%." },
+          { text: "25%", aw: 1, lens: "skeptic", note: "25% was the old minimum. It's now 10%." },
+        ],
+      },
+      {
         lensLabel: "The numbers",
-        text: "With the minimum balance cut to 10%, how much of their eligible PF savings can employees withdraw?",
+        text: "How much of their eligible PF savings can employees now withdraw?",
         options: [
           {
-            text: "Up to 75%, since a quarter has to stay in the account",
+            text: "Up to 75%",
             aw: 1,
             lens: "skeptic",
-            note: "That was the old rule, when 25% had to stay. With the minimum now 10%, up to 90% can come out.",
+            note: "That was the limit when 25% had to stay. With the minimum now 10%, it's up to 90%.",
           },
+          { text: "Up to 80%", aw: 1, lens: "systems", note: "More than that. Employees can now withdraw up to 90%." },
           {
-            text: "Up to 10%, the new withdrawal limit",
-            aw: 0,
-            lens: "systems",
-            note: "10% is what must stay in the account, not what you can take out. Up to 90% can be withdrawn.",
-          },
-          {
-            text: "Up to 90%, subject to EPFO's withdrawal rules",
+            text: "Up to 90%",
             aw: 3,
             lens: "data",
-            note: "Right. Keeping only 10% means up to 90% of eligible savings can come out, within the withdrawal rules.",
+            note: "Right. Up to 90% of eligible savings, subject to EPFO's withdrawal rules.",
           },
           {
-            text: "All of it, once they've been out of work for two months",
-            aw: 1,
+            text: "All of it",
+            aw: 0,
             lens: "optimist",
-            note: "Not the whole balance. The new limit is up to 90% of eligible savings, within the rules.",
+            note: "Not all of it. 10% has to stay in the account, so the limit is up to 90%.",
           },
         ],
       },
       {
-        lensLabel: "The details",
-        text: "How long does someone now have to be out of work before they can withdraw their PF?",
+        lensLabel: "The waiting time",
+        text: "After losing a job, how soon can someone now withdraw their PF?",
         options: [
           {
-            text: "Two months, down from 12",
-            aw: 3,
-            lens: "data",
-            note: "Exactly. EPFO's board cut the wait after losing a job from 12 months to two.",
-          },
-          {
-            text: "Six months, down from 12",
-            aw: 1,
-            lens: "systems",
-            note: "Shorter than that: two months, down from 12.",
-          },
-          {
-            text: "Two months, down from six",
-            aw: 2,
-            lens: "optimist",
-            note: "Right new figure, wrong old one. The wait used to be 12 months.",
-          },
-          {
-            text: "Still 12 months; only the balance rule changed",
-            aw: 0,
-            lens: "skeptic",
-            note: "Both changed. Alongside the lower balance, the wait after losing a job drops from 12 months to two.",
-          },
-        ],
-      },
-      {
-        lensLabel: "Connecting the dots",
-        text: "What change may be coming for employees when they retire?",
-        options: [
-          {
-            text: "A higher interest rate on their PF balance",
+            text: "Right away",
             aw: 0,
             lens: "optimist",
-            note: "No rate change is mentioned. The change for retirees is monthly instalments instead of one lump sum.",
+            note: "There's still a wait, but a short one: two months, down from 12.",
           },
           {
-            text: "Being able to withdraw everything two months after retiring",
-            aw: 1,
-            lens: "data",
-            note: "The two-month rule is about losing a job, not retiring. For retirees, the change is monthly instalments.",
-          },
-          {
-            text: "Having to leave 10% of their savings in the account for life",
-            aw: 1,
-            lens: "skeptic",
-            note: "That isn't what's described for retirees. The proposal is to pay their savings in monthly instalments.",
-          },
-          {
-            text: "Receiving their PF savings in monthly instalments instead of all at once",
+            text: "After 2 months",
             aw: 3,
-            lens: "systems",
-            note: "Right. Retirees may soon get their savings as monthly instalments instead of withdrawing everything at once.",
+            lens: "data",
+            note: "Right. EPFO's board cut the wait after losing a job from 12 months to two.",
           },
+          { text: "After 6 months", aw: 1, lens: "systems", note: "Sooner than that: after two months, down from 12." },
+          { text: "After 12 months", aw: 1, lens: "skeptic", note: "That was the old rule. The wait is now two months." },
         ],
       },
     ],
@@ -473,92 +409,77 @@ export const editions: Edition[] = [
       "The 'peace declaration' commits the three powers to nuclear-risk talks, steadier energy supplies and UN reform. It says nothing about Russia's war in Ukraine.",
     questions: [
       {
+        lensLabel: "The summit",
+        text: "In which city did Trump, Xi and Putin hold their summit?",
+        options: [
+          { text: "Beijing", aw: 1, lens: "optimist", note: "Not Beijing. The summit was held in Shenzhen, on the sidelines of the APEC forum." },
+          { text: "Moscow", aw: 0, lens: "skeptic", note: "It was in China, in Shenzhen, on the sidelines of the APEC forum." },
+          { text: "Shanghai", aw: 1, lens: "systems", note: "Not Shanghai. The summit was held in Shenzhen, on the sidelines of the APEC forum." },
+          {
+            text: "Shenzhen",
+            aw: 3,
+            lens: "data",
+            note: "Right. Shenzhen hosted the first-ever three-way summit of the US, China and Russia.",
+          },
+        ],
+      },
+      {
         lensLabel: "The agreement",
-        text: "What does the joint declaration commit the three countries to on nuclear weapons?",
+        text: "What did the three leaders agree on nuclear weapons?",
         options: [
           {
-            text: "A complete ban and destruction of nuclear weapons",
+            text: "A full ban on nuclear weapons",
             aw: 1,
             lens: "optimist",
-            note: "That was Xi's call in his own remarks at the meeting. The joint declaration commits to talks on reducing nuclear risk.",
+            note: "A full ban was Xi's own call at the meeting. The joint declaration agrees to talks on reducing nuclear risks.",
           },
           {
-            text: "Cutting their nuclear arsenals by an agreed amount",
-            aw: 0,
-            lens: "systems",
-            note: "No cuts were agreed. The pledge is to hold talks on reducing risks and stopping the spread of nuclear weapons.",
-          },
-          {
-            text: "Nothing; nuclear weapons were left out of the text",
-            aw: 0,
-            lens: "skeptic",
-            note: "They're in it. The leaders agreed to hold talks on reducing nuclear risks and preventing their spread.",
-          },
-          {
-            text: "Talks on reducing nuclear risks and stopping their spread",
+            text: "Talks on reducing nuclear risks",
             aw: 3,
             lens: "data",
-            note: "Right. The declaration commits to talks on nuclear risk and non-proliferation, not to cuts or a ban.",
+            note: "Right. They agreed to talks on reducing nuclear risks and stopping the spread of nuclear weapons.",
+          },
+          {
+            text: "Cuts to their nuclear arsenals",
+            aw: 0,
+            lens: "systems",
+            note: "No cuts were agreed. The leaders agreed to talks on reducing nuclear risks.",
+          },
+          {
+            text: "Nothing on nuclear weapons",
+            aw: 0,
+            lens: "skeptic",
+            note: "Nuclear weapons are in the declaration: the leaders agreed to talks on reducing nuclear risks.",
           },
         ],
       },
       {
-        lensLabel: "Connecting the dots",
-        text: "Before the summit, Trump said the US and China wanted to help end the Russia-Ukraine war. What does the declaration say about Ukraine?",
+        lensLabel: "What's missing",
+        text: "Which of these does the declaration not mention?",
         options: [
           {
-            text: "It backs Trump's plan to end the war",
-            aw: 1,
-            lens: "systems",
-            note: "Trump spoke about ending the war before the summit, but the declaration itself doesn't mention Ukraine.",
-          },
-          {
-            text: "Nothing; it makes no mention of the war",
-            aw: 3,
-            lens: "data",
-            note: "Right. Ukraine was expected on the agenda, but the joint text doesn't mention Russia's war against Ukraine.",
-          },
-          {
-            text: "It calls for a ceasefire and new peace talks",
+            text: "Energy supplies",
             aw: 0,
             lens: "optimist",
-            note: "It doesn't. Despite Trump's comments before the summit, the declaration makes no mention of the war.",
+            note: "Energy is in it: a pledge to boost petroleum production and supplies. It's the war in Ukraine that's left out.",
           },
           {
-            text: "It hands Ukraine to a reformed UN to resolve",
+            text: "UN reform",
             aw: 1,
             lens: "skeptic",
-            note: "The declaration does call for UN reform, but it doesn't link that to Ukraine. The war isn't mentioned.",
-          },
-        ],
-      },
-      {
-        lensLabel: "The details",
-        text: "What did the three leaders pledge on energy?",
-        options: [
-          {
-            text: "To cut oil output to support prices",
-            aw: 0,
-            lens: "skeptic",
-            note: "The opposite. They pledged to boost petroleum production and supplies.",
+            note: "UN reform is in it. It's the war in Ukraine that's left out.",
           },
           {
-            text: "To speed up the switch to renewable energy",
-            aw: 1,
-            lens: "systems",
-            note: "Renewables aren't mentioned. The pledge is about more petroleum production and supply.",
-          },
-          {
-            text: "To boost petroleum production and supplies for stable global energy flows",
+            text: "The war in Ukraine",
             aw: 3,
-            lens: "data",
-            note: "Right. The energy pledge is more petroleum output and supply, so global energy flows stay stable.",
+            lens: "systems",
+            note: "Right. The declaration covers energy, nuclear risk and UN reform, but not Russia's war in Ukraine.",
           },
           {
-            text: "To cap petroleum prices for countries that import oil",
+            text: "Nuclear risk",
             aw: 1,
-            lens: "optimist",
-            note: "No price cap was agreed. The pledge is to boost production and supplies.",
+            lens: "data",
+            note: "Nuclear risk is in it, as talks on reducing it. It's the war in Ukraine that's left out.",
           },
         ],
       },

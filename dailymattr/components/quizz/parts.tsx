@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check } from "lucide-react"
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react"
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react"
 
 import { cn } from "@/lib/utils"
@@ -96,19 +96,17 @@ export function SecondaryButton({ children, className, ...props }: ButtonProps) 
   )
 }
 
-/** SecondaryButton's look, for navigation. */
-export function SecondaryLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
+/** PrimaryButton's look, for navigation. */
+export function PrimaryLink({ href, children, className }: { href: string; children: React.ReactNode; className?: string }) {
   return (
     <Link
       href={href}
-      className={cn(
-        BTN,
-        FOCUS,
-        "justify-center bg-white px-5 text-ink shadow-[inset_0_0_0_1px_var(--color-line-strong)] hover:shadow-[inset_0_0_0_1.5px_var(--color-ink)]",
-        className
-      )}
+      className={cn(BTN, FOCUS, "justify-between bg-brand-blue-deep pr-2.5 pl-5 text-white hover:bg-brand-blue-deep-hover", className)}
     >
-      {children}
+      <span className="min-w-0 truncate">{children}</span>
+      <span className="grid size-8 shrink-0 place-items-center rounded-[0.625rem] bg-white/18">
+        <ArrowRight aria-hidden className="size-4" strokeWidth={2.2} />
+      </span>
     </Link>
   )
 }
@@ -447,7 +445,7 @@ function OptionButton({
   )
 }
 
-/* ---------- report ---------- */
+/* ---------- score ---------- */
 
 const RING_R = 72
 const RING_C = 2 * Math.PI * RING_R
@@ -459,6 +457,7 @@ export function ScoreCard({
   bandDesc,
   tag,
   headingRef,
+  onCopy,
 }: {
   pct: number
   band: string
@@ -466,6 +465,8 @@ export function ScoreCard({
   /** Right-hand pill: the story's category. */
   tag: string
   headingRef: React.Ref<HTMLHeadingElement>
+  /** Copies a one-line summary of the result; shown as a button on the card. */
+  onCopy: () => void
 }) {
   const reduce = useReducedMotion()
   const count = useMotionValue(reduce ? pct : 0)
@@ -523,7 +524,17 @@ export function ScoreCard({
         <span className="sr-only">Your News IQ score: {pct}% Awareness. </span>
         {band}
       </h1>
-      <p className="mt-auto bg-brand-blue-deep px-5 pt-3.5 pb-4 text-left text-md leading-[1.375rem]">{bandDesc}</p>
+      <div className="mt-auto flex flex-col items-start gap-3 bg-brand-blue-deep px-5 pt-3.5 pb-4 text-left">
+        <p className="text-md leading-[1.375rem]">{bandDesc}</p>
+        <button
+          type="button"
+          onClick={onCopy}
+          className="inline-flex h-9 items-center gap-2 rounded-full bg-white/16 px-3.5 text-sm leading-5 font-semibold text-white transition-colors hover:bg-white/24 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-[0.98]"
+        >
+          <Copy aria-hidden className="size-4" strokeWidth={2.2} />
+          Copy my result
+        </button>
+      </div>
     </section>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useLenis } from "lenis/react"
+import { RotateCcw } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet"
@@ -14,10 +15,11 @@ import {
   Eyebrow,
   OptionGroup,
   PrimaryButton,
+  PrimaryLink,
   Progress,
   ReviewItem,
   ScoreCard,
-  SecondaryLink,
+  SecondaryButton,
   SeriesBar,
   StoryBody,
   StoryImage,
@@ -109,6 +111,13 @@ export function Quiz({ slug }: { slug: string }) {
   }
 
   // Back from question 1 returns to the start screen; answers are kept.
+  // Same story again: clear the answers and go straight to question 1.
+  const retake = () => {
+    setAnswers([])
+    setIdx(0)
+    setStep("question")
+  }
+
   const goBack = () => {
     if (idx > 0) setIdx(idx - 1)
     else setStep("start")
@@ -238,6 +247,7 @@ export function Quiz({ slug }: { slug: string }) {
                   bandDesc={result.band.desc}
                   tag={edition.category}
                   headingRef={headingRef}
+                  onCopy={copyResult}
                 />
                 <StyleCard lens={result.lens} tally={result.tally} total={total} />
               </div>
@@ -252,10 +262,11 @@ export function Quiz({ slug }: { slug: string }) {
               <TakeawayCard edition={edition} />
             </div>
             <ActionBar className="lg:mx-auto lg:max-w-[42rem]">
-              <PrimaryButton onClick={copyResult}>Copy my result</PrimaryButton>
-              <SecondaryLink href={QUIZ_HOME} className="w-auto shrink-0">
-                Another story
-              </SecondaryLink>
+              <SecondaryButton onClick={retake} className="w-auto shrink-0 gap-2">
+                <RotateCcw aria-hidden className="size-4" strokeWidth={2.2} />
+                Retake
+              </SecondaryButton>
+              <PrimaryLink href={QUIZ_HOME}>Another story</PrimaryLink>
             </ActionBar>
           </>
         )}
