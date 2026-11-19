@@ -229,8 +229,10 @@ export function Quiz({ slug }: { slug: string }) {
 
         {step === "result" && result && (
           <>
-            <div className="grid gap-4 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start lg:gap-12">
-              <div className="grid gap-4 lg:sticky lg:top-[calc(var(--chrome-height,5.5rem)+1.5rem)]">
+            {/* Desktop: score and thinking style side by side, the answers and takeaway full
+                width below. Phones and tablets stack everything. */}
+            <div className="grid gap-4 lg:gap-6">
+              <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
                 <ScoreCard
                   pct={result.pct}
                   band={result.band.name}
@@ -239,26 +241,18 @@ export function Quiz({ slug }: { slug: string }) {
                   headingRef={headingRef}
                 />
                 <StyleCard lens={result.lens} tally={result.tally} total={total} />
-                <div className="hidden gap-2.5 lg:flex">
-                  <PrimaryButton onClick={copyResult}>Copy my result</PrimaryButton>
-                  <SecondaryLink href={QUIZ_HOME} className="w-auto shrink-0">
-                    Another story
-                  </SecondaryLink>
+              </div>
+              <section className={cn(CARD, "lg:gap-5 lg:p-7")}>
+                <Eyebrow>Your answers vs the reporting</Eyebrow>
+                <div className="grid gap-4 lg:gap-6">
+                  {edition.questions.map((q, i) => (
+                    <ReviewItem key={q.text} n={i + 1} question={q} pick={result.picks[i]} />
+                  ))}
                 </div>
-              </div>
-              <div className="grid gap-4">
-                <section className={CARD}>
-                  <Eyebrow>Your answers vs the reporting</Eyebrow>
-                  <div className="grid gap-4">
-                    {edition.questions.map((q, i) => (
-                      <ReviewItem key={q.text} n={i + 1} question={q} pick={result.picks[i]} />
-                    ))}
-                  </div>
-                </section>
-                <TakeawayCard edition={edition} />
-              </div>
+              </section>
+              <TakeawayCard edition={edition} />
             </div>
-            <ActionBar className="lg:hidden">
+            <ActionBar className="lg:mx-auto lg:max-w-[42rem]">
               <PrimaryButton onClick={copyResult}>Copy my result</PrimaryButton>
               <SecondaryLink href={QUIZ_HOME} className="w-auto shrink-0">
                 Another story

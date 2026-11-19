@@ -483,7 +483,9 @@ export function ScoreCard({
   const offset = RING_C * (1 - pct / 100)
 
   return (
-    <section className="overflow-hidden rounded-[1.5rem] bg-brand-blue text-center text-white">
+    // A flex column so the deep-blue strip stays at the bottom when the card is stretched to
+    // match the thinking style card beside it.
+    <section className="flex flex-col overflow-hidden rounded-[1.5rem] bg-brand-blue text-center text-white">
       <div className="flex justify-between gap-2 px-4 pt-4">
         <Pill>Your News IQ report</Pill>
         <Pill>{tag}</Pill>
@@ -521,7 +523,7 @@ export function ScoreCard({
         <span className="sr-only">Your News IQ report: {pct}% Awareness. </span>
         {band}
       </h1>
-      <p className="bg-brand-blue-deep px-5 pt-3.5 pb-4 text-left text-md leading-[1.375rem]">{bandDesc}</p>
+      <p className="mt-auto bg-brand-blue-deep px-5 pt-3.5 pb-4 text-left text-md leading-[1.375rem]">{bandDesc}</p>
     </section>
   )
 }
@@ -553,7 +555,8 @@ export function StyleCard({ lens, tally, total }: { lens: LensKey; tally: Record
   const reduce = useReducedMotion()
   const L = lenses[lens]
   return (
-    <section className={CARD}>
+    // content-start: when stretched beside the score card, the extra height goes below the meter.
+    <section className={cn(CARD, "content-start lg:gap-5 lg:p-7")}>
       <Eyebrow>Your thinking style</Eyebrow>
       <div className="flex items-start gap-3.5">
         <Monogram lens={lens} />
@@ -591,37 +594,42 @@ export function StyleCard({ lens, tally, total }: { lens: LensKey; tally: Record
   )
 }
 
-/** One answer against the reporting: never "wrong", just how close. */
+/**
+ * One answer against the reporting: never "wrong", just how close. On desktop the question and
+ * your answer sit on the left and what the reporting says on the right.
+ */
 export function ReviewItem({ n, question, pick }: { n: number; question: Question; pick: QuizOption }) {
   return (
-    <div className="grid gap-2.5 border-t border-hairline pt-4 first-of-type:border-t-0 first-of-type:pt-0">
-      <span className="inline-flex items-center gap-1.5 justify-self-start rounded-full bg-paper py-[0.1875rem] pr-2.5 pl-[0.1875rem] text-xs leading-4 font-semibold text-ink">
-        <Monogram lens={pick.lens} size="sm" />
-        {lenses[pick.lens].short} answer
-      </span>
-      <h3 className="text-lg leading-6 font-semibold tracking-[-0.01em] text-ink">
-        {n}. {question.text}
-      </h3>
-      <div className="grid gap-2 rounded-[0.75rem] bg-paper px-3.5 py-3 text-md leading-[1.375rem] text-ink">
-        <span className="text-xs font-semibold text-ink-muted">You said</span>
-        {pick.text}
-        <span className="flex items-center gap-2 text-[0.78rem] font-medium text-ink-muted">
-          Closeness to the facts
-          <span className="inline-flex gap-1" aria-hidden>
-            {[0, 1, 2].map((d) => (
-              <i
-                key={d}
-                className={cn(
-                  "size-2 rounded-full",
-                  d < pick.aw ? "bg-brand-blue" : "shadow-[inset_0_0_0_1.5px_var(--color-line-strong)]"
-                )}
-              />
-            ))}
-          </span>
-          {pick.aw} of 3
+    <div className="grid gap-2.5 border-t border-hairline pt-4 first-of-type:border-t-0 first-of-type:pt-0 lg:grid-cols-2 lg:gap-x-10 lg:pt-6">
+      <div className="grid content-start gap-2.5">
+        <span className="inline-flex items-center gap-1.5 justify-self-start rounded-full bg-paper py-[0.1875rem] pr-2.5 pl-[0.1875rem] text-xs leading-4 font-semibold text-ink">
+          <Monogram lens={pick.lens} size="sm" />
+          {lenses[pick.lens].short} answer
         </span>
+        <h3 className="text-lg leading-6 font-semibold tracking-[-0.01em] text-ink">
+          {n}. {question.text}
+        </h3>
+        <div className="grid gap-2 rounded-[0.75rem] bg-paper px-3.5 py-3 text-md leading-[1.375rem] text-ink">
+          <span className="text-xs font-semibold text-ink-muted">You said</span>
+          {pick.text}
+          <span className="flex items-center gap-2 text-[0.78rem] font-medium text-ink-muted">
+            Closeness to the facts
+            <span className="inline-flex gap-1" aria-hidden>
+              {[0, 1, 2].map((d) => (
+                <i
+                  key={d}
+                  className={cn(
+                    "size-2 rounded-full",
+                    d < pick.aw ? "bg-brand-blue" : "shadow-[inset_0_0_0_1.5px_var(--color-line-strong)]"
+                  )}
+                />
+              ))}
+            </span>
+            {pick.aw} of 3
+          </span>
+        </div>
       </div>
-      <div className="grid gap-1 text-md leading-[1.375rem] text-ink">
+      <div className="grid content-start gap-1 text-md leading-[1.375rem] text-ink lg:gap-2 lg:rounded-[0.75rem] lg:bg-brand-blue-soft lg:px-4 lg:py-3.5">
         <span className="text-xs leading-4 font-semibold tracking-[0.06em] text-brand-blue-deep uppercase">
           What the reporting says
         </span>
