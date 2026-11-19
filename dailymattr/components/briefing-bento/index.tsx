@@ -626,9 +626,9 @@ function LessScrollingTile() {
 export function BriefingBentoSection() {
   return (
     <section className="w-full py-8 lg:py-12">
-      {/* Black panel, edge to edge with rounded corners. Figma: 104 above the heading, 88 below
+      {/* Black panel, edge to edge with square corners. Figma: 104 above the heading, 88 below
           the bento frame, and the tiles 52.9 in from each side (frame inset + tile inset). */}
-      <div className="w-full bg-black px-4 pt-16 pb-12 sm:px-6 lg:rounded-[1rem] lg:px-[3.3rem] lg:pt-26 lg:pb-[6.7rem]">
+      <div className="w-full bg-black px-4 pt-16 pb-12 sm:px-6 lg:px-[3.3rem] lg:pt-26 lg:pb-[6.7rem]">
         <SectionHeading
           inverted
           className="mx-auto"
