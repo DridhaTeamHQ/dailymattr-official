@@ -13,10 +13,15 @@ import { footerGroups } from "./footer-links"
  * tokens so it is light on regular pages; inside `.theme-nia` only the colours go dark.
  * NIA pins its root font to 16px, so there it is zoomed by the laptop ratio
  * (--site-scale-auto) to come out the same size as on every other page.
+ *
+ * After a page that ends in a full-bleed photo (`data-full-bleed`), it drops the top border and
+ * takes Figma's 97px top gap. cacheComponents keeps visited pages mounted as hidden <main>s
+ * (React Activity: inline `display: none !important`) between the live page and the footer,
+ * so the rule looks at any earlier <main> that isn't hidden, not just the adjacent one.
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:px-16 lg:border-t-0 lg:pt-6 [main:has(>[data-full-bleed]:last-child)+&]:border-t-0 lg:[main:has(>[data-full-bleed]:last-child)+&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
+    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 font-helvetica sm:px-6 lg:px-16 lg:border-t-0 lg:pt-6 [main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:border-t-0 lg:[main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
       {/* Lines up with the wide panels above (PANEL_WIDTH) */}
       <div className={cn(PANEL_WIDTH, "flex flex-col")}>
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-20">
