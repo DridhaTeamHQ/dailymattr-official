@@ -40,12 +40,17 @@ export function DailyRoutineSection() {
         </div>
       </SectionHeading>
 
-      {/* Day-by-day video (1920×1080), framed at its own 16:9 ratio so nothing is cropped. Gutter to
-          gutter like the other panels (64px from each edge at 1920). */}
-      <FadeIn className="mx-auto w-full">
+      {/* Day-by-day video (1920×1080). Gutter to gutter like the other panels (64px from each edge
+          at 1920), at 16:9 of that width, but from lg never taller than the screen below the sticky
+          header (4rem) with 2rem to spare above and below; on shorter screens the width stays and
+          the video crops a little top and bottom (object-cover), like the app preview panel. */}
+      <FadeIn className="@container mx-auto w-full">
         {/* No fill on the frame: a background bleeds through the anti-aliased rounded edge as a pale
             outline. clip-path rounds the corners without that halo, so only the video is visible. */}
-        <AspectRatio ratio={16 / 9} className="[clip-path:inset(0_round_0.75rem)]">
+        <AspectRatio
+          ratio={16 / 9}
+          className="[clip-path:inset(0_round_0.75rem)] lg:aspect-auto lg:h-[min(56.25cqw,100svh_-_8rem)]"
+        >
           <SiteVideo
             video={videos.dayByDay}
             // Plays from the start each time the section scrolls into view.
