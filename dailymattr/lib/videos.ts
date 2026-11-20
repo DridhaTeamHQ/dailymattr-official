@@ -6,6 +6,7 @@
 //   <name>.webm         VP9, smallest; used by browsers that support it
 //   <name>.mp4          H.264 fallback that plays everywhere
 //   <name>-poster.webp  first frame, shown instantly while the video loads
+// and, for entries with av1Crf in the script, <name>.av1.mp4 (see VideoAsset.fullColor).
 // To add a video: drop the original in media-src/, add it to the list in the script, run
 // `npm run videos`, then add an entry below with localVideo().
 
@@ -18,6 +19,13 @@ export type VideoSource = { src: string; type: string }
 export type VideoAsset = {
   /** In order of preference; the browser plays the first one it supports. */
   sources: VideoSource[]
+  /**
+   * A full-colour (4:4:4) AV1 encode, for where fine coloured detail matters on a large screen
+   * (the desktop home hero). Not in `sources`: it needs software decoding, so a component
+   * opts in by putting it first. Its type names the AV1 High profile, so a browser that can't
+   * decode it (Safari) skips straight to `sources`.
+   */
+  fullColor?: VideoSource
   /** Local still for the first frame. Remote posters are never used: they hold up page load. */
   poster?: string
   width: number
@@ -31,12 +39,16 @@ export const localVideo = (
   name: string,
   width: number,
   height: number,
-  { webm = true, dir = "videos" }: { webm?: boolean; dir?: string } = {}
+  { webm = true, dir = "videos", fullColor = false }: { webm?: boolean; dir?: string; fullColor?: boolean } = {}
 ): VideoAsset => ({
   sources: [
     ...(webm ? [{ src: `/${dir}/${name}.webm`, type: "video/webm" }] : []),
     { src: `/${dir}/${name}.mp4`, type: "video/mp4" },
   ],
+  // av01.1 = High profile (4:4:4), then level 4.1, Main tier, 8-bit: what av1Crf writes for 1080p60.
+  ...(fullColor
+    ? { fullColor: { src: `/${dir}/${name}.av1.mp4`, type: 'video/mp4; codecs="av01.1.09M.08"' } }
+    : {}),
   poster: `/${dir}/${name}-poster.webp`,
   width,
   height,
@@ -61,7 +73,10 @@ export const videos = {
   pixEntry: localVideo("pix-entry", 1920, 1080),
   /**
    * Home hero: grows to full screen on scroll, and its frames are scrubbed by the scroll
-   * position instead of playing (see <ScrubVideo>). Encoded with scrub: true.
+   * position instead of playing (see <ScrubVideo>). Encoded with scrub: true. Once
+   * `npm run videos` has written public/videos/home-hero.av1.mp4 (av1Crf in the script), set
+   * fullColor: true so large screens scrub that full-colour encode, which keeps the phone
+   * screen's coloured text as sharp as the master. Off until then: the file isn't there yet.
    */
   homeHero: localVideo("home-hero", 1920, 1080, { webm: false }),
 } satisfies Record<string, VideoAsset>
@@ -73,13 +88,10 @@ const story = (name: string, opts: { webm?: boolean } = {}) =>
 export const storyVideos = {
   amaron: story("amaron"),
   asianPaints: story("asian-paints"),
-  ather: story("ather", { webm: false }),
-  dixon: story("dixon"),
   fevicol: story("fevicol"),
   havells: story("havells"),
   jockey: story("jockey", { webm: false }),
   mrf: story("mrf"),
   nilkamal: story("nilkamal"),
-  relaxo: story("relaxo"),
   videocon: story("videocon"),
 } satisfies Record<string, VideoAsset>

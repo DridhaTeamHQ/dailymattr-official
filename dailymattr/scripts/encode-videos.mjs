@@ -12,7 +12,12 @@
 // channel (e.g. a .mov cut out on transparency) need background, a "#rrggbb" colour they are
 // flattened onto, since web H.264/VP9 have no alpha; choke (pixels) shrinks their mask first,
 // to trim a halo of the backdrop they were cut from. skipFrames lists [from, to] source frame
-// numbers to drop (e.g. a badly cut frame), each shown as the frame before it.
+// numbers to drop (e.g. a badly cut frame), each shown as the frame before it; start cuts
+// that many frames off the front (e.g. a black first frame). Set rgb: true for an RGB master
+// with no transparency to flatten (QuickTime Animation, PNG .mov), so it still gets the HD
+// colour conversion. posterQuality (WebP, 0-100) defaults to 70. av1Crf adds <name>.av1.mp4, a
+// full-colour (4:4:4) AV1 encode of an RGB master (localVideo's fullColor option; see the home
+// hero below for why). libaom is slow: about 6 s of encoding per second of 1080p60.
 // Audio is dropped unless an entry sets audio: true (AAC in the mp4, Opus in the webm).
 // Needs ffmpeg on PATH.
 //
@@ -31,14 +36,19 @@ import path from "node:path"
 const VIDEOS = [
   // Home hero, scrubbed by scroll rather than played. scrub: a keyframe every 4 frames so
   // seeking to any scroll position is instant; VP9 seeks slower, so mp4 only. The master is a
-  // 60 fps cut-out on transparency, flattened onto the page's own white (--background) so the
-  // hand sits straight on the page with no box around it; a really transparent video can't be
-  // scrubbed in Safari. Its picture only changes in a 3:2 cadence, i.e. 24 fps footage, so
-  // fps: 24 keeps every distinct frame. Its mask edge carries a grey ring of the studio backdrop
-  // (choke: 2 trims it), and source frames 98-99 (1.63 s, the phone turning) have a torn mask.
+  // lossless QuickTime Animation (RGB) export on pure white (#ffffff, the page's --background,
+  // alpha fully opaque), so the hand sits straight on the page with no box around it. Kept at
+  // full quality on purpose: native 1920x1080, every one of its 60 fps frames (real 60 fps
+  // motion, not padded 24), near-lossless CRF. Its first frame is a stray all-black frame, which
+  // would show as a black box at the top of the page and as the poster: start: 1 drops it.
+  // av1Crf: the H.264 file is 4:2:0 (colour stored at half resolution, all that hardware H.264
+  // decoders take), which smears the phone screen's coloured text: its screen area only matches
+  // the master to ~34 dB, however low the CRF. The 4:4:4 AV1 keeps full-resolution colour and
+  // reaches ~42 dB there, the most Chrome's own pipeline gives, at about the same file size.
+  // Desktop scrubs that one where the browser can decode it; phones and Safari use the mp4.
   {
-    name: "home-hero", input: "dailymattr hand with mobile.mov", h264Crf: 20, webm: false, scrub: true,
-    background: "#ffffff", choke: 2, skipFrames: [[98, 99]], fps: 24,
+    name: "home-hero", input: "dailymattr hand with mobile white bg.mov", h264Crf: 12, webm: false, scrub: true,
+    rgb: true, start: 1, posterQuality: 95, av1Crf: 10,
   },
   // Low-detail footage: H.264 already lands at ~0.7 MB and VP9 could not beat it.
   { name: "day-by-day", input: "Day_by_day_video.mp4", h264Crf: 26, webm: false },
@@ -49,12 +59,13 @@ const VIDEOS = [
   { name: "customer-story-2-v2", input: "dailymattr_Customer_Story_2_v2.mp4", h264Crf: 27, vp9Crf: 38, audio: true },
   // "A whole world of stories" cards on the home page: 9:16 brand stories, played with sound on
   // hover. Masters are 1080x1920; the cards are under 300px wide, so 720 wide is plenty for 2x
-  // screens. Originals in media-src/stories/, output to public/stories/.
-  ...["amaron", "asian-paints", "ather", "dixon", "fevicol", "havells", "jockey", "mrf", "nilkamal", "relaxo", "videocon"].map(
+  // screens. Originals in media-src/stories/, output to public/stories/. Only the stories the
+  // carousel shows are kept: add a name back here (and in lib/videos.ts) to bring one back.
+  ...["amaron", "asian-paints", "fevicol", "havells", "jockey", "mrf", "nilkamal", "videocon"].map(
     (name) => ({
       name, input: `stories/${name}.mp4`, dir: "stories", maxWidth: 720, h264Crf: 26, vp9Crf: 36, audio: true,
-      // These two open on a white frame; VP9 gains nothing on them either.
-      ...(name === "ather" || name === "jockey" ? { posterAt: 1, webm: false } : {}),
+      // Opens on a white frame; VP9 gains nothing on it either.
+      ...(name === "jockey" ? { posterAt: 1, webm: false } : {}),
     })
   ),
 ]
@@ -90,13 +101,14 @@ const kb = (file) => `${Math.round(statSync(file).size / 1024)} KB`
 
 const outputs = (outDir, name) => ({
   mp4: path.join(outDir, `${name}.mp4`),
+  av1: path.join(outDir, `${name}.av1.mp4`),
   webm: path.join(outDir, `${name}.webm`),
   poster: path.join(outDir, `${name}-poster.webp`),
 })
 
 const ffmpeg = (args) => execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...args], { stdio: "inherit" })
 
-for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0, scrub = false, length, fps, background, choke = 0, skipFrames = [] } of VIDEOS) {
+for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0, scrub = false, length, fps, background, choke = 0, skipFrames = [], start = 0, rgb = false, posterQuality = 70, av1Crf } of VIDEOS) {
   if (only && !only.includes(name)) continue
   const source = path.join(srcDir, input)
   if (!existsSync(source)) {
@@ -107,18 +119,27 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   mkdirSync(outDir, { recursive: true })
   const scale = scaleTo(maxWidth)
   const flatten = background ? [flattenOnto(background, choke)] : []
+  // Cut frames off the front and restart the clock, so the clip still begins at 0 s.
+  const trimStart = start ? [`trim=start_frame=${start}`, "setpts=PTS-STARTPTS"] : []
   // First in the chain, so `n` counts the master's own frames; fps then fills each gap.
   const skip = skipFrames.length
     ? [`select='not(${skipFrames.map(([from, to]) => `between(n,${from},${to})`).join("+")})'`]
     : []
-  // An RGB master (alpha .mov) is converted with the HD colour matrix and tagged as such, so
-  // browsers don't shift its colours; YUV masters already carry their own.
+  // An RGB master (alpha or Animation .mov) is converted with the HD colour matrix and tagged
+  // as such, so browsers don't shift its colours, using swscale's most accurate path (full
+  // chroma, exact rounding) so the conversion costs as little as possible; YUV masters already
+  // carry their own.
+  const rgbMaster = background || rgb
   const videoFilters = [
     ...skip,
+    ...trimStart,
     ...flatten,
     ...(fps ? [`fps=${fps}`] : []),
-    ...(background
-      ? [`${scale}:out_color_matrix=bt709:out_range=tv`, "setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv"]
+    ...(rgbMaster
+      ? [
+          `${scale}:flags=lanczos+accurate_rnd+full_chroma_int:out_color_matrix=bt709:out_range=tv`,
+          "setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv",
+        ]
       : [scale]),
   ].join(",")
   const trimmed = ["-i", source, ...(length ? ["-t", String(length)] : [])]
@@ -139,6 +160,21 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   }
   console.log(`  mp4     ${kb(out.mp4)}`)
 
+  if (av1Crf !== undefined) {
+    if (stale(out.av1)) {
+      ffmpeg([
+        ...trimmed, "-dn", "-an", "-vf", videoFilters,
+        // libaom, as SVT-AV1 only writes 4:2:0. Look-ahead stays on (it halves the size);
+        // tiles and row-mt let the decoder spread one frame over several cores.
+        "-c:v", "libaom-av1", "-crf", String(av1Crf), "-b:v", "0", "-cpu-used", "5", "-row-mt", "1",
+        "-tile-columns", "2", "-tile-rows", "1", "-pix_fmt", "yuv444p",
+        ...(scrub ? ["-g", "4", "-keyint_min", "4"] : []),
+        "-write_tmcd", "0", "-movflags", "+faststart", out.av1,
+      ])
+    }
+    console.log(`  av1     ${kb(out.av1)}`)
+  }
+
   if (webm) {
     if (stale(out.webm)) {
       ffmpeg([
@@ -152,8 +188,8 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   }
 
   if (stale(out.poster)) {
-    const posterFilters = [...flatten, scale].join(",")
-    ffmpeg(["-ss", String(posterAt), "-i", source, "-frames:v", "1", "-vf", posterFilters, "-c:v", "libwebp", "-quality", "70", out.poster])
+    const posterFilters = [...trimStart, ...flatten, scale].join(",")
+    ffmpeg(["-ss", String(posterAt), "-i", source, "-frames:v", "1", "-vf", posterFilters, "-c:v", "libwebp", "-quality", String(posterQuality), out.poster])
   }
   console.log(`  poster  ${kb(out.poster)}`)
 
