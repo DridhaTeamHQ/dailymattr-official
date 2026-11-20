@@ -11,7 +11,8 @@ import type { VideoAsset } from "@/lib/videos"
 import { HeroShowcase } from "./hero-showcase"
 
 // r = root font size / 16: the rem scale, which shrinks on laptops (see app/globals.css).
-type Size = { w: number; h: number; r: number }
+// d = devicePixelRatio: screen pixels per CSS pixel (1.5 on Windows at 150%).
+type Size = { w: number; h: number; r: number; d: number }
 type Box = { x: number; y: number; width: number; height: number }
 
 // Mirrors the hero section's container: max-w-6xl with px-4 / sm:px-6 / lg:px-8 (at a 16px
@@ -36,6 +37,28 @@ function fullBox({ w, h }: Size): Box {
   return { x: 0, y: 0, width: w, height: h }
 }
 
+/**
+ * Holds the video 2px past its clipping box on every side, so the video's own outermost pixel
+ * column (which the browser blends with the empty space beyond it) is never on screen.
+ */
+function Bleed({ children }: { children: React.ReactNode }) {
+  return <div className="absolute -inset-[2px]">{children}</div>
+}
+
+/** Rounds a CSS length to the nearest whole screen pixel. */
+const snap = (v: number, d: number) => Math.round(v * d) / d
+/**
+ * The box with every edge on a whole screen pixel. Mid-grow the box's edges land between
+ * screen pixels, and on a 1.5x screen (Windows at 150%) Chrome then leaves a 1px gap down the
+ * video's right edge: a thin dark line that follows the card as it grows. Each edge is
+ * rounded on its own (not the size), so the right edge lands on a pixel too.
+ */
+const snapBox = ({ x, y, width, height }: Box, d: number): Box => {
+  const left = snap(x, d)
+  const top = snap(y, d)
+  return { x: left, y: top, width: snap(x + width, d) - left, height: snap(y + height, d) - top }
+}
+
 const mix = (a: number, b: number, t: number) => a + (b - a) * t
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1)
 // Ease in-out, so each stage starts and settles gently rather than at constant speed.
@@ -50,7 +73,10 @@ const mixBox = (a: Box, b: Box, t: number): Box => ({
 // Scroll distances, as fractions of the screen height.
 const GROW = 0.8 // card → full screen (before the pin: the card rises from 80% down to the top)
 // Stays full screen while the rest of the clip scrubs by, then scrolls away with the page.
-const HOLD = 0.7
+// The whole clip runs over the scroll, so this sets its pace: 6 gives the 21 s home clip about
+// 230px of scroll per second of video on a laptop, slow enough to read each app screen while
+// full screen. Retune it if the clip's length changes.
+const HOLD = 6
 const TOTAL = GROW + HOLD
 const GROW_END = GROW / TOTAL
 
@@ -73,6 +99,7 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
         w: document.documentElement.clientWidth,
         h: window.innerHeight,
         r: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
+        d: window.devicePixelRatio || 1,
       })
     measure()
     window.addEventListener("resize", measure)
@@ -161,10 +188,10 @@ function WidenOnScroll({ ratio, video }: { ratio: number; video: RenderVideo }) 
   return (
     <motion.div ref={ref} className="mt-10 w-full" style={{ paddingInline: inset }}>
       <motion.div
-        className="w-full overflow-hidden"
+        className="relative w-full overflow-hidden"
         style={{ aspectRatio: ratio, borderRadius: radius }}
       >
-        {video()}
+        <Bleed>{video()}</Bleed>
       </motion.div>
     </motion.div>
   )
@@ -194,8 +221,8 @@ function PinnedExpand({ size, video }: { size: Size; video: RenderVideo }) {
   // with the page. Scrolling back to the top reverses the grow, back down to the card.
   const boxAt = (p: number): Box => {
     const full = fullBox(stage)
-    if (p <= GROW_END) return mixBox(cardBox(stage, "top"), full, ease(clamp01(p / GROW_END)))
-    return full
+    if (p > GROW_END) return snapBox(full, size.d)
+    return snapBox(mixBox(cardBox(stage, "top"), full, ease(clamp01(p / GROW_END))), size.d)
   }
   /** 0 when full-screen, 1 when a card: drives the corner radius. */
   const cardness = (p: number) => (p <= GROW_END ? 1 - clamp01(p / GROW_END) : 0)
@@ -217,7 +244,7 @@ function PinnedExpand({ size, video }: { size: Size; video: RenderVideo }) {
           className="pointer-events-auto absolute top-0 left-0 overflow-hidden"
           style={{ x, y, width, height, borderRadius: radius }}
         >
-          {video(videoProgress)}
+          <Bleed>{video(videoProgress)}</Bleed>
         </motion.div>
       </div>
     </div>

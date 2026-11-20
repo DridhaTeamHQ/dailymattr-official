@@ -8,7 +8,11 @@
 //   <name>-poster.webp  first frame, so the box is never blank while the video loads
 // Set posterAt (seconds) when the first frame is blank. Set scrub: true for videos driven by
 // scroll position (dense keyframes, so any frame can be shown at once). Set length (seconds)
-// to keep only the start of the clip.
+// to keep only the start of the clip, and fps to drop the frame rate. Masters with an alpha
+// channel (e.g. a .mov cut out on transparency) need background, a "#rrggbb" colour they are
+// flattened onto, since web H.264/VP9 have no alpha; choke (pixels) shrinks their mask first,
+// to trim a halo of the backdrop they were cut from. skipFrames lists [from, to] source frame
+// numbers to drop (e.g. a badly cut frame), each shown as the frame before it.
 // Audio is dropped unless an entry sets audio: true (AAC in the mp4, Opus in the webm).
 // Needs ffmpeg on PATH.
 //
@@ -26,8 +30,16 @@ import path from "node:path"
 // webm: false here and pass { webm: false } to its localVideo() in lib/videos.ts.
 const VIDEOS = [
   // Home hero, scrubbed by scroll rather than played. scrub: a keyframe every 4 frames so
-  // seeking to any scroll position is instant; VP9 seeks slower, so mp4 only.
-  { name: "home-hero", input: "hand-phone-rising.mp4", h264Crf: 26, webm: false, scrub: true, length: 7 },
+  // seeking to any scroll position is instant; VP9 seeks slower, so mp4 only. The master is a
+  // 60 fps cut-out on transparency, flattened onto the page's own white (--background) so the
+  // hand sits straight on the page with no box around it; a really transparent video can't be
+  // scrubbed in Safari. Its picture only changes in a 3:2 cadence, i.e. 24 fps footage, so
+  // fps: 24 keeps every distinct frame. Its mask edge carries a grey ring of the studio backdrop
+  // (choke: 2 trims it), and source frames 98-99 (1.63 s, the phone turning) have a torn mask.
+  {
+    name: "home-hero", input: "dailymattr hand with mobile.mov", h264Crf: 20, webm: false, scrub: true,
+    background: "#ffffff", choke: 2, skipFrames: [[98, 99]], fps: 24,
+  },
   // Low-detail footage: H.264 already lands at ~0.7 MB and VP9 could not beat it.
   { name: "day-by-day", input: "Day_by_day_video.mp4", h264Crf: 26, webm: false },
   { name: "pix-entry", input: "pix_entry_video.mp4", h264Crf: 26, vp9Crf: 36 },
@@ -64,6 +76,16 @@ try {
 }
 
 const scaleTo = (maxWidth) => `scale='min(${maxWidth},iw)':-2`
+
+/**
+ * Lays an alpha master over a solid "#rrggbb" frame of its own size, blended in RGB, after
+ * shrinking its mask by `choke` pixels.
+ */
+const flattenOnto = (hex, choke = 0) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  const trim = choke ? `split[c][a];[a]alphaextract${",erosion".repeat(choke)}[m];[c][m]alphamerge,` : ""
+  return `format=rgba,${trim}split[fg][s];[s]lutrgb=r=${r}:g=${g}:b=${b}:a=255[bg];[bg][fg]overlay=format=rgb`
+}
 const kb = (file) => `${Math.round(statSync(file).size / 1024)} KB`
 
 const outputs = (outDir, name) => ({
@@ -74,7 +96,7 @@ const outputs = (outDir, name) => ({
 
 const ffmpeg = (args) => execFileSync("ffmpeg", ["-hide_banner", "-loglevel", "error", "-y", ...args], { stdio: "inherit" })
 
-for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0, scrub = false, length } of VIDEOS) {
+for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp9Crf = 36, webm = true, audio = false, posterAt = 0, scrub = false, length, fps, background, choke = 0, skipFrames = [] } of VIDEOS) {
   if (only && !only.includes(name)) continue
   const source = path.join(srcDir, input)
   if (!existsSync(source)) {
@@ -84,6 +106,22 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   const outDir = path.join(publicDir, dir)
   mkdirSync(outDir, { recursive: true })
   const scale = scaleTo(maxWidth)
+  const flatten = background ? [flattenOnto(background, choke)] : []
+  // First in the chain, so `n` counts the master's own frames; fps then fills each gap.
+  const skip = skipFrames.length
+    ? [`select='not(${skipFrames.map(([from, to]) => `between(n,${from},${to})`).join("+")})'`]
+    : []
+  // An RGB master (alpha .mov) is converted with the HD colour matrix and tagged as such, so
+  // browsers don't shift its colours; YUV masters already carry their own.
+  const videoFilters = [
+    ...skip,
+    ...flatten,
+    ...(fps ? [`fps=${fps}`] : []),
+    ...(background
+      ? [`${scale}:out_color_matrix=bt709:out_range=tv`, "setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv"]
+      : [scale]),
+  ].join(",")
+  const trimmed = ["-i", source, ...(length ? ["-t", String(length)] : [])]
   const out = outputs(outDir, name)
   const stale = (file) => force || !existsSync(file) || statSync(file).mtimeMs < statSync(source).mtimeMs
 
@@ -91,11 +129,12 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
 
   if (stale(out.mp4)) {
     ffmpeg([
-      "-i", source, ...(length ? ["-t", String(length)] : []), ...(audio ? ["-c:a", "aac", "-b:a", "128k"] : ["-an"]), "-vf", scale,
+      ...trimmed, "-dn", ...(audio ? ["-c:a", "aac", "-b:a", "128k"] : ["-an"]), "-vf", videoFilters,
       "-c:v", "libx264", "-preset", "slow", "-crf", String(h264Crf), "-profile:v", "high",
       "-pix_fmt", "yuv420p",
       ...(scrub ? ["-g", "4", "-keyint_min", "4", "-sc_threshold", "0"] : ["-maxrate", "5M", "-bufsize", "10M"]),
-      "-movflags", "+faststart", out.mp4,
+      // No timecode track (.mov masters carry one); browsers have no use for it.
+      "-write_tmcd", "0", "-movflags", "+faststart", out.mp4,
     ])
   }
   console.log(`  mp4     ${kb(out.mp4)}`)
@@ -103,8 +142,9 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   if (webm) {
     if (stale(out.webm)) {
       ffmpeg([
-        "-i", source, ...(audio ? ["-c:a", "libopus", "-b:a", "96k"] : ["-an"]), "-vf", scale,
+        ...trimmed, "-dn", ...(audio ? ["-c:a", "libopus", "-b:a", "96k"] : ["-an"]), "-vf", videoFilters,
         "-c:v", "libvpx-vp9", "-crf", String(vp9Crf), "-b:v", "0", "-row-mt", "1",
+        "-pix_fmt", "yuv420p",
         "-deadline", "good", "-cpu-used", "2", out.webm,
       ])
     }
@@ -112,7 +152,8 @@ for (const { name, input, dir = "videos", maxWidth = MAX_WIDTH, h264Crf = 26, vp
   }
 
   if (stale(out.poster)) {
-    ffmpeg(["-ss", String(posterAt), "-i", source, "-frames:v", "1", "-vf", scale, "-c:v", "libwebp", "-quality", "70", out.poster])
+    const posterFilters = [...flatten, scale].join(",")
+    ffmpeg(["-ss", String(posterAt), "-i", source, "-frames:v", "1", "-vf", posterFilters, "-c:v", "libwebp", "-quality", "70", out.poster])
   }
   console.log(`  poster  ${kb(out.poster)}`)
 
