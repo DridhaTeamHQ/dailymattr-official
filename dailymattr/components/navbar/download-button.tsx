@@ -14,7 +14,7 @@ export function DownloadButton({ className }: { className?: string }) {
         className
       )}
     >
-      Download the app
+      Get the app
       <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-background/15">
         <ArrowUpRight className="size-3" />
       </span>
