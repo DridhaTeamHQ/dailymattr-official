@@ -5,7 +5,6 @@ import { DailyRoutineSection } from "@/components/daily-routine";
 import { ExplainersSection } from "@/components/explainers";
 import { Hero } from "@/components/hero";
 import { LearnFormatsSection } from "@/components/learn-formats";
-import { LookInsideSection } from "@/components/look-inside";
 import { NewsletterSection } from "@/components/newsletter";
 import { RecognizedInSection } from "@/components/recognized-in";
 import { StoriesSection } from "@/components/stories";
@@ -27,7 +26,6 @@ export default function Home() {
       <DailyRoutineSection />
       <BriefingBentoSection />
       <TemplatesSection />
-      <LookInsideSection />
       <NewsletterSection />
     </main>
   );
