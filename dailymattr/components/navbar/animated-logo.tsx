@@ -41,13 +41,16 @@ const BLUE = "#3979ff"
  * The navbar logo, animated from the brand's logo reveal. On load the quotes logo fills in
  * and, at the top of the page, opens out into the "dailymattr" wordmark. Starting to scroll
  * down shrinks it back to the quotes; starting to scroll up, anywhere on the page, plays the
- * reveal again. A change of direction mid-way reverses from the current frame. Blue, or white
- * on the dark routes. Reduced motion jumps straight to each end state.
+ * reveal again. A change of direction mid-way reverses from the current frame. Hovering with
+ * a mouse opens the quotes out into the wordmark too; moving off puts back whatever the scroll
+ * last asked for. Blue, or white on the dark routes. Reduced motion jumps straight to each
+ * end state.
  */
 export function AnimatedLogo({ className }: { className?: string }) {
   // Fetch the sprite with the page rather than after hydration.
   preload(SPRITE.src, { as: "image", type: "image/webp", fetchPriority: "high" })
 
+  const linkRef = useRef<HTMLAnchorElement>(null)
   const slotRef = useRef<HTMLSpanElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const color = useDarkRoute() ? "#ffffff" : BLUE
@@ -55,10 +58,11 @@ export function AnimatedLogo({ className }: { className?: string }) {
   const redrawRef = useRef<() => void>(() => {})
 
   useEffect(() => {
+    const link = linkRef.current
     const slot = slotRef.current
     const canvas = canvasRef.current
     const ctx = canvas?.getContext("2d")
-    if (!slot || !canvas || !ctx) return
+    if (!link || !slot || !canvas || !ctx) return
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
     const sprite = new Image()
@@ -157,6 +161,13 @@ export function AnimatedLogo({ className }: { className?: string }) {
     let travel = 0 // px moved in the current direction (negative = up)
     // Loaded part-way down the page: settle on the quotes; at the top: reveal the wordmark.
     target = lastY > TOP ? QUOTES : WORDMARK
+    // What the scroll last asked for; it waits while the pointer is over the logo.
+    let scrolled = target
+    let hovered = false
+    const settle = (to: number) => {
+      scrolled = to
+      if (!hovered) play(to)
+    }
 
     const onScroll = () => {
       // The header moves while the announcement bar scrolls away: keep the logo on the grid.
@@ -166,9 +177,21 @@ export function AnimatedLogo({ className }: { className?: string }) {
       lastY = y
       if (delta === 0) return
       travel = Math.sign(delta) === Math.sign(travel) ? travel + delta : delta
-      if (y <= TOP) play(WORDMARK)
-      else if (travel >= TRAVEL) play(QUOTES)
-      else if (travel <= -TRAVEL) play(WORDMARK)
+      if (y <= TOP) settle(WORDMARK)
+      else if (travel >= TRAVEL) settle(QUOTES)
+      else if (travel <= -TRAVEL) settle(WORDMARK)
+    }
+
+    // Mouse only: a tap on a touch screen fires these too, just before it navigates away.
+    const onEnter = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") return
+      hovered = true
+      play(WORDMARK)
+    }
+    const onLeave = () => {
+      if (!hovered) return
+      hovered = false
+      play(scrolled)
     }
 
     // `load` rather than decode(): decode() waits until the page is painted, so a tab opened
@@ -188,12 +211,16 @@ export function AnimatedLogo({ className }: { className?: string }) {
     resize.observe(slot)
     window.addEventListener("resize", fit)
     window.addEventListener("scroll", onScroll, { passive: true })
+    link.addEventListener("pointerenter", onEnter)
+    link.addEventListener("pointerleave", onLeave)
     return () => {
       cancelAnimationFrame(raf)
       sprite.removeEventListener("load", start)
       resize.disconnect()
       window.removeEventListener("resize", fit)
       window.removeEventListener("scroll", onScroll)
+      link.removeEventListener("pointerenter", onEnter)
+      link.removeEventListener("pointerleave", onLeave)
       redrawRef.current = () => {}
     }
   }, [])
@@ -205,7 +232,7 @@ export function AnimatedLogo({ className }: { className?: string }) {
   }, [color])
 
   return (
-    <Link href="/" aria-label="dailymattr home" className="inline-flex shrink-0">
+    <Link ref={linkRef} href="/" aria-label="dailymattr home" className="inline-flex shrink-0">
       {/* The slot sets the logo's size (the frame's aspect ratio sets the height); the canvas
           inside is fitted to it in whole device pixels. */}
       <span ref={slotRef} className={cn("relative block aspect-[432/150] w-[8.5rem]", className)}>
