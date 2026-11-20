@@ -303,8 +303,8 @@ export function AboutFormats() {
   return (
     <section className="bg-white py-24 lg:py-[10rem]">
       <FadeIn className="flex justify-center px-4">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-3xl leading-none font-medium tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <h2 className="text-3xl leading-none font-semibold tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12">
             {formats.title}
           </h2>
           <p className="text-lg leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-xl">

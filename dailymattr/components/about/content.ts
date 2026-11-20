@@ -7,8 +7,13 @@ export const hero = {
 
 export const purpose = {
   eyebrow: "Our purpose",
-  statement:
-    "To help people stay informed, understand what matters, and spend less time navigating information overload.",
+  // Muted phrases take the grey of the site's two-tone headings.
+  statement: [
+    { text: "To help people", muted: true },
+    { text: " stay informed, understand what matters, and spend less time " },
+    { text: "navigating information overload", muted: true },
+    { text: "." },
+  ],
 }
 
 export const formats = {

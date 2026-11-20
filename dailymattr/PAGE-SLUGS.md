@@ -34,14 +34,14 @@ redirects `/about/` to `/about`.
 ### Latest News
 - **Slug:** `/news/`
 - **Old URL:** https://www.dailymattr.com/news/
-- **Status:** To build. The new site currently links "Latest Stories" to `/stories`; point those links to `/news/`.
+- **Status:** Empty page (`app/news/page.tsx`), linked from the footer's Latest Stories → Top. Design to build. The navbar's "Latest Stories" still links to `/stories`; point it to `/news/`.
 - **Title:** Latest News
 - **Description:** News articles, updates and current affairs. Latest news, breaking news and the latest headlines today from India and around the world.
 
 ### Newsletter
 - **Slug:** `/newsletter/`
 - **Old URL:** https://www.dailymattr.com/newsletter/
-- **Status:** To build (already linked from the navbar and footer).
+- **Status:** Empty page (`app/newsletter/page.tsx`), linked from the navbar and the footer's "Subscribe to newsletter". Design to build.
 - **Title:** Newsletter
 - **Description:** Curated news briefings and summarized stories, delivered as a daily news briefing.
 
@@ -54,49 +54,49 @@ All category pages sit under `/news/<category>/`.
 ### India News
 - **Slug:** `/news/india/`
 - **Old URL:** https://www.dailymattr.com/news/india/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** India News
 - **Description:** Latest India news, national news headlines, politics news, government updates and current affairs.
 
 ### World News
 - **Slug:** `/news/world/`
 - **Old URL:** https://www.dailymattr.com/news/world/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** World News
 - **Description:** Latest world news, international news headlines, global affairs and major developments from around the world.
 
 ### Business News
 - **Slug:** `/news/business/`
 - **Old URL:** https://www.dailymattr.com/news/business/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** Business News
 - **Description:** Latest business news, financial updates, market developments, company news and economic current affairs.
 
 ### Technology News
 - **Slug:** `/news/technology/`
 - **Old URL:** https://www.dailymattr.com/news/technology/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** Technology News
 - **Description:** Latest technology news, artificial intelligence updates, digital innovation, gadgets and tech industry developments.
 
 ### Sports News
 - **Slug:** `/news/sports/`
 - **Old URL:** https://www.dailymattr.com/news/sports/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** Sports News
 - **Description:** Latest sports news, cricket updates, sports headlines, tournaments and major sporting events.
 
 ### Entertainment News
 - **Slug:** `/news/entertainment/`
 - **Old URL:** https://www.dailymattr.com/news/entertainment/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** Entertainment News
 - **Description:** Latest entertainment news, cinema news, movie updates, celebrity news and film industry headlines.
 
 ### Lifestyle News
 - **Slug:** `/news/lifestyle/`
 - **Old URL:** https://www.dailymattr.com/news/lifestyle/
-- **Status:** To build
+- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
 - **Title:** Lifestyle News
 - **Description:** Lifestyle news, health news, wellness topics, culture and everyday-interest stories.
 
@@ -132,7 +132,7 @@ All category pages sit under `/news/<category>/`.
 ### Support
 - **Slug:** `/support/`
 - **Old URL:** https://www.dailymattr.com/support/
-- **Status:** To build. The footer's "Help Center" and "Contact" links can point here.
+- **Status:** Empty page (`app/support/page.tsx`), linked from the footer's Inside DailyMattr → Contact. Design to build.
 - **Title:** Support
 - **Description:** User support and assistance for the dailymattr website and app.
 
@@ -146,7 +146,7 @@ All category pages sit under `/news/<category>/`.
 ### Terms and Conditions
 - **Slug:** `/termsandconditions/`
 - **Old URL:** https://www.dailymattr.com/termsandconditions/
-- **Status:** To build. The footer's "Terms" link should point here.
+- **Status:** Empty page (`app/termsandconditions/page.tsx`), linked from the footer's Legal → Terms. Design to build.
 - **Title:** Terms and Conditions
 - **Description:** The terms that apply to the dailymattr website and services.
 
@@ -175,6 +175,9 @@ These pages have no old URL. Keep their slugs as they are.
 | `/formats/xplaind/` | Xplaind – Explainers | To build (already linked) |
 | `/benchmark/` | Benchmark (was `/newsroom/`) | Exists (linked from the nav and the footer's Inside DailyMattr → Benchmark) |
 | `/advertise/` | Advertise | Exists (linked from the footer's Support → Advertise) |
+| `/careers/` | Careers | Empty page (`app/careers/page.tsx`), linked from the footer's Inside DailyMattr → Careers. Design to build. |
+
+Empty pages render `components/shared/empty-page.tsx` and are marked `noindex` in `lib/seo.ts`, which keeps them out of search and the sitemap. Remove `noindex` when a page gets its content.
 
 ---
 

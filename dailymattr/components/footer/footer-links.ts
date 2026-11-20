@@ -1,8 +1,7 @@
 export type FooterGroup = { title: string; links: { label: string; href: string }[] }
 
-const toLinks = (labels: string[]) => labels.map((label) => ({ label, href: "#" }))
-
-// Link groups from the landing-page Figma footer. Replace "#" with real routes as pages are added.
+// Link groups from the landing-page Figma footer. Slugs follow PAGE-SLUGS.md (the old site's URLs);
+// pages marked "To build" there are linked already and 404 until they are built.
 export const footerGroups: FooterGroup[] = [
   {
     title: "Formats",
@@ -15,33 +14,41 @@ export const footerGroups: FooterGroup[] = [
   },
   {
     title: "Latest Stories",
-    links: toLinks([
-      "Top",
-      "India",
-      "World",
-      "Business",
-      "Technology",
-      "Sports",
-      "Entertainment",
-      "Lifestyle",
-    ]),
+    links: [
+      { label: "Top", href: "/news" },
+      { label: "India", href: "/news/india" },
+      { label: "World", href: "/news/world" },
+      { label: "Business", href: "/news/business" },
+      { label: "Technology", href: "/news/technology" },
+      { label: "Sports", href: "/news/sports" },
+      { label: "Entertainment", href: "/news/entertainment" },
+      { label: "Lifestyle", href: "/news/lifestyle" },
+    ],
   },
   {
     title: "Inside DailyMattr",
     links: [
       { label: "About", href: "/about" },
-      ...toLinks(["Editorial"]),
       { label: "Benchmark", href: "/benchmark" },
-      ...toLinks(["Careers", "Contact"]),
+      { label: "Careers", href: "/careers" },
+      { label: "Contact", href: "/support" },
     ],
   },
-  { title: "Legal", links: [{ label: "Privacy", href: "/privacypolicy" }, ...toLinks(["Terms", "Cookies"])] },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy", href: "/privacypolicy" },
+      { label: "Terms", href: "/termsandconditions" },
+    ],
+  },
   {
     title: "Support",
-    links: [
-      ...toLinks(["Help Center"]),
-      { label: "Advertise", href: "/advertise" },
-      ...toLinks(["Press"]),
-    ],
+    links: [{ label: "Advertise", href: "/advertise" }],
   },
 ]
+
+/** Store listings for the "Get the app" badges. */
+export const appStoreLinks = {
+  apple: "https://apps.apple.com/in/app/dailymattr/id6791996138",
+  google: "https://play.google.com/store/apps/details?id=com.dailymattr",
+}

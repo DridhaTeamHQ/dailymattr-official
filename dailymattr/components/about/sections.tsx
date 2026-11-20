@@ -15,7 +15,7 @@ const HEADING =
  */
 export function AboutHero() {
   return (
-    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] items-end overflow-hidden bg-[#1c1c1e] px-4 pt-24 pb-6 sm:px-6 lg:pl-15 lg:pb-8">
+    <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] items-end overflow-hidden bg-[#1c1c1e] px-4 pt-24 pb-6 sm:px-6 lg:pl-15 lg:pb-20">
       <Image
         src="/cover-images/about_page_poster.JPG"
         alt=""
@@ -64,7 +64,17 @@ export function AboutPurpose() {
         <p className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
           {purpose.eyebrow}
         </p>
-        <p className={HEADING}>{purpose.statement}</p>
+        <p className={HEADING}>
+          {purpose.statement.map(({ text, muted }) =>
+            muted ? (
+              <span key={text} className="text-[rgba(28,28,30,0.5)]">
+                {text}
+              </span>
+            ) : (
+              text
+            ),
+          )}
+        </p>
       </FadeIn>
     </section>
   )
@@ -97,10 +107,10 @@ export function AboutMedia() {
         {/*
           Figma draws this with its Glass effect (frost 15, depth 11, light −45° at 0.8,
           refraction 0.96, dispersion 0.77) over a 20% white fill. CSS has no Glass, so:
-          frost 15 → blur(7.5px) (Figma radius ≈ 2σ), the −45° light → a brighter top-left
-          rim and a softer bottom-right one, and depth → a faint 11px inner edge glow.
+          frost 15 → blur(7.5px) (Figma radius ≈ 2σ) and depth → a faint 11px inner glow.
+          No white light rim on the edge, only the faint blue border.
         */}
-        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 font-helvetica shadow-[inset_1px_1px_0.5px_rgba(255,255,255,0.4),inset_-1px_-1px_0.5px_rgba(255,255,255,0.2),inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
+        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 font-helvetica shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
           <div className="flex flex-col gap-4 lg:w-[37.0625rem]">
             <h2 className="text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
               {media.title}

@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { PANEL_WIDTH } from "@/components/shared/layout"
-import { footerGroups } from "./footer-links"
+import { appStoreLinks, footerGroups } from "./footer-links"
 
 /**
  * Site footer, from the landing-page Figma frame: brand + newsletter sign-up on the left,
@@ -77,18 +77,29 @@ export function Footer() {
             ))}
           </nav>
 
-          {/* TODO: point these at the App Store / Google Play listings once they exist */}
           {/* On desktop it fills the empty space under the short Legal and Support columns,
               its bottom edge level with the "Subscribe to newsletter" button on the left */}
           <div className="flex flex-col gap-3 lg:absolute lg:right-0 lg:bottom-0">
             <p className="text-lg leading-7 tracking-[-0.02rem] text-foreground">Get the app</p>
             <div className="flex flex-wrap items-center gap-3">
-              <Link href="/download" aria-label="Download on the App Store" className="block transition-opacity hover:opacity-85">
+              <a
+                href={appStoreLinks.apple}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Download on the App Store"
+                className="block transition-opacity hover:opacity-85"
+              >
                 <Image src="/downlods/apple.png" alt="Download on the App Store" width={126} height={40} className="block h-10 w-auto" />
-              </Link>
-              <Link href="/download" aria-label="Get it on Google Play" className="block transition-opacity hover:opacity-85">
+              </a>
+              <a
+                href={appStoreLinks.google}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Get it on Google Play"
+                className="block transition-opacity hover:opacity-85"
+              >
                 <Image src="/downlods/Text.png" alt="Get it on Google Play" width={134} height={40} className="block h-10 w-auto" />
-              </Link>
+              </a>
             </div>
           </div>
           </div>

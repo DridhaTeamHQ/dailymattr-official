@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { newsCategories, newsPath } from "@/components/news/content"
 import { editions, quizPath } from "@/components/quizz/content"
 import { site } from "./site"
 
@@ -107,6 +108,41 @@ export const defaultSeo: Record<string, PageSeo> = {
       },
     ])
   ),
+
+  // Empty placeholder pages (components/shared/empty-page.tsx), so the footer's links resolve.
+  // noindex keeps them out of search and the sitemap; drop it when a page gets its content.
+  "/news": {
+    title: "Latest News",
+    description:
+      "News articles, updates and current affairs. Latest news, breaking news and the latest headlines today from India and around the world.",
+    noindex: true,
+  },
+  ...Object.fromEntries(
+    newsCategories.map((c): [string, PageSeo] => [
+      newsPath(c.slug),
+      { title: c.title, description: c.description, noindex: true },
+    ])
+  ),
+  "/newsletter": {
+    title: "Newsletter",
+    description: "Curated news briefings and summarized stories, delivered as a daily news briefing.",
+    noindex: true,
+  },
+  "/careers": {
+    title: "Careers",
+    description: "Careers at dailyMattr and Dridha Technologies Private Limited.",
+    noindex: true,
+  },
+  "/support": {
+    title: "Support",
+    description: "User support and assistance for the dailyMattr website and app.",
+    noindex: true,
+  },
+  "/termsandconditions": {
+    title: "Terms and Conditions",
+    description: "The terms that apply to the dailyMattr website and services.",
+    noindex: true,
+  },
 }
 
 /** The SEO entry for a route. The single place to connect the CMS. */
