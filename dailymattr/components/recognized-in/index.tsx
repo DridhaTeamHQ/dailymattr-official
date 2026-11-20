@@ -59,8 +59,9 @@ function LogoSet({ hidden }: { hidden?: boolean }) {
 
 /**
  * "As recognized in" press strip, Figma 8859:12685: a band tinted brand blue at 5%
- * (rgba(57,121,255,0.05)), 64px top and bottom and 40px at the sides, with a 64px margin
- * so the band doesn't butt against the hero above or the stories below. Eyebrow Helvetica Neue
+ * (rgba(57,121,255,0.05)), 64px top and bottom and 40px at the sides. Its top edge meets the
+ * bottom of the hero's hand-and-phone image; a 64px margin below keeps it off the stories.
+ * Eyebrow Helvetica Neue
  * Medium 18/18 −0.16px brand blue, 56px above a row of logos 97px apart. The row loops sideways
  * (two identical sets, the track moves by one set's width), pauses on hover, and stands still
  * for people who prefer reduced motion.
@@ -69,7 +70,7 @@ export function RecognizedInSection() {
   return (
     <section
       aria-labelledby="recognized-in"
-      className="my-12 w-full overflow-hidden bg-brand-blue/5 py-12 lg:my-16 lg:px-10 lg:py-16"
+      className="mb-12 w-full overflow-hidden bg-brand-blue/5 py-12 lg:mb-16 lg:px-10 lg:py-16"
     >
       <FadeIn className="flex flex-col items-center gap-10 lg:gap-14">
         <h2

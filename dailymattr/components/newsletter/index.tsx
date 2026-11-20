@@ -67,7 +67,7 @@ export function NewsletterSection() {
               </p>
             </div>
 
-            <ul className="flex flex-col gap-3.5">
+            {/* <ul className="flex flex-col gap-3.5">
               {points.map((p) => (
                 <li key={p} className="flex items-start gap-3">
                   <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-[0.375rem] border border-[rgba(57,121,255,0.4)] bg-[rgba(57,121,255,0.15)] shadow-[0_0_0.625rem_rgba(57,121,255,0.2)]">
@@ -76,7 +76,7 @@ export function NewsletterSection() {
                   <span className="text-sm leading-4.5 font-medium text-[#e2e8f0]">{p}</span>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </div>
 
           <form

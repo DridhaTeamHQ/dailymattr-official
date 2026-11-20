@@ -69,7 +69,7 @@ export function TemplatesSection() {
       </FadeIn>
 
       {/* Card row bleeds to the full screen width. */}
-      <FadeIn className="w-full">
+      <FadeIn className="w-[98%]">
         <Carousel
           className="[&>div]:rounded-none [&>div>div]:gap-5"
           items={stories.map((story, index) => (

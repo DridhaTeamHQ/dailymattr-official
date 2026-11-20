@@ -32,7 +32,7 @@ export function Footer() {
                 <Image src="/footer/logo.svg" alt="dailymattr" width={150} height={31} className="block [.nia-layout_&]:lg:[zoom:calc(1/var(--site-scale-auto,1))]" />
               </Link>
               <p className="max-w-96 text-base leading-6 text-muted-foreground [.theme-nia_&]:text-white/55">
-                dailymattr brings you the story behind the headline — with context, clarity, and
+                &quot;dailymattr&quot; brings you the story behind the headline with context, clarity, and
                 perspective that help you understand what really matters.
               </p>
             </div>
@@ -40,7 +40,7 @@ export function Footer() {
             <div className="flex flex-col items-start">
               <p className="text-base leading-6 text-foreground">Sign up for email updates</p>
               <p className="text-base leading-6 text-muted-foreground [.theme-nia_&]:text-white/55">
-                Keep up with Bounti news and product features
+                Keep up with latest stories, features, and more from &quot;dailymattr&quot;.
               </p>
               <Button
                 nativeButton={false}
@@ -60,7 +60,7 @@ export function Footer() {
           <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 lg:flex lg:shrink-0 lg:gap-10 xl:gap-20">
             {footerGroups.map((group) => (
               <div key={group.title} className="flex flex-col gap-3 whitespace-nowrap">
-                <p className="text-lg leading-7 tracking-[-0.02rem] text-foreground">{group.title}</p>
+                <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">{group.title}</p>
                 <ul className="flex flex-col gap-1">
                   {group.links.map((l) => (
                     <li key={l.label}>
@@ -106,7 +106,7 @@ export function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-16 flex flex-col gap-2 border-t border-border pt-6 text-sm leading-5 text-muted-foreground sm:flex-row sm:items-start sm:justify-between sm:gap-8 [.theme-nia_&]:text-white/50">
+        <div className="mt-16 flex flex-col gap-2 border-t border-border pt-6 text-[12px] leading-5 text-muted-foreground sm:flex-row sm:items-start sm:justify-between sm:gap-8 [.theme-nia_&]:text-white/50">
           <p className="lg:whitespace-nowrap">
             The trademarks, logos, and service marks displayed on this site are the property of their
             respective owners.
