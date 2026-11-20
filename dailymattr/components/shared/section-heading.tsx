@@ -4,6 +4,11 @@ import { FadeIn } from "./fade-in"
 type SectionHeadingProps = {
   eyebrow?: string
   title: React.ReactNode
+  /**
+   * Muted first line above the title (Figma 8859:12699): the title then takes the two-tone
+   * style, Helvetica Neue Medium 48/48 −1.5px #1c1c1e with this line at 50% opacity.
+   */
+  lead?: React.ReactNode
   description?: React.ReactNode
   className?: string
   /** Extra classes for the <h2>, e.g. a heavier weight; merged after the defaults. */
@@ -19,10 +24,12 @@ type SectionHeadingProps = {
  * Landing page section heading (Figma 8585:9489), Helvetica Neue except the title:
  * eyebrow Medium 18/18 −0.16px #3979ff · title Inter Tight Semibold 48/48 −1.5px #292929 ·
  * description Regular 18/26 #696969 · actions 40px below.
+ * With a `lead`, the title is the two-tone style used from the app preview down.
  */
 export function SectionHeading({
   eyebrow,
   title,
+  lead,
   description,
   className,
   titleClassName,
@@ -39,11 +46,18 @@ export function SectionHeading({
       )}
       <h2
         className={cn(
-          "font-tight text-3xl leading-none font-semibold tracking-[-0.0625rem] sm:text-4xl lg:text-5xl lg:tracking-[-0.0938rem]",
-          inverted ? "text-white" : "text-[#292929]",
+          "text-3xl leading-none tracking-[-0.0625rem] sm:text-4xl lg:text-5xl lg:tracking-[-0.0938rem]",
+          lead ? "font-helvetica font-medium" : "font-tight font-semibold",
+          inverted ? "text-white" : lead ? "text-[#1c1c1e]" : "text-[#292929]",
           titleClassName
         )}
       >
+        {lead && (
+          <>
+            <span className={inverted ? "text-white/50" : "text-[rgba(28,28,30,0.5)]"}>{lead}</span>
+            <br />
+          </>
+        )}
         {title}
       </h2>
       {description && (

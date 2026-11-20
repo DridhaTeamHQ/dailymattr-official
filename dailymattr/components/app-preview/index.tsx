@@ -15,13 +15,8 @@ export function AppPreviewSection() {
     <section className={cn("flex w-full flex-col items-center gap-12 bg-[#f5f5f7] py-[6.25rem]", SITE_GUTTER)}>
       <SectionHeading
         eyebrow="For curious minds. Busy lives."
-        title={
-          <>
-            Open the app.
-            <br />
-            Find your way into the story.
-          </>
-        }
+        lead="Open the app."
+        title="Find your way into the story."
       >
         <Button
           nativeButton={false}

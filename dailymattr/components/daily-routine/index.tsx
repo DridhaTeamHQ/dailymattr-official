@@ -14,13 +14,8 @@ export function DailyRoutineSection() {
     <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem] lg:gap-36">
       <SectionHeading
         eyebrow="A little curiosity, every day"
-        title={
-          <>
-            Make staying informed
-            <br />
-            part of your routine.
-          </>
-        }
+        lead="Make staying informed"
+        title="part of your routine."
       >
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button

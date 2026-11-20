@@ -632,15 +632,9 @@ export function BriefingBentoSection() {
         <SectionHeading
           inverted
           className="mx-auto"
-          titleClassName="font-medium"
           eyebrow="Less to sift through. More to take away."
-          title={
-            <>
-              A daily briefing
-              <br />
-              with a clear purpose.
-            </>
-          }
+          lead="A daily briefing"
+          title="with a clear purpose."
         />
 
         <div className="mt-10 lg:mt-[4.2rem]">

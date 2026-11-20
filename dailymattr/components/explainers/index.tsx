@@ -14,13 +14,8 @@ export function ExplainersSection() {
     <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem]">
       <SectionHeading
         eyebrow="Follow your curiosity"
-        title={
-          <>
-            Something worth watching.
-            <br />
-            Something worth talking about.
-          </>
-        }
+        lead="Something worth watching."
+        title="Something worth talking about."
         description="Find a fresh perspective on the subjects that keep coming up in your conversations."
       >
         <Button

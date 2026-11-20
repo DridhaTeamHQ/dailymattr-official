@@ -16,13 +16,8 @@ export function LookInsideSection() {
       <div className={cn(PANEL_WIDTH, "flex aspect-[4/5] flex-col items-center justify-center rounded-[1rem] bg-[#ededed] px-4 sm:aspect-[1507/889] lg:aspect-auto lg:h-[min(calc((100vw-8rem)*889/1507),calc(100svh-7rem))]")}>
         <SectionHeading
           eyebrow="A look inside dailymattr"
-          title={
-            <>
-              See how your next
-              <br />
-              daily habit comes together.
-            </>
-          }
+          lead="See how your next"
+          title="daily habit comes together."
         >
           <Link
             href="/download"
