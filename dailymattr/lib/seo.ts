@@ -138,6 +138,21 @@ export const defaultSeo: Record<string, PageSeo> = {
     description: "User support and assistance for the dailyMattr website and app.",
     noindex: true,
   },
+  "/inside": {
+    title: "Inside dailyMattr",
+    description: "Inside dailyMattr: the team, the newsroom and how the platform is built.",
+    noindex: true,
+  },
+  "/login": {
+    title: "Log in",
+    description: "Log in to your dailyMattr account.",
+    noindex: true,
+  },
+  "/download": {
+    title: "Get the App",
+    description: "Download the dailyMattr app for iPhone and Android.",
+    noindex: true,
+  },
   "/termsandconditions": {
     title: "Terms and Conditions",
     description: "The terms that apply to the dailyMattr website and services.",

@@ -34,7 +34,7 @@ redirects `/about/` to `/about`.
 ### Latest News
 - **Slug:** `/news/`
 - **Old URL:** https://www.dailymattr.com/news/
-- **Status:** Empty page (`app/news/page.tsx`), linked from the footer's Latest Stories → Top. Design to build. The navbar's "Latest Stories" still links to `/stories`; point it to `/news/`.
+- **Status:** Empty page (`app/news/page.tsx`), linked from the navbar's "Latest Stories", the announcement bar, the "today's stories" buttons, Pix and the footer's Latest Stories → Top. Design to build. (Those links used to point to `/stories`.)
 - **Title:** Latest News
 - **Description:** News articles, updates and current affairs. Latest news, breaking news and the latest headlines today from India and around the world.
 
@@ -176,6 +176,9 @@ These pages have no old URL. Keep their slugs as they are.
 | `/benchmark/` | Benchmark (was `/newsroom/`) | Exists (linked from the nav and the footer's Inside DailyMattr → Benchmark) |
 | `/advertise/` | Advertise | Exists (linked from the footer's Support → Advertise) |
 | `/careers/` | Careers | Empty page (`app/careers/page.tsx`), linked from the footer's Inside DailyMattr → Careers. Design to build. |
+| `/inside/` | Inside dailyMattr | Empty page (`app/inside/page.tsx`), linked from the navbar. Design to build. |
+| `/login/` | Log in | Empty page (`app/login/page.tsx`), linked from the navbar and mobile menu. Sign-in to build. |
+| `/download/` | Get the app | Empty page (`app/download/page.tsx`), linked from the navbar's "Get the app" and the Download buttons on the home page. Design to build. |
 
 Empty pages render `components/shared/empty-page.tsx` and are marked `noindex` in `lib/seo.ts`, which keeps them out of search and the sitemap. Remove `noindex` when a page gets its content.
 

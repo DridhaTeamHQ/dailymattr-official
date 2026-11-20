@@ -85,7 +85,7 @@ export const realStories = {
       category: "World",
       headline: "Russia-Ukraine ceasefire allows aid to reach Oleshky's remaining residents",
       fact: "One key fact from the story.",
-      href: "/stories",
+      href: "/news",
       // Figma crops the portrait shot to its lower half (8636:2501).
       image: {
         src: "/pix/story-world.png",
@@ -98,21 +98,21 @@ export const realStories = {
       category: "Business",
       headline: "Story headline",
       fact: "One key fact from the story.",
-      href: "/stories",
+      href: "/news",
     },
     {
       id: "culture",
       category: "Culture",
       headline: "Story headline",
       fact: "One key fact from the story.",
-      href: "/stories",
+      href: "/news",
     },
     {
       id: "sport",
       category: "Sport",
       headline: "Story headline",
       fact: "One key fact from the story.",
-      href: "/stories",
+      href: "/news",
     },
   ] satisfies PixStory[],
 }
@@ -120,5 +120,5 @@ export const realStories = {
 export const getStarted = {
   eyebrow: "Get started",
   title: "Get the story. Keep your time.",
-  cta: { label: "Read with Pix", href: "/stories" },
+  cta: { label: "Read with Pix", href: "/news" },
 }

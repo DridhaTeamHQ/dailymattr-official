@@ -2,7 +2,7 @@ export type NavItem = { label: string; href?: string; menu?: "features" }
 
 export const leftLinks: NavItem[] = [
   { label: "Features", menu: "features" },
-  { label: "Latest Stories", href: "/stories" },
+  { label: "Latest Stories", href: "/news" },
   { label: "Newsletter", href: "/newsletter" },
 ]
 
