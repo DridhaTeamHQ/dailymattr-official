@@ -1,10 +1,10 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { EmptyPage } from "@/components/shared/empty-page"
+import { NewsPageView } from "@/components/news/sections"
 
 export const generateMetadata = () => seoMetadata("/news")
 
-/** /news: empty until the Latest News page is built (PAGE-SLUGS.md). */
+/** /news: Latest news, every section's stories. UI only on sample stories (components/news/stories.ts). */
 export default function NewsPage() {
-  return <EmptyPage title="Latest News" />
+  return <NewsPageView />
 }

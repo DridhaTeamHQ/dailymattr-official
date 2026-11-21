@@ -1,10 +1,15 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { EmptyPage } from "@/components/shared/empty-page"
+import { TermsArticle, TermsCta, TermsHero } from "@/components/terms/sections"
 
 export const generateMetadata = () => seoMetadata("/termsandconditions")
 
-/** /termsandconditions: empty until the Terms and Conditions page is built (PAGE-SLUGS.md). */
 export default function TermsPage() {
-  return <EmptyPage title="Terms and Conditions" />
+  return (
+    <main className="flex-1 bg-white">
+      <TermsHero />
+      <TermsArticle />
+      <TermsCta />
+    </main>
+  )
 }

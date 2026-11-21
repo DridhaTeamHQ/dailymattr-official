@@ -26,7 +26,7 @@ export const formats: Format[] = [
   { value: "nia", title: "NIA", subtitle: "Understand both sides", image: appMockup, videoSrc: inside("nia.mp4"), duration: "10:00", sparkle: true },
   { value: "qix", title: "Qix", subtitle: "Watch short explainers", image: appMockup, videoSrc: inside("qix final.mp4"), duration: "10:00" },
   { value: "trax", title: "Trax", subtitle: "Listen to stories", image: appMockup, videoSrc: inside("trax.mp4"), duration: "10:00" },
+  { value: "polls", title: "Polls", subtitle: "Share your opinion", image: appMockup, videoSrc: inside("LIVE POLLS.mp4"), duration: "10:00" },
   { value: "xplaind", title: "Xplaind", subtitle: "Understand topics better", image: appMockup, videoSrc: inside("explained.mp4"), duration: "10:00" },
   { value: "streaks", title: "Streaks", subtitle: "Keep your habit going", image: appMockup, videoSrc: inside("streaks.mp4"), duration: "10:00" },
-  { value: "polls", title: "Polls", subtitle: "Share your opinion", image: appMockup, videoSrc: inside("LIVE POLLS.mp4"), duration: "10:00" },
 ]

@@ -1,10 +1,17 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { EmptyPage } from "@/components/shared/empty-page"
+import { CareersApply, CareersHero, CareersRoles, CareersValues } from "@/components/careers/sections"
 
 export const generateMetadata = () => seoMetadata("/careers")
 
-/** /careers: empty until the Careers page is built. */
+/** /careers: starter content with placeholder roles (components/careers/content.ts). */
 export default function CareersPage() {
-  return <EmptyPage title="Careers" />
+  return (
+    <main className="flex-1 bg-white">
+      <CareersHero />
+      <CareersValues />
+      <CareersRoles />
+      <CareersApply />
+    </main>
+  )
 }

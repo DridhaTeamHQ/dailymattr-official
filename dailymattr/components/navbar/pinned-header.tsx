@@ -51,10 +51,11 @@ export function PinnedHeader({ children }: { children: React.ReactNode }) {
     // the page size so all its links fit. At scale 1 (desktop) it stays 1:1.
     // NIA pins its root to 16px, so there the nav is zoomed by the laptop ratio instead
     // (--site-scale-auto, floored at 90% from 1280px): the same size as on every other page.
+    // The zoom is kept in --nav-zoom so the nav row can undo it for its fixed 64px side gutter.
     <header
       ref={ref}
       className={cn(
-        "sticky top-0 z-50 w-full bg-background xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)] [.nia-layout_&]:xl:[zoom:max(0.9,var(--site-scale-auto,1))]",
+        "sticky top-0 z-50 w-full bg-background [--nav-zoom:1] [zoom:var(--nav-zoom)] xl:[--nav-zoom:max(1,calc(0.9/var(--site-scale,1)))] [.nia-layout_&]:lg:[--nav-zoom:var(--site-scale-auto,1)] [.nia-layout_&]:xl:[--nav-zoom:max(0.9,var(--site-scale-auto,1))]",
         traxRoute && "trax-route",
         traxNav && "trax-nav",
       )}

@@ -14,12 +14,19 @@ import durationPlay from "@/public/home/duration-play.png"
 import niaStar from "@/public/home/nia-star.svg"
 
 // Figma 8859:12712: a #f9f8f8 panel, radius 14.93, opening to 1792 × 1008 with the app mockup
-// (8859:12714) covering it. Tab bar 8859:12720: black, 1211 × 78, centred, 37px above the
-// bottom, padding 5.6, radius 14.93; seven 67.2-tall tabs, radius 11.2, the active one on 15%
-// white. Inactive tabs sit at 50% opacity. Phones and tablets keep a full-width bar 24px in.
-// Subtitles show once the box is wide enough for all seven (78rem).
+// (8859:12714) covering it. Tab bar 8859:12720: 1211 × 78, centred, 37px above the bottom,
+// padding 5.6, radius 14.93; seven 67.2-tall tabs, radius 11.2. Phones and tablets keep a
+// full-width bar 24px in. Subtitles show once the box is wide enough for all seven (78rem).
+// The bar is frosted glass rather than solid black: a dark tint (so white labels stay legible
+// over the light frames of the clips) blurred and saturated over the video, a soft top sheen,
+// a hairline white edge and a lift shadow. The active tab is a brighter glass pill.
 const fade = "transition-opacity duration-300"
-const inactive = "opacity-50 group-hover/trigger:opacity-80"
+// Inactive tabs at 60% (Figma: 50%), a touch higher so they read on the lighter glass.
+const inactive = "opacity-60 group-hover/trigger:opacity-90"
+const glassBar =
+  "bg-black/55 bg-linear-to-b from-white/[0.12] to-white/[0.02] backdrop-blur-2xl backdrop-saturate-[1.6] ring-1 ring-white/15 ring-inset shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_12px_40px_-12px_rgba(0,0,0,0.55)]"
+const glassPill =
+  "absolute inset-0 rounded-[0.7rem] bg-white/[0.18] bg-linear-to-b from-white/15 to-transparent ring-1 ring-white/25 ring-inset shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_14px_-4px_rgba(0,0,0,0.35)]"
 // NIA's brand gradient, the same as the NIA title in the bento and on About.
 const niaGradient = "bg-[linear-gradient(246.16deg,#af75ff_3.11%,#4d90fd_93.93%)]"
 
@@ -33,29 +40,39 @@ export function FormatTabs() {
   const pillId = `format-pill-${useId()}`
   // Length of a video on screen, read once its metadata loads; stills use the format's own text.
   const [durations, setDurations] = useState<Record<string, number>>({})
+  // Whole seconds played of each tab's clip, so the badge counts down as it plays (and starts
+  // over when the clip loops). Only whole seconds are stored, so it re-renders once a second.
+  const [elapsed, setElapsed] = useState<Record<string, number>>({})
   const videoLength = durations[activeFormat.value]
   const durationText =
-    activeFormat.videoSrc && videoLength !== undefined ? formatTime(videoLength) : activeFormat.duration
+    activeFormat.videoSrc && videoLength !== undefined
+      ? formatTime(Math.max(0, videoLength - (elapsed[activeFormat.value] ?? 0)))
+      : activeFormat.duration
   // Tabs that share a still don't re-animate it when switching between them.
   const mediaKey = activeFormat.videoSrc ?? activeFormat.image.src
 
   return (
     <Tabs
       value={active}
-      onValueChange={(value) => setActive(value as string)}
+      onValueChange={(value) => {
+        // A tab's clip mounts again from the start, so its countdown does too.
+        setElapsed((prev) => ({ ...prev, [value as string]: 0 }))
+        setActive(value as string)
+      }}
       // At lg and up the width follows --expand-w (set by ExpandOnScroll as the section
-      // scrolls in), falling back to the starting width (START_W) when it isn't set.
+      // scrolls in), falling back to the starting width (START_W) when it isn't set. On every
+      // screen the box is capped so its 16:9 height fits between the pinned nav and the bottom
+      // of the screen (1.5rem clear of each): short screens get a narrower box, never a cropped clip.
       className={cn(
         "@container gap-0",
         CONTENT_WIDTH,
-        "lg:w-[var(--expand-w,85vw)] lg:max-w-none"
+        "max-w-[calc((100svh_-_var(--nav-height,4rem)_-_3rem)*16/9)] lg:w-[var(--expand-w,85vw)]"
       )}
     >
       <AspectRatio
-        ratio={1200 / 720}
-        // At lg and up the height follows --expand-h (falls back to the starting 16:9 height,
-        // START_H in expand-on-scroll.tsx, capped at MAX_H so it fits the screen).
-        className="overflow-hidden rounded-[0.9333rem] bg-[#f9f8f8] lg:aspect-auto lg:h-[var(--expand-h,min(85vw*0.5625,100svh_-_6rem))]"
+        // 16:9 everywhere, the shape of the clips, so object-cover shows the whole frame.
+        ratio={16 / 9}
+        className="overflow-hidden rounded-[0.9333rem] bg-[#f9f8f8]"
       >
         {/*
           Decorative preview layer. Both media are mounted while the tab changes, so the
@@ -82,6 +99,11 @@ export function FormatTabs() {
                 onLoadedMetadata={(e) => {
                   const d = e.currentTarget.duration
                   if (Number.isFinite(d)) setDurations((prev) => ({ ...prev, [activeFormat.value]: d }))
+                }}
+                onTimeUpdate={(e) => {
+                  const s = Math.floor(e.currentTarget.currentTime)
+                  const v = activeFormat.value
+                  setElapsed((prev) => (prev[v] === s ? prev : { ...prev, [v]: s }))
                 }}
               />
             ) : (
@@ -112,7 +134,7 @@ export function FormatTabs() {
           </TabsContent>
         ))}
 
-        <TabsList className="absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[0.9333rem] bg-black p-1.5 group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]">
+        <TabsList className={cn("absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[0.9333rem] p-1.5group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]", glassBar)}>
           {formats.map((f) => {
             const isActive = f.value === active
             // NIA: grey star, and the title and star take the NIA gradient on hover.
@@ -128,17 +150,23 @@ export function FormatTabs() {
               >
                 {isActive &&
                   (reduceMotion ? (
-                    <span className="absolute inset-0 rounded-[0.7rem] bg-white/15" />
+                    <span className={glassPill} />
                   ) : (
                     // Shared layoutId: the pill glides from the old tab to this one.
                     <motion.span
                       layoutId={pillId}
-                      className="absolute inset-0 rounded-[0.7rem] bg-white/15 will-change-transform"
+                      className={cn(glassPill, "will-change-transform")}
                       transition={{ type: "spring", bounce: 0.15, visualDuration: 0.4 }}
                     />
                   ))}
                 {/* Bold 16.8/17.92 over Regular 14/15.68 at 50% white; inactive labels at 50%. */}
-                <span className="relative text-sm font-bold lg:text-[1.05rem] lg:leading-[1.12rem]">
+                {/* NIA is a step heavier (extra-bold): the gradient on hover reads thinner than white. */}
+                <span
+                  className={cn(
+                    "relative text-sm lg:text-[1.05rem] lg:leading-[1.12rem]",
+                    f.sparkle ? "font-extrabold" : "font-bold"
+                  )}
+                >
                   <span className={cn(fade, !isActive && inactive, niaHover && "group-hover/trigger:opacity-0")}>
                     {f.title}
                   </span>
@@ -167,7 +195,7 @@ export function FormatTabs() {
                 </span>
                 <span
                   className={cn(
-                    "relative hidden text-sm leading-[0.98rem] font-normal text-white/50 @min-[78rem]:block",
+                    "relative hidden text-sm leading-[0.98rem] font-normal text-white/65 @min-[78rem]:block",
                     fade,
                     !isActive && inactive
                   )}

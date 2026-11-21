@@ -1,10 +1,15 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { EmptyPage } from "@/components/shared/empty-page"
+import { SupportChannels, SupportHero } from "@/components/support/sections"
 
 export const generateMetadata = () => seoMetadata("/support")
 
-/** /support (the footer's Contact link): empty until the Support page is built (PAGE-SLUGS.md). */
+/** /support: the footer's Contact link. */
 export default function SupportPage() {
-  return <EmptyPage title="Support" />
+  return (
+    <main className="flex-1 bg-white">
+      <SupportHero />
+      <SupportChannels />
+    </main>
+  )
 }

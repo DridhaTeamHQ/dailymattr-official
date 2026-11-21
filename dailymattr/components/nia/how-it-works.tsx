@@ -7,7 +7,13 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { FadeIn } from "@/components/shared/fade-in";
 import { cn } from "cn";
 import { howItWorksIntro, howItWorksSteps } from "./content";
+import { StreamedWords, type Word } from "./hero-chat";
 import { NiaMark } from "./nia-mark";
+import { TypingDots } from "./typing-dots";
+
+/** A reply split into words, numbered in reading order so each one fades in after the last. */
+const toWords = (text: string): Word[] =>
+  text.split(" ").map((word, order) => ({ word, order, strong: false }));
 
 /** Ambient blue glow bleeding off the right of the section. Figma node 8856:9959. */
 const glow =
@@ -73,29 +79,19 @@ type Turn = { index: number; status: "typing" | "done" };
 /** How long NIA "types" before its canned reply appears. */
 const TYPING_MS = 1100;
 
-function NiaBubble({ children }: { children: React.ReactNode }) {
+/**
+ * NIA's reply, styled like the hero chat (hero-chat.tsx): the mark and "Nia" above, then the
+ * answer as plain text with no bubble. While it types, only the dots show under the name.
+ */
+function NiaReply({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-2.5">
-      <NiaMark size={26} iconSize={14} />
-      <div className="max-w-[486px] flex-1 rounded-[16px] rounded-tl-[4px] border border-white/8 bg-[#1c1c20] p-3.5">
-        {children}
+    <div className="flex w-full flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <NiaMark size={26} iconSize={14} />
+        <p className="text-sm leading-4.5 font-semibold text-white/70">Nia</p>
       </div>
+      {children}
     </div>
-  );
-}
-
-function TypingDots() {
-  return (
-    <span className="flex h-5 items-center gap-1.5" aria-label="NIA is typing">
-      {[0, 1, 2].map((i) => (
-        <motion.span
-          key={i}
-          className="size-1.5 rounded-full bg-white/50"
-          animate={{ opacity: [0.3, 1, 0.3], y: [0, -2, 0] }}
-          transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15 }}
-        />
-      ))}
-    </span>
   );
 }
 
@@ -269,34 +265,29 @@ export function NiaHowItWorks() {
                 </AnimatePresence>
 
                 {/* Top padding lives inside the scroller so messages run up to the panel edge */}
-                <div className="mt-auto flex flex-col gap-4 pt-4 sm:pt-10">
+                <div className="mt-auto flex flex-col gap-8 pt-4 sm:pt-10">
                   {turns.map((turn) => {
                     const step = howItWorksSteps[turn.index];
                     return (
                       <div key={step.number} className="flex flex-col gap-4">
                         <motion.div {...enter} className="flex justify-end">
-                          <div className="rounded-[16px] rounded-br-[4px] bg-linear-to-r/srgb from-[#3979ff] to-[#5b6bff] px-3.5 py-2.5 drop-shadow-[0px_6px_9px_rgba(57,121,255,0.35)]">
-                            <p className="text-sm leading-5 font-medium text-white">
+                          <div className="max-w-[220px] rounded-[20px] bg-white/8 px-4 py-2.5 lg:max-w-[260px] lg:rounded-[22px] lg:px-5 lg:py-3">
+                            <p className="text-sm leading-5 text-white/90 lg:text-md lg:leading-5.5">
                               {step.question}
                             </p>
                           </div>
                         </motion.div>
 
                         <motion.div {...enter}>
-                          <NiaBubble>
+                          <NiaReply>
                             {turn.status === "typing" ? (
-                              <TypingDots />
+                              <TypingDots className="h-6 lg:h-7" />
                             ) : (
-                              <motion.p
-                                initial={reduceMotion ? false : { opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                                className="text-sm leading-5 text-white/80"
-                              >
-                                {step.answer}
-                              </motion.p>
+                              <p className="max-w-[486px] text-sm leading-5.5 tracking-[-0.1px] text-white/95 lg:text-base lg:leading-6.5">
+                                <StreamedWords words={toWords(step.answer)} play={!reduceMotion} />
+                              </p>
                             )}
-                          </NiaBubble>
+                          </NiaReply>
                         </motion.div>
                       </div>
                     );
@@ -304,18 +295,13 @@ export function NiaHowItWorks() {
                 </div>
               </div>
 
-              <div className="relative flex h-12 shrink-0 items-center justify-between rounded-[12px] border border-white/8 bg-[#1c1c20] px-3.5">
-                <p className="text-sm leading-5 text-white/40">
+              {/* Same composer as the hero chat (hero-chat.tsx); display only here. */}
+              <div className="relative flex h-12 shrink-0 items-center justify-between rounded-[16px] bg-[linear-gradient(180deg,rgba(0,0,0,0.34)_22.4%,rgba(0,0,0,0.067)_100%),linear-gradient(90deg,rgb(38,38,42)_0%,rgb(38,38,42)_100%)] pr-2.5 pl-4 shadow-[0px_0px_0px_0.75px_rgba(255,255,255,0.08),0px_2px_5px_0px_rgba(0,0,0,0.04)]">
+                <p className="text-sm leading-5 tracking-[-0.065px] text-[#606169]">
                   Ask a follow-up question
                 </p>
-                <span className="grid size-7 shrink-0 -rotate-90 place-items-center rounded-full bg-[#3979ff] drop-shadow-[0px_0px_7px_rgba(57,121,255,0.5)]">
-                  <Image
-                    src="/nia/send-14.svg"
-                    alt=""
-                    width={14}
-                    height={14}
-                    className="block"
-                  />
+                <span className="grid size-7 shrink-0 place-items-center rounded-[14px] bg-[#3979ff] drop-shadow-[0px_0px_7px_rgba(57,121,255,0.5)]">
+                  <Image src="/nia/send.svg" alt="" width={16} height={16} className="block" />
                 </span>
               </div>
             </div>

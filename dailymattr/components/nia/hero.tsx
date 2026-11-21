@@ -2,8 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { FadeIn } from "@/components/shared/fade-in"
-import { heroChat } from "./content"
-import { NiaMark } from "./nia-mark"
+import { HeroChat } from "./hero-chat"
 
 /** Radial sheen behind the "Ask NIA" pill. Figma node 8856:9119. */
 const askButtonBackground = [
@@ -73,76 +72,7 @@ export function NiaHero() {
             className="pointer-events-none absolute -top-[5px] left-1/2 h-[78px] w-[320px] max-w-full -translate-x-1/2 rounded-full bg-linear-to-r/srgb from-[rgba(175,117,255,0.08)] from-[2.404%] to-[rgba(77,144,253,0.08)] to-[97.5%] blur-[36px]"
           />
 
-          <div className="relative flex flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_13.11%,rgba(255,255,255,0)_100%),linear-gradient(90deg,rgb(14,14,15)_0%,rgb(14,14,15)_100%)] shadow-[0px_7px_8px_-4px_rgba(0,0,0,0.2),0px_11px_28px_-4px_rgba(0,0,0,0.2),0px_0px_0px_0.5px_rgba(255,255,255,0.16),inset_0px_0px_11px_0px_rgba(255,255,255,0.1)]">
-            {/* Card header */}
-            <div className="flex h-[72px] shrink-0 items-center gap-3 pr-4 pl-5 font-roboto lg:h-[90px] lg:pl-7">
-              <NiaMark size={34} iconSize={18} />
-              <p className="text-lg leading-5.5 font-semibold tracking-[-0.3px] text-white lg:text-xl lg:leading-6.5">
-                {heroChat.title}
-              </p>
-            </div>
-
-            {/* Conversation */}
-            <div className="flex flex-col items-end gap-4 px-5 pb-2 font-roboto lg:px-7">
-              <div className="w-[185px] rounded-[20px] bg-white/8 px-4 py-2.5 lg:w-[201px] lg:rounded-[22px] lg:px-5 lg:py-3">
-                <p className="text-sm leading-5 text-white/90 lg:text-md lg:leading-5.5">{heroChat.question}</p>
-              </div>
-
-              <div className="flex w-full flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <NiaMark size={26} iconSize={14} />
-                  <p className="text-sm leading-4.5 font-semibold text-white/70">Nia</p>
-                </div>
-
-                <p className="max-w-[350px] text-md leading-6 tracking-[-0.1px] text-white/95 lg:text-lg lg:leading-7">
-                  {heroChat.intro}
-                </p>
-
-                <ul className="flex flex-col gap-2.5">
-                  {heroChat.bullets.map((b) => (
-                    <li key={b.id} className="flex gap-2.5">
-                      <span className="font-sans text-md leading-6 text-white/50 lg:text-lg lg:leading-7">•</span>
-                      <span
-                        className={`max-w-[330px] text-md leading-6 tracking-[-0.1px] lg:text-lg lg:leading-7 ${
-                          b.muted ? "text-white/32" : "text-white/95"
-                        }`}
-                      >
-                        {"highlight" in b ? (
-                          <>
-                            {b.lead}{" "}
-                            <span className="inline-block rounded-[5px] bg-[#3979ff] px-1.5 font-sans align-baseline text-white drop-shadow-[0px_0px_6px_rgba(91,140,255,0.45)]">
-                              {b.highlight}
-                            </span>{" "}
-                            {b.trail}
-                          </>
-                        ) : (
-                          b.text
-                        )}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Composer */}
-            <div className="mt-auto flex flex-col bg-linear-to-b/srgb from-[rgba(39,39,42,0)] via-[rgba(26,26,28,0.98)] via-[76.9%] to-[#27272a] to-[124.6%] px-2 py-5 lg:py-7">
-              <div className="relative flex h-16 items-start rounded-[16px] bg-[linear-gradient(180deg,rgba(0,0,0,0.34)_22.4%,rgba(0,0,0,0.067)_100%),linear-gradient(90deg,rgb(38,38,42)_0%,rgb(38,38,42)_100%)] py-2.5 pr-[50px] pl-4 shadow-[0px_0px_0px_0.75px_rgba(255,255,255,0.08),0px_2px_5px_0px_rgba(0,0,0,0.04)]">
-                <p className="text-sm leading-5 tracking-[-0.065px] text-[#606169]">
-                  {heroChat.placeholder}
-                </p>
-                <span className="absolute right-[14px] bottom-[6px] grid size-7 place-items-center rounded-[14px] bg-[linear-gradient(180deg,rgba(255,255,255,0.14)_13.11%,rgba(255,255,255,0)_100%),linear-gradient(90deg,rgb(45,45,49)_0%,rgb(45,45,49)_100%)] shadow-[inset_0px_0.5px_0px_0px_rgba(255,255,255,0.2)]">
-                  <Image
-                    src="/nia/send.svg"
-                    alt=""
-                    width={16}
-                    height={16}
-                    className="block"
-                  />
-                </span>
-              </div>
-            </div>
-          </div>
+          <HeroChat />
         </FadeIn>
       </div>
     </section>

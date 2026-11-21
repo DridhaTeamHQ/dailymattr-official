@@ -34,14 +34,14 @@ redirects `/about/` to `/about`.
 ### Latest News
 - **Slug:** `/news/`
 - **Old URL:** https://www.dailymattr.com/news/
-- **Status:** Empty page (`app/news/page.tsx`), linked from the navbar's "Latest Stories", the announcement bar, the "today's stories" buttons, Pix and the footer's Latest Stories → Top. Design to build. (Those links used to point to `/stories`.)
+- **Status:** Exists (`app/news/page.tsx`), linked from the navbar's "Latest Stories", the announcement bar, the "today's stories" buttons, Pix and the footer's Latest Stories → Top. UI only: sample stories (`components/news/stories.ts`, the old site's list from 21 November 2026) until the CMS feed exists, so it stays `noindex`. Each story opens its own page at `/news/<story-slug>/` (the old site's URLs), served by `app/news/[slug]/page.tsx` with the old story page's layout and each story's key points and source (`components/news/articles.ts`), also `noindex`.
 - **Title:** Latest News
 - **Description:** News articles, updates and current affairs. Latest news, breaking news and the latest headlines today from India and around the world.
 
 ### Newsletter
 - **Slug:** `/newsletter/`
 - **Old URL:** https://www.dailymattr.com/newsletter/
-- **Status:** Empty page (`app/newsletter/page.tsx`), linked from the navbar and the footer's "Subscribe to newsletter". Design to build.
+- **Status:** Exists (`app/newsletter/page.tsx`), linked from the navbar and the footer's "Subscribe to newsletter"; the home page's newsletter card submits here and prefills the form. The sign-up form is UI only (no mailing-list provider yet), so the page stays `noindex` until it is connected.
 - **Title:** Newsletter
 - **Description:** Curated news briefings and summarized stories, delivered as a daily news briefing.
 
@@ -54,56 +54,56 @@ All category pages sit under `/news/<category>/`.
 ### India News
 - **Slug:** `/news/india/`
 - **Old URL:** https://www.dailymattr.com/news/india/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** India News
 - **Description:** Latest India news, national news headlines, politics news, government updates and current affairs.
 
 ### World News
 - **Slug:** `/news/world/`
 - **Old URL:** https://www.dailymattr.com/news/world/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** World News
 - **Description:** Latest world news, international news headlines, global affairs and major developments from around the world.
 
 ### Business News
 - **Slug:** `/news/business/`
 - **Old URL:** https://www.dailymattr.com/news/business/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** Business News
 - **Description:** Latest business news, financial updates, market developments, company news and economic current affairs.
 
 ### Technology News
 - **Slug:** `/news/technology/`
 - **Old URL:** https://www.dailymattr.com/news/technology/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** Technology News
 - **Description:** Latest technology news, artificial intelligence updates, digital innovation, gadgets and tech industry developments.
 
 ### Sports News
 - **Slug:** `/news/sports/`
 - **Old URL:** https://www.dailymattr.com/news/sports/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** Sports News
 - **Description:** Latest sports news, cricket updates, sports headlines, tournaments and major sporting events.
 
 ### Entertainment News
 - **Slug:** `/news/entertainment/`
 - **Old URL:** https://www.dailymattr.com/news/entertainment/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** Entertainment News
 - **Description:** Latest entertainment news, cinema news, movie updates, celebrity news and film industry headlines.
 
 ### Lifestyle News
 - **Slug:** `/news/lifestyle/`
 - **Old URL:** https://www.dailymattr.com/news/lifestyle/
-- **Status:** Empty page (`app/news/[category]/page.tsx`), linked from the footer. Design to build.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
 - **Title:** Lifestyle News
 - **Description:** Lifestyle news, health news, wellness topics, culture and everyday-interest stories.
 
 ### State News
 - **Slug:** `/news/states/`
 - **Old URL:** https://www.dailymattr.com/news/states/
-- **Status:** To build
+- **Status:** Exists (`app/news/[slug]/page.tsx`), linked from the /news tabs (not in the footer yet). UI only on sample stories, still `noindex`.
 - **Title:** State News
 - **Description:** Latest state news, regional news, district news, local news updates and important developments across India.
 
@@ -132,7 +132,7 @@ All category pages sit under `/news/<category>/`.
 ### Support
 - **Slug:** `/support/`
 - **Old URL:** https://www.dailymattr.com/support/
-- **Status:** Empty page (`app/support/page.tsx`), linked from the footer's Inside DailyMattr → Contact. Design to build.
+- **Status:** Exists (`app/support/page.tsx`): support form (opens an email to support@dailymattr.com) and other contact routes. Linked from the footer's Inside DailyMattr → Contact.
 - **Title:** Support
 - **Description:** User support and assistance for the dailymattr website and app.
 
@@ -146,9 +146,9 @@ All category pages sit under `/news/<category>/`.
 ### Terms and Conditions
 - **Slug:** `/termsandconditions/`
 - **Old URL:** https://www.dailymattr.com/termsandconditions/
-- **Status:** Empty page (`app/termsandconditions/page.tsx`), linked from the footer's Legal → Terms. Design to build.
+- **Status:** Exists (`app/termsandconditions/page.tsx`), same layout as the Privacy Policy. Linked from the footer's Legal → Terms.
 - **Title:** Terms and Conditions
-- **Description:** The terms that apply to the dailymattr website and services.
+- **Description:** The terms that govern your use of the dailymattr app and related services, provided by Dridha Technologies Private Limited.
 
 ---
 
@@ -175,7 +175,7 @@ These pages have no old URL. Keep their slugs as they are.
 | `/formats/xplaind/` | Xplaind – Explainers | To build (already linked) |
 | `/benchmark/` | Benchmark (was `/newsroom/`) | Exists (linked from the nav and the footer's Inside DailyMattr → Benchmark) |
 | `/advertise/` | Advertise | Exists (linked from the footer's Support → Advertise) |
-| `/careers/` | Careers | Empty page (`app/careers/page.tsx`), linked from the footer's Inside DailyMattr → Careers. Design to build. |
+| `/careers/` | Careers | Starter content (`app/careers/page.tsx`) with placeholder roles; still `noindex` until real openings are added. Linked from the footer's Inside DailyMattr → Careers. |
 | `/inside/` | Inside dailyMattr | Empty page (`app/inside/page.tsx`), linked from the navbar. Design to build. |
 | `/login/` | Log in | Empty page (`app/login/page.tsx`), linked from the navbar and mobile menu. Sign-in to build. |
 | `/download/` | Get the app | Empty page (`app/download/page.tsx`), linked from the navbar's "Get the app" and the Download buttons on the home page. Design to build. |

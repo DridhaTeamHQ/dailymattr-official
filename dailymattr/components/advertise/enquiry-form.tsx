@@ -11,11 +11,12 @@ import { cn } from "@/lib/utils"
 import { enquiry } from "./content"
 
 // Field styling from Figma 8595:13438: h48, radius 12, border #dddfe3, label 14/20 Medium, 8px gap.
-const field =
-  "h-12 rounded-[0.75rem] border-[#dddfe3] bg-white px-3.5 text-base text-[#1c1c1e] shadow-none md:text-base focus-visible:border-[#3979ff] focus-visible:ring-[#3979ff]/20"
+// Shared with the Support form (components/support/support-form.tsx).
+export const field =
+  "h-12 rounded-[0.75rem] border-[#dddfe3] bg-white px-3.5 text-base text-[#1c1c1e] shadow-none placeholder:text-[#9a9aa0] md:text-base focus-visible:border-[#3979ff] focus-visible:ring-[#3979ff]/20"
 const label = "text-sm leading-5 font-medium text-[#1c1c1e]"
 
-function Field({ id, text, children }: { id: string; text: string; children: React.ReactNode }) {
+export function Field({ id, text, children }: { id: string; text: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-2">
       <Label htmlFor={id} className={label}>
@@ -26,20 +27,42 @@ function Field({ id, text, children }: { id: string; text: string; children: Rea
   )
 }
 
-function Select({ id, name, options }: { id: string; name: string; options: string[] }) {
+/**
+ * Native select. `placeholder` shows greyed until a choice is made (blank by default, as in
+ * Figma). Pass `value` and `onChange` to control it from outside.
+ */
+export function Select({
+  id,
+  name,
+  options,
+  placeholder,
+  required,
+  value,
+  onChange,
+}: {
+  id: string
+  name: string
+  options: string[]
+  placeholder?: string
+  required?: boolean
+  value?: string
+  onChange?: (value: string) => void
+}) {
   return (
     <div className="relative">
       <select
         id={id}
         name={name}
-        defaultValue=""
+        {...(value === undefined ? { defaultValue: "" } : { value, onChange: (e) => onChange?.(e.target.value) })}
+        required={required}
         className={cn(
           field,
-          "w-full appearance-none border pr-10 outline-none focus-visible:ring-3",
+          "w-full appearance-none border pr-10 outline-none invalid:text-[#9a9aa0] focus-visible:ring-3",
         )}
       >
-        {/* Blank until chosen, as in Figma. */}
-        <option value="" disabled />
+        <option value="" disabled>
+          {placeholder}
+        </option>
 
         {options.map((o) => (
           <option key={o} value={o} className="text-[#1c1c1e]">

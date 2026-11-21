@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 
+import { storyBodies } from "@/components/news/articles"
 import { newsCategories, newsPath } from "@/components/news/content"
+import { stories, storyImage } from "@/components/news/stories"
 import { editions, quizPath } from "@/components/quizz/content"
 import { site } from "./site"
 
@@ -123,6 +125,20 @@ export const defaultSeo: Record<string, PageSeo> = {
       { title: c.title, description: c.description, noindex: true },
     ])
   ),
+  // One page per sample story (/news/<slug>), with its photo as the share image. Sample data
+  // (components/news/stories.ts), so kept out of search until the CMS feed replaces it.
+  ...Object.fromEntries(
+    stories.map((s): [string, PageSeo] => [
+      newsPath(s.slug),
+      {
+        title: s.headline,
+        description: storyBodies[s.slug]?.points[0] ?? s.headline,
+        image: storyImage(s),
+        noindex: true,
+      },
+    ])
+  ),
+  // Built, but the sign-up form isn't connected to a mailing list yet: drop noindex once it is.
   "/newsletter": {
     title: "Newsletter",
     description: "Curated news briefings and summarized stories, delivered as a daily news briefing.",
@@ -135,8 +151,10 @@ export const defaultSeo: Record<string, PageSeo> = {
   },
   "/support": {
     title: "Support",
-    description: "User support and assistance for the dailyMattr website and app.",
-    noindex: true,
+    description:
+      "Get help with the dailyMattr app: send a request to our support team about your account, a technical issue or app feedback.",
+    priority: 0.4,
+    changeFrequency: "yearly",
   },
   "/inside": {
     title: "Inside dailyMattr",
@@ -155,8 +173,10 @@ export const defaultSeo: Record<string, PageSeo> = {
   },
   "/termsandconditions": {
     title: "Terms and Conditions",
-    description: "The terms that apply to the dailyMattr website and services.",
-    noindex: true,
+    description:
+      "The terms that govern your use of the dailyMattr app and related services, provided by Dridha Technologies Private Limited.",
+    priority: 0.3,
+    changeFrequency: "yearly",
   },
 }
 

@@ -419,8 +419,8 @@ export const sections: PolicySection[] = [
   },
 ]
 
-/** Dark contact card in Section 12. Figma 8697:842. */
-function GrievanceCard() {
+/** Dark contact card in Section 12 (also used on the Terms page). Figma 8697:842. */
+export function GrievanceCard() {
   return (
     <div
       className="mt-[1.125rem] rounded-[1.75rem] p-7 sm:p-11"
