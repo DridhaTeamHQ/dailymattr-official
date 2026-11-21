@@ -1,5 +1,7 @@
 import { FadeIn } from "@/components/shared/fade-in"
+import { PhotoCta } from "@/components/shared/photo-cta"
 import { StoryCarousel } from "@/components/stories/story-carousel"
+import { cn } from "@/lib/utils"
 import { QixExperienceSequence } from "./experience-sequence"
 import { experience, gallery, getStarted } from "./content"
 import { QIX_H2, QixButton, QixEyebrow } from "./primitives"
@@ -53,16 +55,15 @@ export function QixGallery() {
   )
 }
 
-/** Closing CTA card. Figma 8646:2924: 160px above and below the 304px card. */
+/**
+ * Closing CTA over a full-bleed photo. Figma 9344:7440. No top padding of its own: the
+ * gallery's 160px bottom padding is the gap above the photo.
+ */
 export function QixGetStarted() {
   return (
-    <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pt-[10rem] lg:pb-[10rem]">
-      <FadeIn className="mx-auto max-w-[75rem]">
-        <div className="flex flex-col items-center gap-6 rounded-3xl bg-[#f7f7f7] px-6 py-14 text-center sm:px-12 sm:py-20 lg:h-[19rem] lg:px-20 lg:py-24">
-          <h2 className={QIX_H2}>{getStarted.title}</h2>
-          <QixButton href={getStarted.cta.href}>{getStarted.cta.label}</QixButton>
-        </div>
-      </FadeIn>
-    </section>
+    <PhotoCta image={getStarted.image} phoneFocus="object-[83%_50%]" overlay={getStarted.overlay}>
+      <h2 className={cn(QIX_H2, "max-w-[7.6em] md:text-white")}>{getStarted.title}</h2>
+      <QixButton href={getStarted.cta.href}>{getStarted.cta.label}</QixButton>
+    </PhotoCta>
   )
 }

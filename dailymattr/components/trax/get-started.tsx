@@ -1,22 +1,18 @@
-import { FadeIn } from "@/components/shared/fade-in"
+import { PhotoCta } from "@/components/shared/photo-cta"
 import { getStarted } from "./content"
-import { traxGlow, TraxButton } from "./primitives"
+import { TraxButton } from "./primitives"
 
-/** Closing CTA card. Figma 8595:12344. */
+/**
+ * Closing CTA over a full-bleed photo. Figma 9344:7320. The heading steps up to 48px only at
+ * xl: any larger at lg, it would run into the woman's hair.
+ */
 export function TraxGetStarted() {
   return (
-    <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-[10rem]">
-      <FadeIn className="mx-auto max-w-[75rem]">
-        <div
-          className="flex flex-col items-center gap-6 overflow-hidden rounded-[1.5rem] px-6 py-14 text-center font-helvetica sm:px-12 sm:py-20 lg:px-20 lg:py-24"
-          style={{ backgroundImage: traxGlow("linear-gradient(#f7f7f7, #f7f7f7)") }}
-        >
-          <h2 className="text-3xl leading-none font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
-            {getStarted.title}
-          </h2>
-          <TraxButton href={getStarted.cta.href}>{getStarted.cta.label}</TraxButton>
-        </div>
-      </FadeIn>
-    </section>
+    <PhotoCta image={getStarted.image} phoneFocus="object-[72%_50%]" className="font-helvetica">
+      <h2 className="max-w-[7.6em] text-3xl leading-none font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display md:text-white xl:text-5xl xl:leading-13 xl:tracking-[-0.0938rem]">
+        {getStarted.title}
+      </h2>
+      <TraxButton href={getStarted.cta.href}>{getStarted.cta.label}</TraxButton>
+    </PhotoCta>
   )
 }

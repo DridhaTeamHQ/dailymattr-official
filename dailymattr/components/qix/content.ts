@@ -57,4 +57,8 @@ export const gallery = {
 export const getStarted = {
   title: "Less scrolling. More seeing.",
   cta: { label: "Explore Qix", href: "/formats/qix#gallery" },
+  /** Full-bleed photo behind the copy (Figma 9344:7440), exported at the frame's 1920×747. */
+  image: "/qix/hero/qix.png",
+  /** Dark wash from the left so the white copy reads on the light fabric (Figma 9344:7440). */
+  overlay: "linear-gradient(89.85deg, rgba(32, 11, 1, 0.8) 0%, rgba(71, 21, 4, 0) 58.956%)",
 }

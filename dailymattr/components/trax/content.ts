@@ -161,4 +161,6 @@ export const featured = {
 export const getStarted = {
   title: "Your next story is one play away.",
   cta: { label: "Discover Trax", href: "/formats/trax#featured" },
+  /** Full-bleed photo behind the copy (Figma 9344:7320), exported at the frame's 1920×747. */
+  image: "/trax/hero/trax-footer.png",
 }
