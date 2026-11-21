@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image, { type StaticImageData } from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
 import { cn } from "@/lib/utils"
@@ -22,7 +22,8 @@ export function PhotoCta({
   className,
   children,
 }: {
-  image: string
+  /** A static import, so replacing the file changes its URL and busts the image cache. */
+  image: StaticImageData
   /**
    * Object-position class for the phone crop (4:3), e.g. "object-[72%_50%]", chosen to keep
    * the photo's subject in frame. From md up the crop is fixed at 25% across.

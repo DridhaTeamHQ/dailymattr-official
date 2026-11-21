@@ -1,6 +1,7 @@
 /** Copy and data for the Qix page. Figma frame: "Qix · DailyMattr" (8646:2608). */
 
 import { localVideo } from "@/lib/videos"
+import getStartedPhoto from "@/public/qix/hero/qix.png"
 
 /** Hero copy. Figma 9278:984 breaks the title after "bigger". */
 export const hero = {
@@ -57,8 +58,11 @@ export const gallery = {
 export const getStarted = {
   title: "Less scrolling. More seeing.",
   cta: { label: "Explore Qix", href: "/formats/qix#gallery" },
-  /** Full-bleed photo behind the copy (Figma 9344:7440), exported at the frame's 1920×747. */
-  image: "/qix/hero/qix.png",
+  /**
+   * Full-bleed photo behind the copy (Figma 9344:7440), exported at the frame's 1920×747.
+   * Imported so its URL carries a content hash (see the Trax one).
+   */
+  image: getStartedPhoto,
   /** Dark wash from the left so the white copy reads on the light fabric (Figma 9344:7440). */
   overlay: "linear-gradient(89.85deg, rgba(32, 11, 1, 0.8) 0%, rgba(71, 21, 4, 0) 58.956%)",
 }

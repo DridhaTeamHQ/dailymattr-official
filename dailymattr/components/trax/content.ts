@@ -1,5 +1,7 @@
 /** Copy and data for the Trax page. Figma frame: "Trax · DailyMattr" (8595:11737). */
 
+import getStartedPhoto from "@/public/trax/hero/trax-footer.png"
+
 export const hero = {
   tag: "Trax · Listen",
   titleLines: ["Stay in the know.", "Hands-free."],
@@ -161,6 +163,10 @@ export const featured = {
 export const getStarted = {
   title: "Your next story is one play away.",
   cta: { label: "Discover Trax", href: "/formats/trax#featured" },
-  /** Full-bleed photo behind the copy (Figma 9344:7320), exported at the frame's 1920×747. */
-  image: "/trax/hero/trax-footer.png",
+  /**
+   * Full-bleed photo behind the copy (Figma 9344:7320), exported at the frame's 1920×747.
+   * Imported rather than a /public path, so its URL carries a content hash: replace the file
+   * and the new photo shows straight away, never a cached optimized copy of the old one.
+   */
+  image: getStartedPhoto,
 }
