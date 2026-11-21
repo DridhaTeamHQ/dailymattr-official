@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 
+import { AnchorLink } from "@/components/shared/anchor-link"
 import { FadeIn } from "@/components/shared/fade-in"
 import { cn } from "@/lib/utils"
 
@@ -18,10 +18,13 @@ export function PixTag({ children, className }: { children: React.ReactNode; cla
   )
 }
 
-/** Blue pill link with the arrow chip ("Discover Pix", "Read with Pix"). Figma 8632:2153. */
+/**
+ * Blue pill link with the arrow chip ("Discover Pix", "Read with Pix"). Figma 8632:2153.
+ * Same-page anchors glide smoothly to their section; other hrefs navigate as usual.
+ */
 export function PixButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link
+    <AnchorLink
       href={href}
       className="flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-[#3979ff] py-2 pr-2 pl-4 font-helvetica transition-[translate,background-color] hover:-translate-y-px hover:bg-[#2f6bf0]"
     >
@@ -31,7 +34,7 @@ export function PixButton({ href, children }: { href: string; children: React.Re
       <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/20">
         <Image src="/pix/arrow-up-right.svg" alt="" width={12} height={12} className="block" />
       </span>
-    </Link>
+    </AnchorLink>
   )
 }
 

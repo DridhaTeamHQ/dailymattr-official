@@ -13,7 +13,9 @@ import { PixButton, PixTag } from "./primitives"
 export function PixHero() {
   return (
     <section className="relative isolate flex min-h-[calc(100svh-var(--chrome-height,5.5rem))] flex-col overflow-hidden bg-[#0d1a2b] lg:block lg:min-h-0 lg:aspect-video">
-      <div className="relative z-10 mx-auto flex w-full max-w-[75rem] items-center px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:absolute lg:inset-0 lg:py-0 lg:px-8">
+      {/* lg+: the 16:9 section can run past the fold, so centre the copy in the part that's
+          on screen (section height capped at the viewport under the header), not the whole box */}
+      <div className="relative z-10 mx-auto flex w-full max-w-[75rem] items-center px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:absolute lg:inset-x-0 lg:top-0 lg:h-[min(100%,calc(100svh-var(--chrome-height,5.5rem)))] lg:py-0 lg:px-8">
         <FadeIn className="flex max-w-[33.75rem] flex-col items-start gap-5 font-helvetica lg:gap-6">
           <PixTag>{hero.tag}</PixTag>
 
