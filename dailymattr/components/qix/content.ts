@@ -1,5 +1,7 @@
 /** Copy and data for the Qix page. Figma frame: "Qix · DailyMattr" (8646:2608). */
 
+import { localVideo } from "@/lib/videos"
+
 /** Hero copy. Figma 9278:984 breaks the title after "bigger". */
 export const hero = {
   titleLines: ["See the bigger", "picture."],
@@ -13,7 +15,15 @@ export const experience = {
   title: "Complicated topics. Clear explanations.",
   description:
     "Qix breaks down a subject into a sequence of visual moments, making the details easier to follow and the bigger picture easier to understand.",
-  frames: [1, 2, 3, 4],
+  // The whole MRF story (public/stories/mrf.mp4, 240 frames) cut at its scene changes into four
+  // back-to-back clips that play in turn: frames 0–66, 67–126, 127–161, 162–239. Clips live in
+  // public/qix/experience/.
+  frames: [
+    { label: "The question", video: localVideo("step-1", 360, 640, { dir: "qix/experience" }) },
+    { label: "The detail", video: localVideo("step-2", 360, 640, { dir: "qix/experience" }) },
+    { label: "The big picture", video: localVideo("step-3", 360, 640, { dir: "qix/experience" }) },
+    { label: "The explanation", video: localVideo("step-4", 360, 640, { dir: "qix/experience" }) },
+  ],
 }
 
 export type QixPillar = { title: string; description: string }
@@ -38,20 +48,10 @@ export const pillars = {
   ] satisfies QixPillar[],
 }
 
-export type QixEpisode = { id: string; topic: string; title: string }
-
-/** Placeholder episodes straight from the frame; the first card is drawn wider. */
+/** Gallery heading; the cards are the home page's story row (components/stories/covers.ts). */
 export const gallery = {
   eyebrow: "Content gallery",
   title: "A world of stories, frame by frame.",
-  episodes: [
-    { id: "ep-1", topic: "Science", title: "Episode title" },
-    { id: "ep-2", topic: "History", title: "Episode title" },
-    { id: "ep-3", topic: "Economics", title: "Episode title" },
-    { id: "ep-4", topic: "Technology", title: "Episode title" },
-    { id: "ep-5", topic: "Science", title: "Episode title" },
-    { id: "ep-6", topic: "History", title: "Episode title" },
-  ] satisfies QixEpisode[],
 }
 
 export const getStarted = {
