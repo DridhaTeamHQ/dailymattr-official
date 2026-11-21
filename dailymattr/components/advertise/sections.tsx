@@ -33,47 +33,35 @@ function IconTile({ src, dark }: { src: string; dark?: boolean }) {
   )
 }
 
-/** Copy and CTA beside a glowing media panel (Figma 8595:13301). */
+/**
+ * Copy and CTA on black, across the full column (Figma 8595:13301 had a media panel beside
+ * it; dropped). The pill is blue here, as a black one would vanish on the background.
+ */
 export function AdvertiseHero() {
   return (
-    <section className={cn(sectionPad, "bg-white pt-12 pb-16 sm:pt-16 lg:pt-[7rem] lg:pb-[7.5rem]")}>
-      <div
-        className={cn(
-          column,
-          "grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,33.75rem)_minmax(0,36.75rem)] lg:justify-between lg:gap-[4.5rem]",
-        )}
-      >
-        <div className="flex flex-col items-start gap-5 lg:gap-6">
-          <FadeIn
-            as="p"
-            className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
-          >
-            {hero.eyebrow}
+    <section className={cn(sectionPad, "bg-black pt-12 pb-16 sm:pt-16 lg:pt-[7rem] lg:pb-[7.5rem]")}>
+      <div className={cn(column, "flex flex-col items-start gap-5 lg:gap-6")}>
+        <FadeIn
+          as="p"
+          className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+        >
+          {hero.eyebrow}
+        </FadeIn>
+        <FadeIn
+          as="h1"
+          className="text-[2.75rem] leading-[1.05] font-medium text-balance text-white sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+        >
+          {hero.title}
+        </FadeIn>
+        {hero.body.map((p) => (
+          <FadeIn as="p" key={p} delay={0.2} className={cn(body, "max-w-[46rem] text-pretty text-white/65")}>
+            {p}
           </FadeIn>
-          <FadeIn
-            as="h1"
-            className="max-w-[33.75rem] text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
-          >
-            {hero.title}
-          </FadeIn>
-          {hero.body.map((p) => (
-            <FadeIn as="p" key={p} delay={0.2} className={cn(body, "max-w-[31.25rem] text-[#696969]")}>
-              {p}
-            </FadeIn>
-          ))}
-          <FadeIn delay={0.2}>
-            <DarkArrowLink href={hero.button.href}>{hero.button.label}</DarkArrowLink>
-          </FadeIn>
-        </div>
-
-        {/* Media slot: an empty placeholder in Figma, kept as one until the art exists. */}
-        <FadeIn delay={0.4}>
-          <div
-            className="flex aspect-[588/560] w-full overflow-hidden rounded-[1.5rem] border border-[rgba(57,121,255,0.12)] p-4 sm:p-6"
-            style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
-          >
-            <div className="size-full rounded-[1.125rem] bg-[rgba(230,231,234,0.75)]" />
-          </div>
+        ))}
+        <FadeIn delay={0.2}>
+          <DarkArrowLink href={hero.button.href} className="bg-[#3979ff] hover:bg-[#2f6bf0]">
+            {hero.button.label}
+          </DarkArrowLink>
         </FadeIn>
       </div>
     </section>
