@@ -61,7 +61,7 @@ export function NiaHero() {
         </FadeIn>
 
         {/* Chat mock */}
-        <FadeIn delay={0.15} className="relative w-full max-w-[430px] shrink-0">
+        <FadeIn delay={0.2} className="relative w-full max-w-[430px] shrink-0">
           {/* Glows sitting behind the card */}
           <div
             aria-hidden

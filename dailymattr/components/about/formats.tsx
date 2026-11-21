@@ -302,19 +302,22 @@ function ListenCard() {
 export function AboutFormats() {
   return (
     <section className="bg-white py-24 lg:py-[10rem]">
-      <FadeIn className="flex justify-center px-4">
+      <div className="flex justify-center px-4">
         <div className="flex flex-col items-center gap-4 text-center">
-          <h2 className="text-3xl leading-none font-semibold tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12">
+          <FadeIn
+            as="h2"
+            className="text-3xl leading-none font-semibold tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12"
+          >
             {formats.title}
-          </h2>
-          <p className="text-lg leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-xl">
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="text-lg leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-xl">
             {formats.subtitle}
-          </p>
+          </FadeIn>
         </div>
-      </FadeIn>
+      </div>
 
       {/* Desktop: zoomed so the four cards exactly fill the width. Phones see the cards at 3/4 size so most of one fits on screen. */}
-      <FadeIn className="mt-12 lg:mt-16">
+      <FadeIn delay={0.4} className="mt-12 lg:mt-16">
         <FitRow
           fit={4}
           cardRem={27.5}

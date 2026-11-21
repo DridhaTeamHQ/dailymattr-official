@@ -47,7 +47,11 @@ export function TraxButton({ href, children }: { href: string; children: React.R
   )
 }
 
-/** Eyebrow + heading pair that opens each Trax section. Figma 8595:11905. */
+/**
+ * Eyebrow + heading pair that opens each Trax section. Figma 8595:11905.
+ * The pair fades up on its own; `children` (copy under it) sit outside that reveal, so give
+ * them their own FadeIn a step later (delay 0.2).
+ */
 export function TraxSectionIntro({
   eyebrow,
   title,
@@ -61,22 +65,29 @@ export function TraxSectionIntro({
   className?: string
   children?: React.ReactNode
 }) {
-  return (
-    <FadeIn
-      className={cn(
-        "flex flex-col gap-3 font-helvetica lg:gap-4",
-        align === "center" ? "items-center text-center" : "items-start text-left",
-        className,
-      )}
-    >
+  const stack = cn(
+    "flex flex-col gap-3 font-helvetica lg:gap-4",
+    align === "center" ? "items-center text-center" : "items-start text-left",
+  )
+
+  const heading = (
+    <FadeIn className={children ? stack : cn(stack, className)}>
       <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
         {eyebrow}
       </p>
       <h2 className="text-3xl leading-none font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
         {title}
       </h2>
-      {children}
     </FadeIn>
+  )
+
+  if (!children) return heading
+
+  return (
+    <div className={cn(stack, className)}>
+      {heading}
+      {children}
+    </div>
   )
 }
 

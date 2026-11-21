@@ -2,6 +2,7 @@ import Image from "next/image"
 
 import { DarkArrowLink } from "@/components/shared/dark-arrow-link"
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { softGlow } from "@/components/shared/soft-glow"
 import { cn } from "@/lib/utils"
 import { environment, enquiry, hero, partnerships, principles } from "./content"
@@ -42,23 +43,31 @@ export function AdvertiseHero() {
           "grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,33.75rem)_minmax(0,36.75rem)] lg:justify-between lg:gap-[4.5rem]",
         )}
       >
-        <FadeIn className="flex flex-col items-start gap-5 lg:gap-6">
-          <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+        <div className="flex flex-col items-start gap-5 lg:gap-6">
+          <FadeIn
+            as="p"
+            className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+          >
             {hero.eyebrow}
-          </p>
-          <h1 className="max-w-[33.75rem] text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
+          </FadeIn>
+          <FadeIn
+            as="h1"
+            className="max-w-[33.75rem] text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+          >
             {hero.title}
-          </h1>
+          </FadeIn>
           {hero.body.map((p) => (
-            <p key={p} className={cn(body, "max-w-[31.25rem] text-[#696969]")}>
+            <FadeIn as="p" key={p} delay={0.2} className={cn(body, "max-w-[31.25rem] text-[#696969]")}>
               {p}
-            </p>
+            </FadeIn>
           ))}
-          <DarkArrowLink href={hero.button.href}>{hero.button.label}</DarkArrowLink>
-        </FadeIn>
+          <FadeIn delay={0.2}>
+            <DarkArrowLink href={hero.button.href}>{hero.button.label}</DarkArrowLink>
+          </FadeIn>
+        </div>
 
         {/* Media slot: an empty placeholder in Figma, kept as one until the art exists. */}
-        <FadeIn delay={0.1}>
+        <FadeIn delay={0.4}>
           <div
             className="flex aspect-[588/560] w-full overflow-hidden rounded-[1.5rem] border border-[rgba(57,121,255,0.12)] p-4 sm:p-6"
             style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
@@ -75,12 +84,18 @@ export function AdvertiseHero() {
 export function AdvertiseEnvironment() {
   return (
     <section className={cn(sectionPad, "bg-[#f5f5f7] py-20 lg:py-40")}>
-      <FadeIn className={cn(column, "grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-20")}>
-        <h2 className={cn(h2, "max-w-[35rem]")}>{environment.title}</h2>
-        <p className="max-w-[35rem] text-lg leading-[1.875rem] tracking-[-0.01875rem] text-[#696969] lg:text-xl">
+      <div className={cn(column, "grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-20")}>
+        <FadeIn as="h2" className={cn(h2, "max-w-[35rem]")}>
+          {environment.title}
+        </FadeIn>
+        <FadeIn
+          as="p"
+          delay={0.2}
+          className="max-w-[35rem] text-lg leading-[1.875rem] tracking-[-0.01875rem] text-[#696969] lg:text-xl"
+        >
           {environment.body}
-        </p>
-      </FadeIn>
+        </FadeIn>
+      </div>
     </section>
   )
 }
@@ -96,7 +111,7 @@ export function AdvertisePartnerships() {
         <ul className="grid grid-cols-1 gap-6 pt-10 sm:grid-cols-2 lg:grid-cols-4 lg:pt-12">
           {partnerships.items.map((item, i) => (
             <li key={item.label}>
-              <FadeIn delay={i * 0.06} className="flex h-full flex-col gap-5 rounded-[1rem] bg-[#f7f7f7] p-8">
+              <FadeIn delay={revealDelay(i, 4)} className="flex h-full flex-col gap-5 rounded-[1rem] bg-[#f7f7f7] p-8">
                 {/* Card art: an empty placeholder in Figma. */}
                 <div className="h-[9.375rem] w-full rounded-[0.75rem] bg-[#e6e7ea]" />
                 <IconTile src={item.icon} />
@@ -133,7 +148,7 @@ export function AdvertisePrinciples() {
           </div>
         </FadeIn>
 
-        <FadeIn delay={0.08} className="flex flex-col overflow-hidden rounded-[1.5rem]">
+        <FadeIn delay={revealDelay(1, 2)} className="flex flex-col overflow-hidden rounded-[1.5rem]">
           <div
             className="flex flex-1 flex-col gap-5 p-8 sm:p-12 lg:min-h-[24.25rem] lg:p-16"
             // Glow geometry from Figma 8595:13419: one blue glow, top right, over near-black.
@@ -162,7 +177,7 @@ export function AdvertiseEnquiry() {
         <FadeIn>
           <h2 className={cn(h2, "max-w-[26.25rem]")}>{enquiry.title}</h2>
         </FadeIn>
-        <FadeIn delay={0.08}>
+        <FadeIn delay={0.4}>
           <EnquiryForm />
         </FadeIn>
       </div>

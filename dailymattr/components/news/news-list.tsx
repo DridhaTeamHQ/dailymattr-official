@@ -6,6 +6,8 @@ import { CalendarDays, X } from "lucide-react"
 import { useRef, useState } from "react"
 
 import { useNavHeight } from "@/components/navbar/nav-height"
+import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { cn } from "@/lib/utils"
 import { newsCategories, newsPath } from "./content"
 import { NewsCard } from "./story-card"
@@ -68,57 +70,59 @@ export function NewsList({ stories, active, sectionLabel }: { stories: Story[]; 
 
   return (
     <>
-      <div ref={topRef} className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-8">
-        <nav aria-label="News sections">
-          <ul className="flex flex-wrap gap-2">
-            {tabs.map((t) => {
-              const current = t.slug === active
-              return (
-                <li key={t.label}>
-                  <Link
-                    href={t.href}
-                    aria-current={current ? "page" : undefined}
-                    className={cn(
-                      pill,
-                      current ? "bg-brand-blue-deep text-white" : "bg-[#f3f3f6] text-[#141417] hover:bg-[#e9e9ee]",
-                    )}
-                  >
-                    {t.label}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
+      <FadeIn delay={0.2}>
+        <div ref={topRef} className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-8">
+          <nav aria-label="News sections">
+            <ul className="flex flex-wrap gap-2">
+              {tabs.map((t) => {
+                const current = t.slug === active
+                return (
+                  <li key={t.label}>
+                    <Link
+                      href={t.href}
+                      aria-current={current ? "page" : undefined}
+                      className={cn(
+                        pill,
+                        current ? "bg-brand-blue-deep text-white" : "bg-[#f3f3f6] text-[#141417] hover:bg-[#e9e9ee]",
+                      )}
+                    >
+                      {t.label}
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
 
-        <label className="flex h-9 w-full shrink-0 items-center gap-2 rounded-full border border-[#e0e0e6] bg-white pr-1.5 pl-3.5 text-[#141417] transition-colors focus-within:border-[#3979ff] md:w-auto">
-          <CalendarDays className="size-4 shrink-0 text-[#6b6b73]" aria-hidden />
-          <span className="sr-only">Filter by date</span>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => chooseDate(e.target.value)}
-            className="min-w-0 flex-1 bg-transparent text-sm leading-none text-[#141417] outline-none [color-scheme:light]"
-          />
-          {date && (
-            <button
-              type="button"
-              onClick={() => chooseDate("")}
-              aria-label="Clear the date"
-              className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-full text-[#6b6b73] hover:bg-[#f3f3f6] hover:text-[#141417]"
-            >
-              <X className="size-3.5" aria-hidden />
-            </button>
-          )}
-        </label>
-      </div>
+          <label className="flex h-9 w-full shrink-0 items-center gap-2 rounded-full border border-[#e0e0e6] bg-white pr-1.5 pl-3.5 text-[#141417] transition-colors focus-within:border-[#3979ff] md:w-auto">
+            <CalendarDays className="size-4 shrink-0 text-[#6b6b73]" aria-hidden />
+            <span className="sr-only">Filter by date</span>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => chooseDate(e.target.value)}
+              className="min-w-0 flex-1 bg-transparent text-sm leading-none text-[#141417] outline-none [color-scheme:light]"
+            />
+            {date && (
+              <button
+                type="button"
+                onClick={() => chooseDate("")}
+                aria-label="Clear the date"
+                className="grid size-6 shrink-0 cursor-pointer place-items-center rounded-full text-[#6b6b73] hover:bg-[#f3f3f6] hover:text-[#141417]"
+              >
+                <X className="size-3.5" aria-hidden />
+              </button>
+            )}
+          </label>
+        </div>
+      </FadeIn>
 
       {visible.length > 0 ? (
         <ul className="grid grid-cols-1 gap-x-[1.375rem] gap-y-[1.625rem] pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {visible.map((story, i) => (
-            <li key={story.slug}>
+            <FadeIn as="li" key={story.slug} delay={revealDelay(i, 4)}>
               <NewsCard story={story} priority={page === 0 && i < 5} />
-            </li>
+            </FadeIn>
           ))}
         </ul>
       ) : (

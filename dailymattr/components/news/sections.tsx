@@ -56,9 +56,9 @@ export function NewsPageView({ category }: { category?: NewsCategory }) {
             <h1 className="mt-6 text-[1.625rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#141417] sm:mt-8 sm:text-[2.5rem]">
               {category?.title ?? latestNews.title}
             </h1>
-            <p className="mt-3 max-w-[39.25rem] text-[0.9375rem] leading-[1.35] text-[#6b6b73]">
-              {category?.description ?? latestNews.description}
-            </p>
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="mt-3 max-w-[39.25rem] text-[0.9375rem] leading-[1.35] text-[#6b6b73]">
+            {category?.description ?? latestNews.description}
           </FadeIn>
 
           <div className="pt-6">

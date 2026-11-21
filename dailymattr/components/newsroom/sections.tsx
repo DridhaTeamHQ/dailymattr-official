@@ -47,7 +47,7 @@ export function NewsroomHero() {
             {hero.lead}
           </p>
         </FadeIn>
-        <FadeIn delay={0.1} className="flex flex-col items-center gap-5 text-center lg:gap-6">
+        <FadeIn delay={0.2} className="flex flex-col items-center gap-5 text-center lg:gap-6">
           {hero.body.map((p) => (
             <p key={p} className="max-w-[36rem] text-base leading-7 text-white/60 lg:text-lg">
               {p}
@@ -78,16 +78,19 @@ export function NewsroomArticle() {
               aria-labelledby={`${sectionId(i)}-title`}
               className={cn("scroll-mt-24 py-[2.125rem]", i === 0 ? "pt-0" : "border-t border-white/8")}
             >
-              <p className="text-xs leading-[1.3125rem] font-bold tracking-[0.1875rem] text-[#3979ff]">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <h2
-                id={`${sectionId(i)}-title`}
-                className="pt-2.5 text-2xl leading-tight font-bold tracking-[-0.03125rem] text-white lg:text-[1.6875rem] lg:leading-[2.1094rem]"
-              >
-                {s.title}
-              </h2>
-              {s.body}
+              {/* Only the content reveals: the section boxes stay put for the contents' scroll-spy. */}
+              <FadeIn>
+                <p className="text-xs leading-[1.3125rem] font-bold tracking-[0.1875rem] text-[#3979ff]">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h2
+                  id={`${sectionId(i)}-title`}
+                  className="pt-2.5 text-2xl leading-tight font-bold tracking-[-0.03125rem] text-white lg:text-[1.6875rem] lg:leading-[2.1094rem]"
+                >
+                  {s.title}
+                </h2>
+              </FadeIn>
+              <FadeIn delay={0.2}>{s.body}</FadeIn>
             </section>
           ))}
         </article>

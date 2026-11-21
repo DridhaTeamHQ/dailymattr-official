@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { whyPix, type PixFeature } from "./content"
 import { PixSectionIntro } from "./primitives"
 import { WhyPixVisual } from "./why-pix-visual"
@@ -23,17 +24,21 @@ function FeatureItem({ feature }: { feature: PixFeature }) {
   )
 }
 
-/** Feature list beside the woman-with-phone collage. Figma 8632:2200. */
+/**
+ * Feature list beside the woman-with-phone collage. Figma 8632:2200.
+ * Clipped sideways only (overflow-x: clip), so the collage, which sits on the bottom edge,
+ * can rise into place from below without being cut off.
+ */
 export function PixWhyPix() {
   return (
-    <section className="relative overflow-hidden bg-[#f5f5f7] px-4 pt-20 sm:px-6 lg:px-8 xl:py-[10rem]">
+    <section className="relative overflow-x-clip bg-[#f5f5f7] px-4 pt-20 sm:px-6 lg:px-8 xl:py-[10rem]">
       <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] gap-12 xl:grid-cols-[37.5rem_32.5rem] xl:gap-20">
         <div className="flex flex-col self-center">
           <PixSectionIntro align="start" eyebrow={whyPix.eyebrow} title={whyPix.title} />
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-10 lg:mt-12">
             {whyPix.features.map((feature, i) => (
-              <FadeIn key={feature.title} delay={i * 0.06}>
+              <FadeIn key={feature.title} delay={revealDelay(i, 2)}>
                 <FeatureItem feature={feature} />
               </FadeIn>
             ))}

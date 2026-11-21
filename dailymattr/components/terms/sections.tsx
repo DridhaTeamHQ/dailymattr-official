@@ -58,16 +58,20 @@ export function TermsArticle() {
               aria-labelledby={`${sectionId(i)}-title`}
               className={cn("scroll-mt-24 py-[2.125rem]", i === 0 ? "pt-0" : "border-t border-[#ececf0]")}
             >
-              <p className="text-xs leading-[1.3125rem] font-bold tracking-[0.1875rem] text-[#3979ff]">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <h2
-                id={`${sectionId(i)}-title`}
-                className="pt-2.5 text-2xl leading-tight font-bold tracking-[-0.03125rem] text-[#141417] lg:text-[1.6875rem] lg:leading-[2.1094rem]"
-              >
-                {s.title}
-              </h2>
-              {s.body}
+              {/* The reveal sits inside the section so the anchor target (and the contents
+                  highlight, which watches the section) never shifts while it plays. */}
+              <FadeIn>
+                <p className="text-xs leading-[1.3125rem] font-bold tracking-[0.1875rem] text-[#3979ff]">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h2
+                  id={`${sectionId(i)}-title`}
+                  className="pt-2.5 text-2xl leading-tight font-bold tracking-[-0.03125rem] text-[#141417] lg:text-[1.6875rem] lg:leading-[2.1094rem]"
+                >
+                  {s.title}
+                </h2>
+                {s.body}
+              </FadeIn>
             </section>
           ))}
         </article>

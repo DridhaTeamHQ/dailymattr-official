@@ -8,12 +8,16 @@ export function TraxWhyAudio() {
     <section className="bg-[#f5f5f7] px-4 py-20 sm:px-6 lg:px-8 lg:py-[10rem]">
       <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-2 lg:gap-20">
         <TraxSectionIntro eyebrow={whyAudio.eyebrow} title={whyAudio.title} align="start">
-          <p className="max-w-[35rem] pt-2 text-base leading-6 tracking-[-0.0188rem] text-[#696969] lg:text-xl lg:leading-[1.875rem]">
+          <FadeIn
+            as="p"
+            delay={0.2}
+            className="max-w-[35rem] pt-2 text-base leading-6 tracking-[-0.0188rem] text-[#696969] lg:text-xl lg:leading-[1.875rem]"
+          >
             {whyAudio.description}
-          </p>
+          </FadeIn>
         </TraxSectionIntro>
 
-        <FadeIn delay={0.1}>
+        <FadeIn delay={0.4}>
           <div
             className="grid h-[15rem] place-items-center overflow-hidden rounded-[1.5rem] px-6 sm:h-[18rem] lg:h-[22.5rem]"
             style={{ backgroundImage: traxGlow("linear-gradient(#fff, #fff)") }}

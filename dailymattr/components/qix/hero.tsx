@@ -2,6 +2,7 @@ import Image from "next/image"
 
 import { AnchorLink } from "@/components/shared/anchor-link"
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { hero, pillars } from "./content"
 import { QixHeroArc } from "./hero-arc"
 
@@ -40,7 +41,7 @@ export function QixHero() {
         {/* Under the arc, in the curve below its small centre cards: the centre card ends at
             46.56em (stage 15em down + 23.75em to its middle + half its 15.625em height). */}
         <div className="pointer-events-none relative z-10 mt-6 flex justify-center lg:absolute lg:inset-x-0 lg:top-[50em] lg:mt-0">
-          <FadeIn delay={0.15} className="pointer-events-auto">
+          <FadeIn delay={0.2} className="pointer-events-auto">
             <WatchButton />
           </FadeIn>
         </div>
@@ -78,7 +79,7 @@ function Pillars() {
   return (
     <div className="relative z-10 mx-auto mt-10 grid max-w-[25em] gap-8 text-center md:max-w-none md:grid-cols-3 md:gap-6 lg:mt-[1em] lg:grid-cols-[repeat(3,minmax(0,25em))] lg:justify-center lg:gap-x-[6.5em]">
       {pillars.items.map((item, i) => (
-        <FadeIn key={item.title} delay={i * 0.06} className="flex flex-col items-center gap-2 lg:gap-[0.75em]">
+        <FadeIn key={item.title} delay={revealDelay(i, 3)} className="flex flex-col items-center gap-2 lg:gap-[0.75em]">
           <h2 className="text-[1.25em] leading-[1.4] font-medium tracking-[-0.0167em] text-white lg:text-[1.5em] lg:leading-[1.3333]">
             {item.title}
           </h2>

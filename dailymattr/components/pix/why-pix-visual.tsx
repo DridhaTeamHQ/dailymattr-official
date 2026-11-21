@@ -144,7 +144,7 @@ export function WhyPixVisual({ className }: { className?: string }) {
 
   return (
     <div ref={frameRef} className={cn("aspect-[652/759]", className)}>
-      <FadeIn className="h-full w-full">
+      <FadeIn delay={0.4} className="h-full w-full">
         <div
           className="relative origin-top-left font-jakarta"
           style={{ width: CANVAS_W, height: CANVAS_H, transform: `scale(${scale})` }}

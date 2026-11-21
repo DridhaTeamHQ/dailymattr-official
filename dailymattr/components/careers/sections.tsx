@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { cn } from "@/lib/utils"
 import { ApplyForm, ApplyLink } from "./apply-form"
 import { apply, hero, roles, values } from "./content"
@@ -17,21 +18,30 @@ const h2 =
 export function CareersHero() {
   return (
     <section className="bg-[#1c1c1e] px-4 pt-20 pb-16 sm:px-6 sm:pt-28 lg:px-[6.5625vw] lg:pt-[15rem] lg:pb-[7.5rem]">
-      <FadeIn className="mx-auto flex max-w-[104.25rem] flex-col gap-5 lg:gap-[1.6875rem]">
-        <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+      <div className="mx-auto flex max-w-[104.25rem] flex-col gap-5 lg:gap-[1.6875rem]">
+        <FadeIn
+          as="p"
+          className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+        >
           {hero.eyebrow}
-        </p>
+        </FadeIn>
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-          <h1 className="text-[2.5rem] leading-[1.15] font-medium text-white sm:text-5xl sm:leading-[1.2] lg:text-[3.5rem] lg:leading-[4.25rem] lg:whitespace-nowrap">
+          <FadeIn
+            as="h1"
+            className="text-[2.5rem] leading-[1.15] font-medium text-white sm:text-5xl sm:leading-[1.2] lg:text-[3.5rem] lg:leading-[4.25rem] lg:whitespace-nowrap"
+          >
             {hero.title.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
-          </h1>
+          </FadeIn>
 
-          <div className="flex flex-col items-start gap-6 font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:text-lg">
+          <FadeIn
+            delay={0.2}
+            className="flex flex-col items-start gap-6 font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:text-lg"
+          >
             <p className="max-w-[37.875rem]">{hero.body[0]}</p>
             <p className="max-w-[33.75rem]">{hero.body[1]}</p>
             <a
@@ -45,9 +55,9 @@ export function CareersHero() {
                 <Image src="/shared/arrow-up-right-blue.svg" alt="" width={12} height={12} className="size-3 rotate-90" />
               </span>
             </a>
-          </div>
+          </FadeIn>
         </div>
-      </FadeIn>
+      </div>
     </section>
   )
 }
@@ -63,7 +73,7 @@ export function CareersValues() {
         <ul className="grid grid-cols-1 gap-6 pt-10 sm:grid-cols-2 lg:grid-cols-4 lg:pt-12">
           {values.items.map((item, i) => (
             <li key={item.title}>
-              <FadeIn delay={i * 0.06} className="flex h-full flex-col gap-3 rounded-[1rem] bg-white p-8">
+              <FadeIn delay={revealDelay(i, 4)} className="flex h-full flex-col gap-3 rounded-[1rem] bg-white p-8">
                 <p className="text-xs leading-[1.3125rem] font-bold tracking-[0.1875rem] text-[#3979ff]">
                   {String(i + 1).padStart(2, "0")}
                 </p>
@@ -88,12 +98,16 @@ export function CareersRoles() {
           "grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,22.5rem)_minmax(0,46.5rem)] lg:justify-between lg:gap-20",
         )}
       >
-        <FadeIn className="flex flex-col gap-5">
-          <h2 className={h2}>{roles.title}</h2>
-          <p className="text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">{roles.body}</p>
-        </FadeIn>
+        <div className="flex flex-col gap-5">
+          <FadeIn as="h2" className={h2}>
+            {roles.title}
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
+            {roles.body}
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.08}>
+        <FadeIn delay={0.4}>
           <ul className="border-t border-[#ececf0]">
             {roles.items.map((role) => (
               <li key={role.title} className="border-b border-[#ececf0]">
@@ -139,11 +153,15 @@ export function CareersApply() {
           "grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,22.5rem)_minmax(0,46.5rem)] lg:justify-between lg:gap-20",
         )}
       >
-        <FadeIn className="flex flex-col gap-5">
-          <h2 className={h2}>{apply.title}</h2>
-          <p className="text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">{apply.body}</p>
+        <div className="flex flex-col gap-5">
+          <FadeIn as="h2" className={h2}>
+            {apply.title}
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
+            {apply.body}
+          </FadeIn>
 
-          <div className="pt-4">
+          <FadeIn delay={0.2} className="pt-4">
             <p className="text-xs font-semibold tracking-[0.09375rem] text-[#97979e] uppercase">{apply.stepsTitle}</p>
             <ol className="mt-5 flex flex-col">
               {apply.steps.map((step, i) => (
@@ -162,10 +180,10 @@ export function CareersApply() {
                 </li>
               ))}
             </ol>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.08}>
+        <FadeIn delay={0.4}>
           <ApplyForm />
         </FadeIn>
       </div>

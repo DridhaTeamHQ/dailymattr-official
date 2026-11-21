@@ -9,17 +9,25 @@ export function QixExperience() {
   return (
     <section className="bg-white px-4 pt-8 pb-20 sm:px-6 lg:px-8 lg:pt-20 lg:pb-[10rem]">
       <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[30rem_41rem] lg:justify-between lg:gap-16">
-        <FadeIn className="flex flex-col items-start gap-4">
-          <QixEyebrow>{experience.eyebrow}</QixEyebrow>
-          <h2 className={QIX_H2}>{experience.title}</h2>
-          <p className="max-w-[30rem] pt-2 text-base leading-6 tracking-[-0.0188rem] text-[#696969] lg:text-xl lg:leading-[1.875rem]">
+        <div className="flex flex-col items-start gap-4">
+          <FadeIn className="flex flex-col items-start gap-4">
+            <QixEyebrow>{experience.eyebrow}</QixEyebrow>
+            <h2 className={QIX_H2}>{experience.title}</h2>
+          </FadeIn>
+          <FadeIn
+            as="p"
+            delay={0.2}
+            className="max-w-[30rem] pt-2 text-base leading-6 tracking-[-0.0188rem] text-[#696969] lg:text-xl lg:leading-[1.875rem]"
+          >
             {experience.description}
-          </p>
-        </FadeIn>
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.1} className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {/* Not revealed: the sequence starts its own timed playback once on screen, and this box is
+            the sideways scroller it drives on phones. */}
+        <div className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <QixExperienceSequence frames={experience.frames} />
-        </FadeIn>
+        </div>
       </div>
     </section>
   )
@@ -38,7 +46,7 @@ export function QixGallery() {
       </FadeIn>
 
       {/* Kept inside the centred 1200px column (Figma 8646:2798); cards scroll within its edges. */}
-      <FadeIn delay={0.1} className="mx-auto mt-10 max-w-[75rem] px-4 sm:px-6 lg:mt-16 lg:box-content lg:px-8">
+      <FadeIn delay={0.4} className="mx-auto mt-10 max-w-[75rem] px-4 sm:px-6 lg:mt-16 lg:box-content lg:px-8">
         <StoryCarousel />
       </FadeIn>
     </section>

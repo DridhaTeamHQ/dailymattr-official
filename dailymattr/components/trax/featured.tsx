@@ -5,6 +5,7 @@ import Image from "next/image"
 import { Pause, Play } from "lucide-react"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { cn } from "@/lib/utils"
 import { featured, type TraxEpisode } from "./content"
 import { traxGlow, TraxSectionIntro, TraxTag } from "./primitives"
@@ -256,13 +257,13 @@ export function TraxFeatured() {
       <div className="mx-auto max-w-[75rem]">
         <TraxSectionIntro eyebrow={featured.eyebrow} title={featured.title} />
 
-        <FadeIn className="mt-10 lg:mt-16">
+        <FadeIn delay={0.4} className="mt-10 lg:mt-16">
           <FeaturedPlayer />
         </FadeIn>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:mt-6 lg:grid-cols-3 lg:gap-6">
           {featured.episodes.map((episode, i) => (
-            <FadeIn key={episode.id} delay={i * 0.06} className="h-full">
+            <FadeIn key={episode.id} delay={revealDelay(i, 3)} className="h-full">
               <EpisodeCard episode={episode} />
             </FadeIn>
           ))}

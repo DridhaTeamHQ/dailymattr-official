@@ -254,13 +254,14 @@ export function StoryImage({ edition, className }: { edition: Edition; className
 }
 
 /** A story to pick on /quizz: photo, category, headline. Links straight to its quiz. */
-export function StoryPickCard({ edition, href }: { edition: Edition; href: string }) {
+export function StoryPickCard({ edition, href, className }: { edition: Edition; href: string; className?: string }) {
   return (
     <Link
       href={href}
       className={cn(
         "group flex flex-col overflow-hidden rounded-[1.25rem] border border-hairline bg-white text-left transition-[box-shadow,translate] duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(17,20,24,0.10)] active:translate-y-0",
-        FOCUS
+        FOCUS,
+        className
       )}
     >
       <span className="relative block aspect-[4/5] overflow-hidden bg-track">

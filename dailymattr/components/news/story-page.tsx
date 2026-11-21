@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { appStoreLinks } from "@/components/footer/footer-links"
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { cn } from "@/lib/utils"
 import logoMark from "@/public/Figma_logos/LOGO with blue background (2).svg"
 import { storyBodies } from "./articles"
@@ -87,38 +88,40 @@ export function StoryPageView({ story }: { story: Story }) {
   return (
     <main className="flex-1 bg-white">
       <article className={cn(NEWS_GUTTER, "pt-8 pb-16 sm:pt-10 lg:pb-20")}>
-        <nav aria-label="Breadcrumb">
-          <ol className="flex min-w-0 items-center gap-1.5 text-[0.8125rem] leading-4 text-[#6b6b73]">
-            <li className="shrink-0">
-              <Link href="/" className="hover:text-[#141417]">
-                Home
-              </Link>
-            </li>
-            <li aria-hidden>›</li>
-            <li className="shrink-0">
-              <Link href="/news" className="hover:text-[#141417]">
-                News
-              </Link>
-            </li>
-            {category && (
-              <>
-                <li aria-hidden>›</li>
-                <li className="shrink-0">
-                  <Link href={newsPath(category.slug)} className="hover:text-[#141417]">
-                    {category.label}
-                  </Link>
-                </li>
-              </>
-            )}
-            <li aria-hidden>›</li>
-            <li aria-current="page" className="min-w-0 truncate text-[#141417]">
-              {story.headline}
-            </li>
-          </ol>
-        </nav>
+        <FadeIn>
+          <nav aria-label="Breadcrumb">
+            <ol className="flex min-w-0 items-center gap-1.5 text-[0.8125rem] leading-4 text-[#6b6b73]">
+              <li className="shrink-0">
+                <Link href="/" className="hover:text-[#141417]">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden>›</li>
+              <li className="shrink-0">
+                <Link href="/news" className="hover:text-[#141417]">
+                  News
+                </Link>
+              </li>
+              {category && (
+                <>
+                  <li aria-hidden>›</li>
+                  <li className="shrink-0">
+                    <Link href={newsPath(category.slug)} className="hover:text-[#141417]">
+                      {category.label}
+                    </Link>
+                  </li>
+                </>
+              )}
+              <li aria-hidden>›</li>
+              <li aria-current="page" className="min-w-0 truncate text-[#141417]">
+                {story.headline}
+              </li>
+            </ol>
+          </nav>
+        </FadeIn>
 
         <div className="grid grid-cols-1 gap-8 pt-6 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:gap-[3.6rem] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
-          <FadeIn className="lg:self-start">
+          <FadeIn delay={0.4} className="lg:self-start">
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#ececf0] lg:aspect-[923/1704]">
               <Image
                 src={storyImage(story)}
@@ -132,25 +135,27 @@ export function StoryPageView({ story }: { story: Story }) {
           </FadeIn>
 
           {/* Fills the column on laptops; capped on wide screens so the points stay readable. */}
-          <FadeIn delay={0.06} className="flex min-w-0 max-w-[56rem] flex-col">
-            <h1 className="text-[1.75rem] leading-[1.18] font-bold tracking-[-0.02em] text-[#141417] sm:text-[2.375rem]">
-              {story.headline}
-            </h1>
+          <div className="flex min-w-0 max-w-[56rem] flex-col">
+            <FadeIn>
+              <h1 className="text-[1.75rem] leading-[1.18] font-bold tracking-[-0.02em] text-[#141417] sm:text-[2.375rem]">
+                {story.headline}
+              </h1>
 
-            <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.8125rem] leading-4 text-[#6b6b73]">
-              <span>
-                By <span className="font-semibold text-[#141417]">dailymattr Editorial Team</span>
-              </span>
-              <time dateTime={story.published}>{story.date}</time>
-              {category && (
-                <Link href={newsPath(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
-                  {category.label}
-                </Link>
-              )}
-            </p>
+              <p className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[0.8125rem] leading-4 text-[#6b6b73]">
+                <span>
+                  By <span className="font-semibold text-[#141417]">dailymattr Editorial Team</span>
+                </span>
+                <time dateTime={story.published}>{story.date}</time>
+                {category && (
+                  <Link href={newsPath(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
+                    {category.label}
+                  </Link>
+                )}
+              </p>
+            </FadeIn>
 
             {body && (
-              <>
+              <FadeIn delay={0.2}>
                 <ul className="mt-6 flex flex-col gap-4">
                   {body.points.map((point) => (
                     <li key={point} className="flex gap-3 text-base leading-[1.6] text-[#141417]">
@@ -170,65 +175,69 @@ export function StoryPageView({ story }: { story: Story }) {
                     {body.source.label}
                   </a>
                 </p>
-              </>
+              </FadeIn>
             )}
 
-            <div className="mt-6">
+            <FadeIn delay={0.2} className="mt-6">
               <AppBanner />
-            </div>
+            </FadeIn>
 
             {previous && (
-              <Link
-                href={storyHref(previous)}
-                className="mt-6 flex flex-col gap-1 rounded-2xl border border-[#e5e4e8] p-4 transition-colors hover:bg-[#f7f7f9]"
-              >
-                <span className={label}>Previous</span>
-                <span className="line-clamp-1 text-[0.9375rem] leading-6 font-semibold text-[#141417]">
-                  {previous.headline}
-                </span>
-              </Link>
+              <FadeIn delay={0.2} className="mt-6">
+                <Link
+                  href={storyHref(previous)}
+                  className="flex flex-col gap-1 rounded-2xl border border-[#e5e4e8] p-4 transition-colors hover:bg-[#f7f7f9]"
+                >
+                  <span className={label}>Previous</span>
+                  <span className="line-clamp-1 text-[0.9375rem] leading-6 font-semibold text-[#141417]">
+                    {previous.headline}
+                  </span>
+                </Link>
+              </FadeIn>
             )}
 
             {older.length > 0 && (
-              <section aria-labelledby="older-stories" className="mt-8">
-                <h2 id="older-stories" className={label}>
-                  Older
-                </h2>
-                <ul className="mt-2 divide-y divide-[#ececf0]">
-                  {older.map((s) => (
-                    <li key={s.slug}>
-                      <Link href={storyHref(s)} className="group flex items-center gap-4 py-3">
-                        <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-[#ececf0]">
-                          <Image src={storyImage(s)} alt="" fill sizes="3.5rem" className="object-cover object-top" />
-                        </span>
-                        <span className="line-clamp-2 text-[0.9375rem] leading-[1.35] font-semibold text-[#141417] underline-offset-2 group-hover:underline">
-                          {s.headline}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              <FadeIn delay={0.2} className="mt-8">
+                <section aria-labelledby="older-stories">
+                  <h2 id="older-stories" className={label}>
+                    Older
+                  </h2>
+                  <ul className="mt-2 divide-y divide-[#ececf0]">
+                    {older.map((s) => (
+                      <li key={s.slug}>
+                        <Link href={storyHref(s)} className="group flex items-center gap-4 py-3">
+                          <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-[#ececf0]">
+                            <Image src={storyImage(s)} alt="" fill sizes="3.5rem" className="object-cover object-top" />
+                          </span>
+                          <span className="line-clamp-2 text-[0.9375rem] leading-[1.35] font-semibold text-[#141417] underline-offset-2 group-hover:underline">
+                            {s.headline}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </FadeIn>
             )}
-          </FadeIn>
+          </div>
         </div>
       </article>
 
       {more.length > 0 && (
         <section aria-labelledby="more-stories" className={cn(NEWS_GUTTER, "border-t border-[#ececf0] pt-12 pb-20 lg:pb-28")}>
-          <div className="flex items-end justify-between gap-4">
+          <FadeIn className="flex items-end justify-between gap-4">
             <h2 id="more-stories" className="text-xl leading-7 font-bold tracking-[-0.02em] text-[#141417] sm:text-2xl">
               More stories
             </h2>
             <Link href="/news" className="text-sm leading-5 font-semibold text-brand-blue-deep hover:underline">
               See all news →
             </Link>
-          </div>
+          </FadeIn>
           <ul className="grid grid-cols-1 gap-x-[1.375rem] gap-y-[1.625rem] pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 [&>li:nth-child(5)]:hidden 2xl:[&>li:nth-child(5)]:block">
-            {more.map((s) => (
-              <li key={s.slug}>
+            {more.map((s, i) => (
+              <FadeIn as="li" key={s.slug} delay={revealDelay(i, 5)}>
                 <NewsCard story={s} headingLevel="h3" />
-              </li>
+              </FadeIn>
             ))}
           </ul>
         </section>

@@ -1,6 +1,7 @@
 import Image from "next/image"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { experiences, type TraxExperience } from "./content"
 import { TraxSectionIntro } from "./primitives"
 
@@ -27,7 +28,7 @@ export function TraxExperiences() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-6">
           {experiences.items.map((item, i) => (
-            <FadeIn key={item.title} delay={i * 0.06} className="h-full">
+            <FadeIn key={item.title} delay={revealDelay(i, 3)} className="h-full">
               <ExperienceCard item={item} />
             </FadeIn>
           ))}

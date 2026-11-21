@@ -1,4 +1,6 @@
+import { FadeIn } from "@/components/shared/fade-in"
 import { SITE_GUTTER } from "@/components/shared/layout"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { cn } from "@/lib/utils"
 import { editionDate, editions, intro, quizPath } from "./content"
 import { SeriesBar, StoryPickCard } from "./parts"
@@ -42,9 +44,12 @@ export function QuizSkeleton() {
 export function QuizPicker() {
   return (
     <div className="mx-auto w-full max-w-[37.5rem] lg:max-w-[66rem]">
-      <SeriesBar date={editionDate} />
+      <FadeIn>
+        <SeriesBar date={editionDate} />
+      </FadeIn>
       <div className="mt-6 flex flex-col gap-8 sm:mt-8 lg:gap-10">
-        <h1
+        <FadeIn
+          as="h1"
           // One line from laptop width up; phones and tablets wrap it.
           className="text-3xl leading-9 font-extrabold tracking-[-0.025em] text-balance text-ink sm:text-4xl sm:leading-[2.75rem] lg:text-display lg:leading-[3rem] lg:whitespace-nowrap"
         >
@@ -57,10 +62,10 @@ export function QuizPicker() {
               part.text
             )
           )}
-        </h1>
+        </FadeIn>
 
         <section aria-labelledby="pick-heading" className="flex flex-col gap-4">
-          <div className="flex items-end justify-between gap-3">
+          <FadeIn className="flex items-end justify-between gap-3">
             <h2
               id="pick-heading"
               className="text-2xl leading-8 font-bold tracking-[-0.02em] text-ink sm:text-[1.75rem] sm:leading-9 lg:text-3xl lg:leading-[2.375rem]"
@@ -70,10 +75,13 @@ export function QuizPicker() {
             <span className="pb-1 text-sm leading-5 font-medium text-ink-muted lg:text-base">
               {editions.length} stories today
             </span>
-          </div>
+          </FadeIn>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {editions.map((e) => (
-              <StoryPickCard key={e.slug} edition={e} href={quizPath(e.slug)} />
+            {editions.map((e, i) => (
+              // h-full keeps each card filling its grid cell now that the reveal wraps it.
+              <FadeIn key={e.slug} delay={revealDelay(i, 4)}>
+                <StoryPickCard edition={e} href={quizPath(e.slug)} className="h-full" />
+              </FadeIn>
             ))}
           </div>
         </section>

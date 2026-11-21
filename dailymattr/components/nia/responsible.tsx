@@ -46,7 +46,7 @@ export function NiaResponsible() {
             </div>
           </FadeIn>
 
-          <FadeIn delay={0.1}>
+          <FadeIn delay={0.2}>
             <div className="flex flex-col items-start gap-4 lg:gap-5">
               <h2 className="max-w-[554px] text-3xl leading-tight font-medium text-white sm:text-display lg:text-5xl lg:leading-12">
                 Don&apos;t stop at the headline.

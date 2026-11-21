@@ -95,21 +95,24 @@ const mediaPhotoOverlay = [
 export function AboutMedia() {
   return (
     // data-full-bleed: the footer adds Figma's 97px top gap after a page-ending photo.
-    <section data-full-bleed className="relative isolate flex overflow-hidden px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-0 lg:pt-0 lg:pb-[5.25rem] lg:pl-[12.9375rem]">
+    <section data-full-bleed className="relative isolate flex px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-0 lg:pt-0 lg:pb-[5.25rem] lg:pl-[12.9375rem]">
       {/* Framed as Figma crops it (9144:290): the photo is 141.63% of the frame's height,
           bottom-aligned, so the top of the tower runs off the frame and the blue logo sits a
           third of the way down, above the card. Figma also stretches it about 1.3× sideways;
           here it keeps its true proportions. Taller still on phones, where the card covers
-          more of the section. */}
-      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[160%] lg:h-[141.63%]">
-        <Image
-          src={buildingPhoto}
-          alt=""
-          fill
-          placeholder="blur"
-          sizes="(min-width: 64rem) 100vw, 200vw"
-          className="object-cover object-[42%_bottom] lg:object-bottom"
-        />
+          more of the section. Only the photo is clipped (not the section), so the card's
+          fade-up isn't cut off at the section's bottom edge. */}
+      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-x-0 bottom-0 h-[160%] lg:h-[141.63%]">
+          <Image
+            src={buildingPhoto}
+            alt=""
+            fill
+            placeholder="blur"
+            sizes="(min-width: 64rem) 100vw, 200vw"
+            className="object-cover object-[42%_bottom] lg:object-bottom"
+          />
+        </div>
       </div>
       <div aria-hidden className="absolute inset-0 -z-10" style={{ backgroundImage: mediaPhotoOverlay }} />
 

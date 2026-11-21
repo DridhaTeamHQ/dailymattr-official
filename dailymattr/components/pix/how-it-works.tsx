@@ -1,4 +1,5 @@
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { howItWorks, type PixStep } from "./content"
 import { PixSectionIntro } from "./primitives"
 
@@ -30,7 +31,7 @@ export function PixHowItWorks() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-6">
           {howItWorks.steps.map((step, i) => (
-            <FadeIn key={step.number} delay={i * 0.06} className="h-full">
+            <FadeIn key={step.number} delay={revealDelay(i, 4)} className="h-full">
               <StepCard step={step} />
             </FadeIn>
           ))}

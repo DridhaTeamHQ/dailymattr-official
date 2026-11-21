@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { realStories, type PixStory } from "./content"
 import { PixSectionIntro, PixTag } from "./primitives"
 
@@ -43,7 +44,7 @@ export function PixStories() {
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-6">
           {realStories.stories.map((story, i) => (
-            <FadeIn key={story.id} delay={i * 0.06} className="h-full">
+            <FadeIn key={story.id} delay={revealDelay(i, 4)} className="h-full">
               <StoryCard story={story} />
             </FadeIn>
           ))}

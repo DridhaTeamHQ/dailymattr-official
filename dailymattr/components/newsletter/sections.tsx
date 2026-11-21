@@ -38,12 +38,18 @@ export function NewsletterHero() {
           "grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,31.25rem)_minmax(0,36.25rem)] lg:justify-between lg:gap-[4.5rem]",
         )}
       >
-        <FadeIn className="flex flex-col items-start gap-5 lg:gap-6">
-          <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+        <div className="flex flex-col items-start gap-5 lg:gap-6">
+          <FadeIn
+            as="p"
+            className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+          >
             {hero.eyebrow}
-          </p>
+          </FadeIn>
           {/* 40px on phones (not the Support page's 44) so "Open your inbox to" fits one line at 375 */}
-          <h1 className="text-[2.5rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
+          <FadeIn
+            as="h1"
+            className="text-[2.5rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+          >
             {hero.title.map((line, i) => (
               <span key={line} className="block">
                 {line}
@@ -55,29 +61,31 @@ export function NewsletterHero() {
                 )}
               </span>
             ))}
-          </h1>
-          <p className="max-w-[28rem] text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="max-w-[28rem] text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
             {hero.body}
-          </p>
+          </FadeIn>
 
-          <ul className="mt-2 flex w-full max-w-[26rem] flex-col divide-y divide-[#ececf0] rounded-[1rem] border border-[#ececf0] bg-[#f7f7f7] px-3">
-            {pledges.map((p) => {
-              const Icon = pledgeIcon[p.key]
-              return (
-                <li key={p.key} className="flex items-center gap-4 py-3">
-                  <span className="grid size-10 shrink-0 place-items-center rounded-[0.625rem] bg-white text-[#3979ff] shadow-[0px_1px_1px_0px_rgba(16,24,40,0.06),0px_4px_6px_0px_rgba(16,24,40,0.04)]">
-                    <Icon className="size-5" strokeWidth={1.75} aria-hidden />
-                  </span>
-                  <span className="text-base leading-6 font-medium tracking-[-0.0125rem] text-[#1c1c1e]">
-                    {p.title}
-                  </span>
-                </li>
-              )
-            })}
-          </ul>
-        </FadeIn>
+          <FadeIn delay={0.2} className="mt-2 w-full max-w-[26rem]">
+            <ul className="flex w-full flex-col divide-y divide-[#ececf0] rounded-[1rem] border border-[#ececf0] bg-[#f7f7f7] px-3">
+              {pledges.map((p) => {
+                const Icon = pledgeIcon[p.key]
+                return (
+                  <li key={p.key} className="flex items-center gap-4 py-3">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-[0.625rem] bg-white text-[#3979ff] shadow-[0px_1px_1px_0px_rgba(16,24,40,0.06),0px_4px_6px_0px_rgba(16,24,40,0.04)]">
+                      <Icon className="size-5" strokeWidth={1.75} aria-hidden />
+                    </span>
+                    <span className="text-base leading-6 font-medium tracking-[-0.0125rem] text-[#1c1c1e]">
+                      {p.title}
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.1}>
+        <FadeIn delay={0.4}>
           <div
             className="rounded-[1.5rem] border border-[rgba(57,121,255,0.12)] p-3 sm:p-6"
             style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
@@ -117,24 +125,22 @@ function InboxPreview() {
 
       <ol className="flex flex-col divide-y divide-[#f0f1f4]">
         {sampleRows.map(([title, line1, line2], i) => (
-          <li key={i}>
-            <FadeIn delay={0.08 + i * 0.07} className="flex items-start gap-3 py-3.5 sm:gap-4">
-              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-blue-soft text-xs leading-none font-semibold text-brand-blue-deep">
-                {i + 1}
-              </span>
-              <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-0.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2.5 rounded-full bg-[#c4c8d0]" style={{ width: `${title}%` }} />
-                  <BadgeCheck className="size-3.5 shrink-0 text-[#3979ff]" strokeWidth={2} />
-                </div>
-                <span className="h-2 rounded-full bg-[#ececf0]" style={{ width: `${line1}%` }} />
-                <span className="h-2 rounded-full bg-[#ececf0]" style={{ width: `${line2}%` }} />
+          <li key={i} className="flex items-start gap-3 py-3.5 sm:gap-4">
+            <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-blue-soft text-xs leading-none font-semibold text-brand-blue-deep">
+              {i + 1}
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col gap-1.5 pt-0.5">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2.5 rounded-full bg-[#c4c8d0]" style={{ width: `${title}%` }} />
+                <BadgeCheck className="size-3.5 shrink-0 text-[#3979ff]" strokeWidth={2} />
               </div>
-              <span className="mt-0.5 hidden shrink-0 items-center gap-1 rounded-full border border-[#dddfe3] px-2 py-1 sm:inline-flex">
-                <Link2 className="size-3 text-[#3979ff]" strokeWidth={2} />
-                <span className="h-1.5 w-6 rounded-full bg-[#c4c8d0]" />
-              </span>
-            </FadeIn>
+              <span className="h-2 rounded-full bg-[#ececf0]" style={{ width: `${line1}%` }} />
+              <span className="h-2 rounded-full bg-[#ececf0]" style={{ width: `${line2}%` }} />
+            </div>
+            <span className="mt-0.5 hidden shrink-0 items-center gap-1 rounded-full border border-[#dddfe3] px-2 py-1 sm:inline-flex">
+              <Link2 className="size-3 text-[#3979ff]" strokeWidth={2} />
+              <span className="h-1.5 w-6 rounded-full bg-[#c4c8d0]" />
+            </span>
           </li>
         ))}
       </ol>
@@ -152,17 +158,19 @@ export function NewsletterHabit() {
           "grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,30rem)_minmax(0,38.75rem)] lg:justify-between lg:gap-[4.5rem]",
         )}
       >
-        <FadeIn className="flex flex-col items-start gap-8 lg:gap-10">
-          <h2 className={h2}>
+        <div className="flex flex-col items-start gap-8 lg:gap-10">
+          <FadeIn as="h2" className={h2}>
             <span className="block">{habit.title}</span>
             <span className="block text-[rgba(28,28,30,0.5)]">{habit.muted}</span>
-          </h2>
-          <AnchorLink href={`#${subscribeId}`} className={darkPill}>
-            <PillContent>{form.submit}</PillContent>
-          </AnchorLink>
-        </FadeIn>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <AnchorLink href={`#${subscribeId}`} className={darkPill}>
+              <PillContent>{form.submit}</PillContent>
+            </AnchorLink>
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.1}>
+        <FadeIn delay={0.4}>
           <div
             className="rounded-[1.5rem] border border-[rgba(57,121,255,0.12)] p-3 sm:p-6"
             style={{

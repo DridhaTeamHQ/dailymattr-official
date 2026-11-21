@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import { revealDelay } from "@/components/shared/reveal-delay"
 import { softGlow } from "@/components/shared/soft-glow"
 import { cn } from "@/lib/utils"
 import { channels, hero, supportEmail } from "./content"
@@ -31,36 +32,44 @@ export function SupportHero() {
           "grid grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,31.25rem)_minmax(0,38.75rem)] lg:justify-between lg:gap-[4.5rem]",
         )}
       >
-        <FadeIn className="flex flex-col items-start gap-5 lg:gap-6">
-          <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+        <div className="flex flex-col items-start gap-5 lg:gap-6">
+          <FadeIn
+            as="p"
+            className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+          >
             {hero.eyebrow}
-          </p>
-          <h1 className="text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
+          </FadeIn>
+          <FadeIn
+            as="h1"
+            className="text-[2.75rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+          >
             {hero.title.map((line) => (
               <span key={line} className="block">
                 {line}
               </span>
             ))}
-          </h1>
-          <p className="max-w-[28rem] text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
+          </FadeIn>
+          <FadeIn as="p" delay={0.2} className="max-w-[28rem] text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
             {hero.body}
-          </p>
+          </FadeIn>
 
-          <a
-            href={`mailto:${supportEmail}`}
-            className="group mt-2 flex items-center gap-4 rounded-[1rem] border border-[#ececf0] bg-[#f7f7f7] py-3 pr-5 pl-3 transition-colors hover:border-[rgba(57,121,255,0.3)]"
-          >
-            <IconTile src="/support/mail.svg" />
-            <span className="flex flex-col">
-              <span className="text-sm leading-5 text-[#696969]">{hero.emailLabel}</span>
-              <span className="text-base leading-6 font-medium break-all text-[#1c1c1e] group-hover:text-[#3979ff]">
-                {supportEmail}
+          <FadeIn delay={0.2} className="mt-2">
+            <a
+              href={`mailto:${supportEmail}`}
+              className="group flex items-center gap-4 rounded-[1rem] border border-[#ececf0] bg-[#f7f7f7] py-3 pr-5 pl-3 transition-colors hover:border-[rgba(57,121,255,0.3)]"
+            >
+              <IconTile src="/support/mail.svg" />
+              <span className="flex flex-col">
+                <span className="text-sm leading-5 text-[#696969]">{hero.emailLabel}</span>
+                <span className="text-base leading-6 font-medium break-all text-[#1c1c1e] group-hover:text-[#3979ff]">
+                  {supportEmail}
+                </span>
               </span>
-            </span>
-          </a>
-        </FadeIn>
+            </a>
+          </FadeIn>
+        </div>
 
-        <FadeIn delay={0.1}>
+        <FadeIn delay={0.4}>
           <div
             className="rounded-[1.5rem] border border-[rgba(57,121,255,0.12)] p-3 sm:p-6"
             style={{ backgroundImage: softGlow("linear-gradient(#f6f8fd, #f6f8fd)") }}
@@ -89,7 +98,7 @@ export function SupportChannels() {
             const Anchor = external ? "a" : Link
             return (
               <li key={item.title}>
-                <FadeIn delay={i * 0.06} className="h-full">
+                <FadeIn delay={revealDelay(i, 3)} className="h-full">
                   <Anchor
                     href={item.link.href}
                     className="group flex h-full flex-col gap-5 rounded-[1rem] bg-white p-8 transition-[translate,box-shadow] hover:-translate-y-0.5 hover:shadow-[0px_12px_32px_0px_rgba(16,24,40,0.08)]"

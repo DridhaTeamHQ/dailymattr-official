@@ -165,7 +165,7 @@ export function NiaHowItWorks() {
         <div className="mt-10 flex flex-col items-center gap-8 lg:mt-16 lg:flex-row lg:items-center lg:gap-0">
           {/* Question ladder */}
           {/* Figma: a 659.5px half-column holding 440px rows, so the gap is built in */}
-          <FadeIn className="w-full lg:flex-[659.5_1_0%]">
+          <FadeIn delay={0.2} className="w-full lg:flex-[659.5_1_0%]">
             <div className="mx-auto flex w-full max-w-[440px] flex-col lg:mx-0">
               {howItWorksSteps.map((step, index) => {
                 const isSent = sent.has(index);
@@ -234,7 +234,7 @@ export function NiaHowItWorks() {
           {/* Chat panel. On desktop it is 754px tall (the Figma size) but never taller than
               the screen minus the header, so it still fits when the browser is zoomed in.
               The page is zoomed by --nia-scale, so viewport units are divided back out. */}
-          <FadeIn delay={0.15} className="w-full lg:flex-[741.5_1_0%]">
+          <FadeIn delay={0.4} className="w-full lg:flex-[741.5_1_0%]">
             <div
               className="relative flex h-[480px] flex-col gap-4 overflow-hidden rounded-[20px] border border-white/8 px-4 pb-4 font-sans sm:h-[560px] sm:px-10 sm:pb-10 lg:h-[clamp(420px,calc((100svh-112px)/var(--nia-scale,1)),754px)] lg:rounded-[24px]"
               style={{ backgroundImage: panelBackground }}

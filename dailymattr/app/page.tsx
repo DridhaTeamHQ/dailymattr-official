@@ -9,6 +9,7 @@ import { NewsletterSection } from "@/components/newsletter";
 import { RecognizedInSection } from "@/components/recognized-in";
 import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
+import { SoftReveal } from "@/components/shared/fade-in";
 
 // Landing page, Figma 8585:9489. Every text style in the frame is Helvetica Neue
 // (Regular / Medium / Bold); font-helvetica falls back to Inter Tight where it isn't installed.
@@ -17,16 +18,19 @@ export const generateMetadata = () => seoMetadata("/")
 export default function Home() {
   return (
     <main className="flex-1 font-helvetica">
-      <Hero />
-      <RecognizedInSection />
-      <StoriesSection />
-      <AppPreviewSection />
-      {/* <LearnFormatsSection /> */}
-      <ExplainersSection />
-      <DailyRoutineSection />
-      <BriefingBentoSection />
-      <TemplatesSection />
-      <NewsletterSection />
+      {/* The home page keeps its original soft reveal; every other page uses the fade-up. */}
+      <SoftReveal>
+        <Hero />
+        <RecognizedInSection />
+        <StoriesSection />
+        <AppPreviewSection />
+        {/* <LearnFormatsSection /> */}
+        <ExplainersSection />
+        <DailyRoutineSection />
+        <BriefingBentoSection />
+        <TemplatesSection />
+        <NewsletterSection />
+      </SoftReveal>
     </main>
   );
 }
