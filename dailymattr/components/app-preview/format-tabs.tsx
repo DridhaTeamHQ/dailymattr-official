@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import Image from "next/image"
 import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 
@@ -32,9 +32,21 @@ const niaGradient = "bg-[linear-gradient(246.16deg,#af75ff_3.11%,#4d90fd_93.93%)
 
 const formatTime =(s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
+/**
+ * Each tab's clip plays this many times, then the bar moves on to the next tab (after the
+ * last, back to the first). Picking a tab yourself starts its count over. Clips only play
+ * while on screen (SiteVideo), so the bar never runs ahead off screen; with reduced motion
+ * nothing plays, so it stays put.
+ */
+const PLAYS_PER_TAB = 3
+
 export function FormatTabs() {
   const [active, setActive] = useState(formats[0].value)
   const reduceMotion = useReducedMotion()
+  // Read in the video's event handlers: the tab on screen and how often its clip has finished.
+  const activeRef = useRef(active)
+  const playsRef = useRef(0)
+  const listRef = useRef<HTMLDivElement>(null)
   const activeFormat = formats.find((f) => f.value === active) ?? formats[0]
   // One id per instance, so two tab bars on a page never share an indicator.
   const pillId = `format-pill-${useId()}`
@@ -51,14 +63,32 @@ export function FormatTabs() {
   // Tabs that share a still don't re-animate it when switching between them.
   const mediaKey = activeFormat.videoSrc ?? activeFormat.image.src
 
+  function select(value: string) {
+    activeRef.current = value
+    playsRef.current = 0
+    // A tab's clip mounts again from the start, so its countdown does too.
+    setElapsed((prev) => ({ ...prev, [value]: 0 }))
+    setActive(value)
+  }
+
+  // On phones the bar scrolls sideways; keep the active tab centred in it, so a tab the bar
+  // moved to on its own is never out of sight. Only the bar scrolls, never the page.
+  useEffect(() => {
+    const list = listRef.current
+    const tab = list?.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+    if (!list || !tab || list.scrollWidth <= list.clientWidth) return
+    const l = list.getBoundingClientRect()
+    const t = tab.getBoundingClientRect()
+    list.scrollTo({
+      left: list.scrollLeft + t.left - l.left - (l.width - t.width) / 2,
+      behavior: reduceMotion ? "auto" : "smooth",
+    })
+  }, [active, reduceMotion])
+
   return (
     <Tabs
       value={active}
-      onValueChange={(value) => {
-        // A tab's clip mounts again from the start, so its countdown does too.
-        setElapsed((prev) => ({ ...prev, [value as string]: 0 }))
-        setActive(value as string)
-      }}
+      onValueChange={(value) => select(value as string)}
       // At lg and up the width follows --expand-w (set by ExpandOnScroll as the section
       // scrolls in), falling back to the starting width (START_W) when it isn't set. On every
       // screen the box is capped so its 16:9 height fits between the pinned nav and the bottom
@@ -105,6 +135,22 @@ export function FormatTabs() {
                   const v = activeFormat.value
                   setElapsed((prev) => (prev[v] === s ? prev : { ...prev, [v]: s }))
                 }}
+                // Replayed by hand rather than looped, so each finished play can be counted.
+                loop={false}
+                onEnded={(e) => {
+                  const v = activeFormat.value
+                  // A clip still fading out after a tab change no longer drives the bar.
+                  if (v !== activeRef.current) return
+                  playsRef.current += 1
+                  if (playsRef.current < PLAYS_PER_TAB) {
+                    const video = e.currentTarget
+                    video.currentTime = 0
+                    video.play().catch(() => {})
+                    return
+                  }
+                  const i = formats.findIndex((f) => f.value === v)
+                  select(formats[(i + 1) % formats.length].value)
+                }}
               />
             ) : (
               <Image
@@ -134,7 +180,7 @@ export function FormatTabs() {
           </TabsContent>
         ))}
 
-        <TabsList className={cn("absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[0.9333rem] p-1.5group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]", glassBar)}>
+        <TabsList ref={listRef} className={cn("absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[0.9333rem] p-1.5group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]", glassBar)}>
           {formats.map((f) => {
             const isActive = f.value === active
             // NIA: grey star, and the title and star take the NIA gradient on hover.
