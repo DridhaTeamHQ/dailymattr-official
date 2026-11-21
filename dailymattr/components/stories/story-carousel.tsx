@@ -55,6 +55,9 @@ export function StoryCarousel() {
   const cardCount = useCardCount(containerRef)
   const [api, setApi] = React.useState<CarouselApi>()
   const [tapped, setTapped] = React.useState<number | null>(null)
+  // Leaving the page keeps it mounted, hidden (Next's cacheComponents): drop the tapped card so
+  // its clip doesn't start again on the way back.
+  React.useLayoutEffect(() => () => setTapped(null), [])
 
   React.useEffect(() => {
     const autoScroll = api?.plugins()?.autoScroll

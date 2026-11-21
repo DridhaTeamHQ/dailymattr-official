@@ -72,6 +72,16 @@ export function StoryCard({
     return () => events.forEach((e) => window.removeEventListener(e, unmute, { capture: true }))
   }, [active, armed, userMuted])
 
+  // Clicking through to a story leaves this page mounted but hidden (Next's cacheComponents),
+  // with no pointerleave, so the clip would play on with sound. Effects clean up then: stop it.
+  React.useLayoutEffect(() => {
+    const el = videoRef
+    return () => {
+      el.current?.pause()
+      setHovered(false)
+    }
+  }, [])
+
   const muted = userMuted || soundBlocked
   const toggleSound = () => {
     const el = videoRef.current

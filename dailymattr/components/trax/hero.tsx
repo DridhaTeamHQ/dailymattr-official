@@ -3,32 +3,43 @@ import { Fragment } from "react"
 import { FadeIn } from "@/components/shared/fade-in"
 import { hero } from "./content"
 import { TraxHeroPlayer } from "./hero-player"
+import { TraxHeroState } from "./hero-state"
+import { HeroWash } from "./hero-wash"
 import { TraxButton, TraxTag } from "./primitives"
 
 /**
- * Cover-flow player filling the first screen, copy below, over a blurred warm wash taken
- * from the playing artwork. Figma 9278:697 (1920×1392 on the desktop frame).
+ * Cover-flow player filling the first screen, copy below, over a blurred wash in the playing
+ * cover's colours (HeroWash). Figma 9278:697 (1920×1392 on the desktop frame).
  *
- * Fit to short screens (laptops, browser toolbars): rem sizes already shrink with the screen
- * width; --trax-hero-fit (0.6–1) also shrinks the player and its top padding so the cards
- * and the bar fit under the header. It is the height left below the header over the 56rem the
- * player needs (6.25rem padding + 46.75rem player + 3rem of room). Pure CSS where length ÷
- * length is supported; TraxHeroPlayer sets it from JS elsewhere (FIT_REM / MIN_FIT there).
+ * Fit to short screens (laptops, browser toolbars, small windows) at every width: rem sizes
+ * already shrink with the screen width; --trax-hero-fit (0.6–1) also shrinks the player and
+ * its top padding so the cards and the bar fit under the header. It is the height left below
+ * the header over the height the player needs at that breakpoint, --trax-hero-need: top
+ * padding + cards (37.75rem × the stage's width zoom) + bar and its margin + a little room.
+ *   base 2.5 + 15.86 + 6.5 + 1.5 ≈ 26.5rem    sm 3.5 + 22.65 + 7.5 + 2 ≈ 35.75rem
+ *   md   3.5 + 26.43 + 7.5 + 2 ≈ 39.5rem      lg 6.25 + 37.75 + 9 + 3 = 56rem
+ * Pure CSS where length ÷ length is supported; TraxHeroPlayer sets it from JS elsewhere.
+ *
+ * Clipped (overflow: clip), not overflow: hidden: the wash and the wide card stage run past the
+ * section, and a hidden-overflow box still scrolls when something inside takes focus, which
+ * slid the cards up under the nav (or sideways). A clipped box can't scroll.
  */
 export function TraxHero() {
   return (
-    <section className="relative isolate flex flex-col items-center overflow-hidden bg-[#0a0a0a] pt-10 pb-16 supports-[zoom:calc(1px/1px)]:[--trax-hero-fit:clamp(0.6,calc((100svh_-_var(--chrome-height,6.375rem))_/_56rem),1)] sm:pt-14 sm:pb-20 lg:pt-[calc(6.25rem*var(--trax-hero-fit,1))] lg:pb-[7.6875rem]">
-      <BlurredArtwork />
+    <section className="relative isolate flex flex-col items-center overflow-clip bg-[#0a0a0a] pt-[calc(2.5rem*var(--trax-hero-fit,1))] pb-16 [--trax-hero-need:26.5rem] supports-[zoom:calc(1px/1px)]:[--trax-hero-fit:clamp(0.6,calc((100svh_-_var(--chrome-height,6.375rem))_/_var(--trax-hero-need)),1)] sm:pt-[calc(3.5rem*var(--trax-hero-fit,1))] sm:pb-20 sm:[--trax-hero-need:35.75rem] md:[--trax-hero-need:39.5rem] lg:pt-[calc(6.25rem*var(--trax-hero-fit,1))] lg:pb-[7.6875rem] lg:[--trax-hero-need:56rem]">
+      <TraxHeroState>
+        <HeroWash />
 
-      <div className="relative w-full px-4 sm:px-6 lg:w-[95rem] lg:px-0">
-        {/* Legibility shade behind the player (Figma 9278:700: 1520×800, 24px above it) */}
-        <Blob
-          src="/trax/hero/shade-player.svg"
-          className="inset-x-0 -top-6 h-[calc(100%+3.25rem)]"
-          overhang="inset-[-25%_-13.16%]"
-        />
-        <TraxHeroPlayer />
-      </div>
+        <div className="relative w-full px-4 sm:px-6 lg:w-[95rem] lg:px-0">
+          {/* Legibility shade behind the player (Figma 9278:700: 1520×800, 24px above it) */}
+          <Blob
+            src="/trax/hero/shade-player.svg"
+            className="inset-x-0 -top-6 h-[calc(100%+3.25rem)]"
+            overhang="inset-[-25%_-13.16%]"
+          />
+          <TraxHeroPlayer />
+        </div>
+      </TraxHeroState>
 
       <div className="relative mt-16 w-full max-w-[51.25rem] px-4 sm:mt-20 sm:px-6 lg:mt-[10.5rem] lg:px-0">
         {/* Shade centred on the copy (Figma 9278:701: 1040×400, 72px above it) */}
@@ -58,25 +69,6 @@ export function TraxHero() {
         </FadeIn>
       </div>
     </section>
-  )
-}
-
-/**
- * The playing artwork's colours, blurred (Figma 9278:801): a 2400×1872 gold gradient at 20%
- * with soft placeholder blobs, centred and running 240px past the hero's top and sides.
- */
-function BlurredArtwork() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute top-[-15rem] left-1/2 h-[117rem] w-[150rem] -translate-x-1/2 overflow-hidden bg-linear-to-r from-[#d6932f] via-[#b9772a] to-[#dda83e] opacity-20 blur-[6.25rem]"
-    >
-      <Blob src="/trax/hero/bg-gold-right.svg" className="inset-[-4.07%_-13.95%_16.86%_69.77%]" overhang="inset-[-1.72%_-2.64%]" />
-      <Blob src="/trax/hero/bg-orange-left.svg" className="inset-[5.23%_68.6%_-4.07%_-15.12%]" overhang="inset-[-1.51%_-2.51%]" />
-      <Blob src="/trax/hero/bg-dark-centre.svg" className="inset-[3.49%_20.93%_17.44%_20.93%]" overhang="inset-[-1.89%_-2.01%]" />
-      <Blob src="/trax/hero/bg-dark-lower.svg" className="inset-[68.6%_26.74%_-12.79%_19.77%]" overhang="inset-[-3.39%_-2.18%]" />
-      <Blob src="/trax/hero/bg-maroon.svg" className="inset-[79.07%_3.49%_-13.95%_52.33%]" overhang="inset-[-4.29%_-2.64%]" />
-    </div>
   )
 }
 

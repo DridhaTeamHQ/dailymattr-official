@@ -80,7 +80,7 @@ export function Footer() {
           {/* On desktop it fills the empty space under the short Legal and Support columns,
               its bottom edge level with the "Subscribe to newsletter" button on the left */}
           <div className="flex flex-col gap-3 lg:absolute lg:right-0 lg:bottom-0">
-            <p className="text-lg leading-7 tracking-[-0.02rem] text-foreground">Get the app</p>
+            <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">Get the app</p>
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={appStoreLinks.apple}

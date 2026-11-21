@@ -19,7 +19,7 @@ export function QixHero() {
   return (
     <section className="relative isolate overflow-hidden bg-[#050505] px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:px-8 lg:pt-0 lg:pb-[6em] lg:text-[length:clamp(0.7rem,calc((100svh_-_var(--chrome-height,6.375rem))_/_59.5),1rem)]">
       <div className="relative lg:h-[62.5em]">
-        {/* Figma 9278:984: 64px down, 32px between title, copy and button */}
+        {/* Figma 9278:984: 64px down, 32px between title and copy */}
         <FadeIn className="relative z-10 flex flex-col items-center gap-6 text-center lg:gap-[2em] lg:pt-[4em]">
           <h1 className="text-[2.5em] leading-[1.1] font-medium tracking-[-0.039em] text-white sm:text-[3em] lg:text-[4em] lg:leading-[1.125]">
             {hero.titleLines.map((line) => (
@@ -33,11 +33,17 @@ export function QixHero() {
           <p className="max-w-[28.3333em] text-[1em] leading-[1.5] tracking-[-0.0083em] text-white/64 sm:text-[1.125em] sm:leading-[1.5556] lg:text-[1.5em] lg:leading-[1.3333]">
             {hero.description}
           </p>
-
-          <WatchButton />
         </FadeIn>
 
         <QixHeroArc />
+
+        {/* Under the arc, in the curve below its small centre cards: the centre card ends at
+            46.56em (stage 15em down + 23.75em to its middle + half its 15.625em height). */}
+        <div className="pointer-events-none relative z-10 mt-6 flex justify-center lg:absolute lg:inset-x-0 lg:top-[50em] lg:mt-0">
+          <FadeIn delay={0.15} className="pointer-events-auto">
+            <WatchButton />
+          </FadeIn>
+        </div>
       </div>
 
       <Pillars />

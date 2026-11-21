@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, type ComponentProps } from "react"
+import { useEffect, useLayoutEffect, useRef, useState, type ComponentProps } from "react"
 import { useReducedMotion } from "motion/react"
 
 import { placeholderVideo, type VideoAsset } from "@/lib/videos"
@@ -100,6 +100,14 @@ export function SiteVideo({
       el.play().catch(() => {})
     })
   }, [shouldPlay, sound, restartOnEnter])
+
+  // Next keeps a page you leave mounted but hidden (cacheComponents), so a clip would play on,
+  // sound and all, under the next page. Effects clean up when that happens: pause here. They
+  // run again on the way back, and the effect above picks playback up from there.
+  useLayoutEffect(() => {
+    const el = ref.current
+    return () => el?.pause()
+  }, [])
 
   return (
     <video

@@ -21,11 +21,17 @@ export type TraxHeroEpisode = {
   focusY: number
   /** Placeholder song made by scripts/make-trax-songs.mjs; swap for the episode's audio. */
   audio: string
+  /**
+   * The song's tempo (beats per minute), so the player bar's level meter moves in time with
+   * it. The placeholder songs' tempos are in make-trax-songs.mjs; update it with the audio.
+   */
+  bpm: number
 }
 
 /**
- * Cover-flow player above the hero copy (Figma 9278:702), left to right as drawn; the middle
- * one starts in the centre slot. Nothing plays until the visitor presses play or a card.
+ * Cover-flow player above the hero copy (Figma 9278:702), in ring order. `initial` is the one
+ * in the centre slot on load (Behind Cricket Balls), with the others round it in this order,
+ * wrapping. Nothing plays until the visitor presses play or a card.
  */
 export const heroPlayer = {
   episodes: [
@@ -36,6 +42,7 @@ export const heroPlayer = {
       art: "/trax/hero/art-cricket.png",
       focusY: 9,
       audio: "/trax/hero/audio/cricket.mp3",
+      bpm: 100,
     },
     {
       id: "insurance",
@@ -44,6 +51,7 @@ export const heroPlayer = {
       art: "/trax/hero/art-insurance.png",
       focusY: 73,
       audio: "/trax/hero/audio/insurance.mp3",
+      bpm: 78,
     },
     {
       id: "fevicol",
@@ -52,6 +60,7 @@ export const heroPlayer = {
       art: "/trax/hero/art-fevicol.jpg",
       focusY: 3,
       audio: "/trax/hero/audio/fevicol.mp3",
+      bpm: 92,
     },
     {
       id: "cricket-balls",
@@ -60,6 +69,7 @@ export const heroPlayer = {
       art: "/trax/hero/art-cricket-balls.png",
       focusY: 18,
       audio: "/trax/hero/audio/cricket-balls.mp3",
+      bpm: 112,
     },
     {
       id: "self-driving-cars",
@@ -68,9 +78,10 @@ export const heroPlayer = {
       art: "/trax/hero/art-self-driving-cars.png",
       focusY: 16,
       audio: "/trax/hero/audio/self-driving-cars.mp3",
+      bpm: 96,
     },
   ] satisfies TraxHeroEpisode[],
-  initial: 2,
+  initial: 3,
 }
 
 export type TraxExperience = { icon: string; title: string; description: string }

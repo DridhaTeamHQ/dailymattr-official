@@ -1,8 +1,11 @@
 "use client"
 
-import { useLayoutEffect, useRef } from "react"
+import { useLayoutEffect, useRef, type CSSProperties } from "react"
 
+import { useTraxNav, useTraxRoute } from "@/components/shared/route-theme"
+import { cn } from "@/lib/utils"
 import { publishNavHeight } from "./nav-height"
+import { useTraxTint } from "./nav-tint"
 
 /**
  * Sticky header that stays pinned to the top of the screen. The announcement bar above it
@@ -10,6 +13,12 @@ import { publishNavHeight } from "./nav-height"
  */
 export function PinnedHeader({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null)
+  // On Trax the nav turns dark over the hero, tinted with the playing cover, and cross-fades
+  // back to white once the hero has scrolled past (globals.css, .trax-route / .trax-nav).
+  // The tint is set on the header itself, so only the nav restyles while it eases.
+  const traxRoute = useTraxRoute()
+  const traxNav = useTraxNav()
+  const tint = useTraxTint()
 
   // Publishes the nav height (--nav-height, useNavHeight) so pinned sections can sit below
   // it, and the announcement bar + nav height as --chrome-height, so full-screen heroes can
@@ -44,7 +53,12 @@ export function PinnedHeader({ children }: { children: React.ReactNode }) {
     // (--site-scale-auto, floored at 90% from 1280px): the same size as on every other page.
     <header
       ref={ref}
-      className="sticky top-0 z-50 w-full bg-background xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)] [.nia-layout_&]:xl:[zoom:max(0.9,var(--site-scale-auto,1))]"
+      className={cn(
+        "sticky top-0 z-50 w-full bg-background xl:[zoom:max(1,calc(0.9/var(--site-scale,1)))] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)] [.nia-layout_&]:xl:[zoom:max(0.9,var(--site-scale-auto,1))]",
+        traxRoute && "trax-route",
+        traxNav && "trax-nav",
+      )}
+      style={traxRoute && tint ? ({ "--trax-tint": tint } as CSSProperties) : undefined}
     >
       {children}
     </header>

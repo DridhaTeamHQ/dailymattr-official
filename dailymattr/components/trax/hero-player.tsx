@@ -1,55 +1,65 @@
 "use client"
 
 import Image from "next/image"
-import { motion, useMotionValue } from "motion/react"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+  type MotionValue,
+} from "motion/react"
+import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils"
 import { heroPlayer, type TraxHeroEpisode } from "./content"
+import { useActiveEpisode } from "./hero-state"
 
 const { episodes } = heroPlayer
 const count = episodes.length
 const wrap = (i: number) => ((i % count) + count) % count
+/** Shortest signed distance on the ring, in [-count/2, count/2). */
+const ringOffset = (d: number) => {
+  const o = ((d % count) + count) % count
+  return o >= count / 2 ? o - count : o
+}
 
-/** Card sizes per cover-flow depth (Figma 9278:728 centre, 9278:716 near, 9278:704 far). */
-const TIERS = {
-  center: {
-    card: "gap-4 rounded-[2rem] pb-5",
-    art: "size-[31.5rem] rounded-[1.5rem] from-[#5a5a60] to-[#232326]",
-    title: "text-2xl leading-8",
-    topic: "leading-6",
-  },
-  near: {
-    card: "gap-3 rounded-[1.5rem] pb-4",
-    art: "size-[27rem] rounded-[1rem] from-[#5a5a60] to-[#232326]",
-    title: "text-base leading-6",
-    topic: "leading-6",
-  },
-  far: {
-    card: "gap-3 rounded-[1.25rem] pb-4 opacity-72",
-    art: "size-[22.5rem] rounded-[0.75rem] from-[#4a4a4f] to-[#1c1c1e]",
-    title: "text-base leading-5",
-    topic: "leading-5",
-  },
+/**
+ * Cover-flow depth, by a card's (fractional) distance from the playing card. Every card is
+ * laid out once at the centre size (Figma 9278:728) and placed with transforms only, so a skip
+ * moves GPU layers and never re-runs layout. At 1 and 2 the values land on Figma's near
+ * (9278:716) and far (9278:704) cards: 27rem and 22.5rem art, centres 18.25rem and 31rem from
+ * the middle, tipped 14° and 24°; ±2.5 is where the card leaving one end fades out and
+ * reappears at the other, so the wrap is never seen.
+ */
+const DEPTH = [-2.5, -2, -1, 0, 1, 2, 2.5]
+const NEAR = 27 / 31.5
+const FAR = 22.5 / 31.5
+const SCALE = [0.65, FAR, NEAR, 1, NEAR, FAR, 0.65]
+const FLOW = {
+  x: ["-34.5rem", "-31rem", "-18.25rem", "0rem", "18.25rem", "31rem", "34.5rem"],
+  rotateY: [-27, -24, -14, 0, 14, 24, 27],
+  scale: SCALE,
+  opacity: [0, 0.72, 1, 1, 1, 0.72, 0],
+  // Type held at Figma's sizes while the card scales: title 24px at the centre and 16px on
+  // the sides, topic 16px everywhere.
+  title: SCALE.map((s) => (s === 1 ? 1 : 16 / 24 / s)),
+  topic: SCALE.map((s) => 1 / s),
+}
+
+/** Interruptible: a skip mid-slide carries the cards' speed into the next one. */
+const SLIDE_SPRING = {
+  type: "spring",
+  visualDuration: 0.65,
+  bounce: 0,
 } as const
 
 /**
- * The five slots, by distance from the playing card, on the 1520×604 stage. Outer edges tip
- * away from the viewer; nearer cards stack above farther ones.
- */
-const SLOTS = [
-  { tier: "far", place: "top-[5.25rem] left-[4.75rem] z-10 [transform:rotateY(-24deg)]" },
-  { tier: "near", place: "top-[2.75rem] left-[15.25rem] z-20 [transform:rotateY(-14deg)]" },
-  { tier: "center", place: "top-0 left-[31.25rem] z-30 [transform:rotateY(0deg)]" },
-  { tier: "near", place: "top-[2.75rem] left-[51.75rem] z-20 [transform:rotateY(14deg)]" },
-  { tier: "far", place: "top-[5.25rem] left-[66.75rem] z-10 [transform:rotateY(24deg)]" },
-] as const
-
-/**
- * Entrance, played once from the first paint (CSS, keyframes `trax-intro` in globals.css):
- * 1. the playing card drops in, 2. the near pair slides out from behind it, then the far pair,
- * 3. the player bar fades up, slowly. Indexed by each card's starting slot, like SLOTS; the x
- * offsets put every card's centre on the stage's centre, hidden behind the playing card.
+ * Entrance, played from the first paint and again each time the visitor comes back to the page
+ * (CSS, keyframes `trax-intro` in globals.css): 1. the playing card drops in, 2. the near pair
+ * slides out from behind it, then the far pair, 3. the player bar fades up, slowly. Indexed by
+ * each card's depth (-2…2) from the card in the centre when the entrance starts; the x offsets
+ * put every card's centre on the stage's centre, hidden behind the playing card.
  */
 const INTRO = [
   "[--intro-x:31rem] animate-[trax-intro_1s_cubic-bezier(0.16,1,0.3,1)_1.15s_backwards]",
@@ -65,12 +75,11 @@ const INTRO = [
 const BAR_INTRO =
   "[--intro-y:-2rem] [--intro-scale:0.96] animate-[trax-intro_1.4s_cubic-bezier(0.16,1,0.3,1)_1.45s_backwards] motion-reduce:animate-none"
 
-/** Height-fit numbers for browsers without CSS length ÷ length (the CSS version is in hero.tsx). */
-const FIT_REM = 56
+/**
+ * Height-fit floor for browsers without CSS length ÷ length (the CSS version is in hero.tsx,
+ * which also sets the height needed, --trax-hero-need, per breakpoint).
+ */
 const MIN_FIT = 0.6
-
-/** Same expo-out curve as FadeIn, so cards settle the way the rest of the site does. */
-const SLIDE = "duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
 
 /** Frosted glass used by the cards and the player bar. */
 const GLASS = "bg-linear-to-b backdrop-blur-[1.25rem]"
@@ -84,21 +93,44 @@ const CARD_EDGE = "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.28),0_2rem_4rem_0_
  * and when it ends the next card slides into the centre and plays.
  */
 export function TraxHeroPlayer() {
-  const [active, setActive] = useState(heroPlayer.initial)
+  // Shared with the wash behind the hero, which takes the centre cover's colours
+  const [active, setActive] = useActiveEpisode()
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(false)
+  // The entrance (INTRO): which card it is built around, and whether it has played (the bar's,
+  // the last to finish, ended; the classes then come off, so skipping never touches it).
+  // Next keeps this page mounted but hidden while the visitor is elsewhere, and showing it
+  // again restarts its CSS animations. So as the page is hidden (this cleanup runs then), the
+  // entrance is set up again around the card in the centre now, not the one the page first
+  // opened on, and it plays from there when the visitor comes back.
+  const [introCenter, setIntroCenter] = useState(heroPlayer.initial)
+  const [entered, setEntered] = useState(false)
+  const setUpEntrance = useEffectEvent(() => {
+    setIntroCenter(active)
+    setEntered(false)
+  })
+  useLayoutEffect(() => () => setUpEntrance(), [])
   const progress = useMotionValue(0)
   const audioRef = useRef<HTMLAudioElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  // Where the ring is, in episodes; never wrapped, so it can spring smoothly past either end.
+  const position = useMotionValue<number>(heroPlayer.initial)
+  const target = useRef<number>(heroPlayer.initial)
+  const reduceMotion = useReducedMotion()
 
   // Fallback for --trax-hero-fit (see TraxHero) where CSS can't divide lengths
   useLayoutEffect(() => {
     if (CSS.supports("zoom", "calc(1px / 1px)")) return
     const root = document.documentElement
+    const el = rootRef.current
     const update = () => {
       const styles = getComputedStyle(root)
       const chrome = parseFloat(styles.getPropertyValue("--chrome-height")) || 0
       const rem = parseFloat(styles.fontSize)
-      const fit = (window.innerHeight - chrome) / (FIT_REM * rem)
+      // In rem, per breakpoint (TraxHero)
+      const need = el ? parseFloat(getComputedStyle(el).getPropertyValue("--trax-hero-need")) : NaN
+      if (!need) return
+      const fit = (window.innerHeight - chrome) / (need * rem)
       root.style.setProperty("--trax-hero-fit", String(Math.min(1, Math.max(MIN_FIT, fit))))
     }
     update()
@@ -121,6 +153,17 @@ export function TraxHeroPlayer() {
     })
   }, [playing, active])
 
+  // Next keeps a page you leave mounted but hidden (cacheComponents), <audio> and all, so the
+  // song would play on under the next page. Effects clean up when that happens: stop it here,
+  // and show it paused when the visitor comes back.
+  useLayoutEffect(() => {
+    const audio = audioRef.current
+    return () => {
+      audio?.pause()
+      setPlaying(false)
+    }
+  }, [])
+
   // Progress bar: read the playhead every frame while playing
   useEffect(() => {
     const audio = audioRef.current
@@ -135,15 +178,21 @@ export function TraxHeroPlayer() {
   }, [playing, active, progress])
 
   const goTo = (index: number) => {
-    if (wrap(index) === active) return
+    const step = ringOffset(index - active)
+    if (step === 0) return
     progress.set(0)
     setActive(wrap(index))
+    target.current += step
+    animate(position, target.current, reduceMotion ? { duration: 0 } : SLIDE_SPRING)
   }
 
   const current = episodes[active]
 
   return (
-    <div className="relative flex w-full flex-col items-center lg:[zoom:var(--trax-hero-fit,1)]">
+    <div
+      ref={rootRef}
+      className="relative flex w-full flex-col items-center [zoom:var(--trax-hero-fit,1)]"
+    >
       <audio
         ref={audioRef}
         src={current.audio}
@@ -162,20 +211,16 @@ export function TraxHeroPlayer() {
           className="relative h-[37.75rem] w-[95rem] shrink-0 [zoom:0.42] [perspective:137.5rem] sm:[zoom:0.6] md:[zoom:0.7] lg:[zoom:1]"
         >
           {episodes.map((episode, i) => {
-            let offset = wrap(i - active)
-            if (offset > count / 2) offset -= count
-            const slot = SLOTS[offset + 2]
-            if (!slot) return null
-            const isCurrent = offset === 0
-            // Fixed per card (from where it starts), so skipping never replays the entrance
-            let start = wrap(i - heroPlayer.initial)
-            if (start > count / 2) start -= count
+            const isCurrent = i === active
+            // From the card the entrance is built around (fixed while it plays)
+            const start = ringOffset(i - introCenter)
             return (
               <EpisodeCard
                 key={episode.id}
                 episode={episode}
-                tier={slot.tier}
-                className={cn(slot.place, INTRO[start + 2], "motion-reduce:animate-none")}
+                index={i}
+                position={position}
+                className={cn(!entered && INTRO[start + 2], "motion-reduce:animate-none")}
                 isCurrent={isCurrent}
                 preload={i === heroPlayer.initial}
                 onClick={() => {
@@ -196,11 +241,14 @@ export function TraxHeroPlayer() {
 
       {/* Player bar (Figma 9278:733) */}
       <div
+        onAnimationEnd={(e) => {
+          if (e.target === e.currentTarget) setEntered(true)
+        }}
         className={cn(
           "mt-6 flex h-20 w-full max-w-[73.625rem] items-center gap-3 rounded-[2.5rem] from-white/14 to-white/6 px-3 sm:mt-10 sm:gap-6 sm:px-6 lg:mt-16 lg:gap-[5.75rem] lg:px-16",
           GLASS,
           BAR_EDGE,
-          BAR_INTRO,
+          !entered && BAR_INTRO,
         )}
       >
         <div className="flex shrink-0 items-center gap-2 sm:gap-6 lg:gap-16">
@@ -229,7 +277,7 @@ export function TraxHeroPlayer() {
             <span className="truncate font-medium text-white">{current.title}</span>
             <span className="truncate text-white/60">{current.topic}</span>
           </span>
-          <BarIcon name="wave" size={24} className="hidden sm:block" />
+          <LevelMeter playing={playing} bpm={current.bpm} className="hidden sm:flex" />
           <BarIcon name="more" size={24} className="hidden sm:block" />
 
           {/* The track runs the panel's full width; its rounded corners clip both ends. */}
@@ -258,7 +306,8 @@ export function TraxHeroPlayer() {
 
 function EpisodeCard({
   episode,
-  tier,
+  index,
+  position,
   className,
   isCurrent,
   preload,
@@ -266,38 +315,41 @@ function EpisodeCard({
   onClick,
 }: {
   episode: TraxHeroEpisode
-  tier: keyof typeof TIERS
+  index: number
+  position: MotionValue<number>
   className: string
   isCurrent: boolean
   preload: boolean
   label: string
   onClick: () => void
 }) {
-  const t = TIERS[tier]
+  const depth = useTransform(() => ringOffset(index - position.get()))
+  const x = useTransform(depth, DEPTH, FLOW.x)
+  const rotateY = useTransform(depth, DEPTH, FLOW.rotateY)
+  const scale = useTransform(depth, DEPTH, FLOW.scale)
+  const opacity = useTransform(depth, DEPTH, FLOW.opacity)
+  const titleScale = useTransform(depth, DEPTH, FLOW.title)
+  const topicScale = useTransform(depth, DEPTH, FLOW.topic)
+  // Nearer cards stack above farther ones; two cards swap as they pass the halfway point.
+  const zIndex = useTransform(() => Math.round(30 - Math.abs(depth.get()) * 10))
+  // A card out past the far slots (only with more than five episodes) can't be clicked.
+  const pointerEvents = useTransform(() => (Math.abs(depth.get()) < 2.25 ? "auto" : "none"))
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
       aria-label={label}
       aria-current={isCurrent || undefined}
+      style={{ x, rotateY, scale, opacity, zIndex, pointerEvents }}
       className={cn(
-        "absolute flex cursor-pointer flex-col items-center overflow-hidden from-white/22 to-white/8 px-2 pt-2 outline-offset-4 focus-visible:outline-2 focus-visible:outline-white",
+        "absolute top-0 left-[31.25rem] flex cursor-pointer flex-col items-center gap-4 overflow-hidden rounded-[2rem] from-white/22 to-white/8 px-2 pt-2 pb-5 outline-offset-4 focus-visible:outline-2 focus-visible:outline-white",
         CARD_EDGE,
         GLASS,
-        "transition-[left,top,transform,opacity,gap,padding,border-radius]",
-        SLIDE,
-        t.card,
         className,
       )}
     >
-      <span
-        className={cn(
-          "relative block shrink-0 overflow-hidden bg-linear-to-b transition-[width,height,border-radius]",
-          SLIDE,
-          t.art,
-        )}
-      >
+      <span className="relative block size-[31.5rem] shrink-0 overflow-hidden rounded-[1.5rem] bg-linear-to-b from-[#5a5a60] to-[#232326]">
         <Image
           src={episode.art}
           alt=""
@@ -309,18 +361,17 @@ function EpisodeCard({
         />
       </span>
       <span className="flex w-full flex-col items-center text-center tracking-[-0.0125rem] whitespace-nowrap">
-        <span
-          className={cn(
-            "font-semibold text-white transition-[font-size,line-height]",
-            SLIDE,
-            t.title,
-          )}
+        <motion.span
+          className="text-2xl leading-8 font-semibold text-white"
+          style={{ scale: titleScale }}
         >
           {episode.title}
-        </span>
-        <span className={cn("text-base text-white/60", t.topic)}>{episode.topic}</span>
+        </motion.span>
+        <motion.span className="text-base leading-6 text-white/60" style={{ scale: topicScale }}>
+          {episode.topic}
+        </motion.span>
       </span>
-    </button>
+    </motion.button>
   )
 }
 
@@ -330,7 +381,6 @@ const ICONS = {
   // Not drawn in the hero frame; the Trax page's own white play glyph, at the pause icon's size.
   play: "/trax/play-small.svg",
   forward: "/trax/hero/icon-forward.svg",
-  wave: "/trax/hero/icon-wave.svg",
   more: "/trax/hero/icon-more.svg",
   quote: "/trax/hero/icon-quote.svg",
   list: "/trax/hero/icon-list.svg",
@@ -362,6 +412,72 @@ function BarButton({
     >
       <Image src={ICONS[icon]} alt="" width={32} height={32} className="block size-8" />
     </button>
+  )
+}
+
+/**
+ * Each bar's level (0–1 of the meter's 20px) for each eighth note of a 4/4 bar, looping. The
+ * first is the bar's height in the wave glyph it replaces (icon-wave.svg: five 2px bars of
+ * 6, 12, 18, 10 and 5px), so the meter rests as that glyph and starts from it.
+ */
+const METER_LEVELS = [
+  [0.3, 0.75, 0.45, 1, 0.35, 0.6, 0.25, 0.8],
+  [0.6, 0.35, 0.95, 0.5, 0.8, 0.3, 0.7, 0.45],
+  [0.9, 0.5, 0.7, 0.35, 1, 0.6, 0.85, 0.4],
+  [0.5, 1, 0.4, 0.7, 0.55, 0.95, 0.35, 0.75],
+  [0.25, 0.55, 0.85, 0.4, 0.65, 0.3, 0.9, 0.5],
+]
+
+/**
+ * The player bar's wave glyph as a level meter, like a DJ deck's: while a song plays, its five
+ * bars bounce to their own patterns, a step per eighth note of the song's tempo; paused, they
+ * spring back into the glyph. Reduced motion keeps the glyph still.
+ */
+function LevelMeter({
+  playing,
+  bpm,
+  className,
+}: {
+  playing: boolean
+  bpm: number
+  className?: string
+}) {
+  const bars = useRef<(HTMLSpanElement | null)[]>([])
+  const reduceMotion = useReducedMotion()
+  const live = playing && !reduceMotion
+
+  useEffect(() => {
+    const eighth = 30 / bpm
+    const controls = bars.current.map((bar, i) => {
+      if (!bar) return null
+      const levels = METER_LEVELS[i]
+      return live
+        ? animate(
+            bar,
+            { scaleY: [...levels, levels[0]] },
+            { duration: eighth * levels.length, ease: "easeInOut", repeat: Infinity },
+          )
+        : animate(bar, { scaleY: levels[0] }, { type: "spring", visualDuration: 0.35, bounce: 0.25 })
+    })
+    return () => controls.forEach((c) => c?.stop())
+  }, [live, bpm])
+
+  return (
+    <span
+      aria-hidden
+      className={cn("size-6 shrink-0 items-center justify-center gap-[0.125rem]", className)}
+    >
+      {METER_LEVELS.map((levels, i) => (
+        <span
+          key={i}
+          ref={(el) => {
+            bars.current[i] = el
+          }}
+          className="block h-5 w-[0.125rem] rounded-full bg-white"
+          style={{ transform: `scaleY(${levels[0]})` }}
+        />
+      ))}
+    </span>
   )
 }
 

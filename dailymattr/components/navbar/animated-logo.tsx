@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { preload } from "react-dom"
 
-import { useDarkRoute } from "@/components/shared/route-theme"
+import { useDarkNav } from "@/components/shared/route-theme"
 import { cn } from "@/lib/utils"
 
 // The brand's logo reveal video as a sprite: 59 frames of white artwork stacked top to bottom
@@ -36,6 +36,10 @@ const TOP = 8
 const TRAVEL = 10
 
 const BLUE = "#3979ff"
+/** How long the logo takes to fade between its light-nav and dark-nav colours. */
+const COLOR_FADE_MS = 400
+/** "#rrggbb" as [r, g, b]. */
+const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
 
 /**
  * The navbar logo, animated from the brand's logo reveal. On load the quotes logo fills in
@@ -43,7 +47,7 @@ const BLUE = "#3979ff"
  * down shrinks it back to the quotes; starting to scroll up, anywhere on the page, plays the
  * reveal again. A change of direction mid-way reverses from the current frame. Hovering with
  * a mouse opens the quotes out into the wordmark too; moving off puts back whatever the scroll
- * last asked for. Blue, or white on the dark routes. Reduced motion jumps straight to each
+ * last asked for. Blue, or white wherever the nav is dark. Reduced motion jumps straight to each
  * end state.
  */
 export function AnimatedLogo({ className }: { className?: string }) {
@@ -53,7 +57,7 @@ export function AnimatedLogo({ className }: { className?: string }) {
   const linkRef = useRef<HTMLAnchorElement>(null)
   const slotRef = useRef<HTMLSpanElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const color = useDarkRoute() ? "#ffffff" : BLUE
+  const color = useDarkNav() ? "#ffffff" : BLUE
   const colorRef = useRef(color)
   const redrawRef = useRef<() => void>(() => {})
 
@@ -225,10 +229,26 @@ export function AnimatedLogo({ className }: { className?: string }) {
     }
   }, [])
 
-  // Route changes swap the navbar between light and dark: repaint in the new colour.
+  // The navbar switching between light and dark (a route change, or scrolling past the Trax
+  // hero) fades the logo to its new colour with the rest of the nav (0.4s, as .trax-route in
+  // globals.css). Reduced motion swaps it straight away.
+  const shown = useRef(rgb(color))
   useEffect(() => {
-    colorRef.current = color
-    redrawRef.current()
+    const from = shown.current
+    const to = rgb(color)
+    const instant = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const start = performance.now()
+    let raf = 0
+    const step = (now: number) => {
+      const t = instant ? 1 : Math.min(1, (now - start) / COLOR_FADE_MS)
+      const eased = t * (2 - t)
+      shown.current = [0, 1, 2].map((k) => from[k] + (to[k] - from[k]) * eased)
+      colorRef.current = `rgb(${shown.current.map(Math.round).join(" ")})`
+      redrawRef.current()
+      if (t < 1) raf = requestAnimationFrame(step)
+    }
+    raf = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(raf)
   }, [color])
 
   return (

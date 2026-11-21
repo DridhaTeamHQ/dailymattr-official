@@ -1,6 +1,5 @@
-import { HeroActions } from "./hero-actions"
+import { FloatingActions } from "./floating-actions"
 import { HeroVideoExpand } from "./hero-video-expand"
-import { FadeIn } from "@/components/shared/fade-in"
 import { WordsReveal } from "@/components/shared/words-reveal"
 import { videos } from "@/lib/videos"
 
@@ -24,14 +23,15 @@ export function Hero() {
         delay={0.18}
         stagger={0.07}
       />
-      <FadeIn className="mt-8 lg:mt-10" delay={0.24}>
-        <HeroActions />
-      </FadeIn>
-
     </section>
 
-    {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
-    <HeroVideoExpand video={videos.homeHero} />
+    {/* The download buttons ride along with the video: they rise in at the bottom of the screen
+        on the first scroll, and when the video ends they scroll up and away with it. */}
+    <div className="relative">
+      {/* Full-bleed, outside the max-w container, so the video can open out to the screen edges. */}
+      <HeroVideoExpand video={videos.homeHero} />
+      <FloatingActions />
+    </div>
     </>
   )
 }

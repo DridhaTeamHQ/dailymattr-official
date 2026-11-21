@@ -9,9 +9,10 @@ import {
 import { FeaturesMenu } from "./features-menu"
 import type { NavItem } from "./nav-config"
 
-// Matches Figma nav item: hug × 32, padding 12/8, gap 4, radius 13
+// Matches Figma nav item: hug × 32, padding 12/8, gap 4, radius 13. No fill of its own (the
+// bar shows through), so items always match the bar, including the cover-tinted Trax nav.
 export const navLinkClass =
-  "h-8 gap-1 whitespace-nowrap rounded-[0.8125rem] bg-background px-3 py-2 text-sm font-normal text-muted-foreground hover:bg-background hover:text-foreground focus:bg-background"
+  "h-8 gap-1 whitespace-nowrap rounded-[0.8125rem] bg-transparent px-3 py-2 text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground focus:bg-transparent"
 
 export function NavLinks({ links, className }: { links: NavItem[]; className?: string }) {
   return (

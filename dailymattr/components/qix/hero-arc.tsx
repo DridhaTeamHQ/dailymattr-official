@@ -13,7 +13,7 @@ import {
   type AnimationPlaybackControls,
   type MotionValue,
 } from "motion/react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 
 import { SiteVideo } from "@/components/shared/site-video"
 import { storyCovers, type StoryCover } from "@/components/stories/covers"
@@ -127,6 +127,10 @@ export function QixHeroArc() {
   useEffect(() => {
     hold.current.sound = sound
   }, [sound])
+
+  // Leaving the page (Next keeps it mounted, hidden) turns the sound back off, so coming back
+  // finds the arc muted and moving again.
+  useLayoutEffect(() => () => setSoundCard(null), [])
 
   const glide = useCallback(
     (to: number, velocity = 0) => {

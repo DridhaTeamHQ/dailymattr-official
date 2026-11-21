@@ -257,6 +257,69 @@ html:has(.theme-nia) body {
   color-scheme: dark;
 }
 
+/*
+ * Trax navbar (the header carries .trax-route on /formats/trax; the footer stays light).
+ * Over the hero (.trax-nav, see components/shared/route-theme.tsx) it is NIA's dark nav with
+ * the bar tinted by the playing cover, so it runs on into the hero's wash; once the hero has
+ * scrolled past, it is the usual white nav.
+ *
+ * Every nav colour is its light value mixed with its dark one by --trax-nav-dark (0 white,
+ * 1 dark), a registered number that eases between the two, so the bar, text, borders and
+ * button cross-fade together. The logo fades in step in JS (AnimatedLogo, same 0.4s).
+ *
+ * The tint: the colour at the top of the playing cover (components/trax/hero-wash.tsx), set
+ * on the header itself by PinnedHeader; 30% of it over the hero's #0a0a0a matches the wash's
+ * strength. Registered as a colour, so it eases from one cover to the next over the same 0.7s
+ * as the wash's cross-fade. Only the bar's own background takes it; items that painted a
+ * tinted token (or have their own colour transitions) would trail the bar and show up as boxes.
+ *
+ * Both animated values are set on the header and don't inherit, so an easing restyles only
+ * the nav. (Animated on <html>, every element on the page restyled each frame, and the nav
+ * fell behind the hero.)
+ */
+@property --trax-tint {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0a0a0a;
+}
+@property --trax-nav-dark {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+.trax-route {
+  --trax-dark: calc(var(--trax-nav-dark) * 100%);
+  --background: color-mix(in oklab, #0e0e0e var(--trax-dark), oklch(1 0 0));
+  --foreground: color-mix(in oklab, #ffffff var(--trax-dark), oklch(0.145 0 0));
+  --muted: color-mix(in oklab, rgb(255 255 255 / 0.08) var(--trax-dark), oklch(0.97 0 0));
+  --muted-foreground: color-mix(in oklab, rgb(255 255 255 / 0.62) var(--trax-dark), oklch(0.556 0 0));
+  --accent: color-mix(in oklab, rgb(255 255 255 / 0.08) var(--trax-dark), oklch(0.97 0 0));
+  --accent-foreground: color-mix(in oklab, #ffffff var(--trax-dark), oklch(0.205 0 0));
+  --popover: color-mix(in oklab, #18181b var(--trax-dark), oklch(1 0 0));
+  --popover-foreground: color-mix(in oklab, #ffffff var(--trax-dark), oklch(0.145 0 0));
+  --border: color-mix(in oklab, rgb(255 255 255 / 0.08) var(--trax-dark), oklch(0.922 0 0));
+  --input: color-mix(in oklab, rgb(255 255 255 / 0.12) var(--trax-dark), oklch(0.922 0 0));
+  color: var(--foreground);
+  background-color: color-mix(
+    in oklab,
+    color-mix(in oklab, var(--trax-tint) 30%, #0a0a0a) var(--trax-dark),
+    oklch(1 0 0)
+  );
+  /* The tint on the wash's exact timing: 0.7s on Tailwind's ease-out (its duration-700
+     ease-out), so the nav and the hero change colour together. */
+  transition:
+    --trax-nav-dark 0.4s ease-out,
+    --trax-tint 0.7s cubic-bezier(0, 0, 0.2, 1);
+}
+.trax-route.trax-nav {
+  --trax-nav-dark: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .trax-route {
+    transition: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
