@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import buildingPhoto from "@/public/logo_animation/Building image. 1.png"
 import { hero, media, purpose } from "./content"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
@@ -87,20 +88,29 @@ const mediaPhotoOverlay = [
 ].join(", ")
 
 /**
- * Frosted contact card over a full-bleed photo (the same photo as NIA's "Responsible answers").
- * Figma 9144:289: 1920×747 frame, card 9144:311 at left 207 / bottom 84, 290 tall.
+ * Frosted contact card over a full-bleed photo of the dailymattr building (Figma's image,
+ * public/logo_animation/Building image. 1.png). Figma 9144:289: 1920×747 frame, card 9144:311
+ * at left 207 / bottom 84, 290 tall.
  */
 export function AboutMedia() {
   return (
     // data-full-bleed: the footer adds Figma's 97px top gap after a page-ending photo.
     <section data-full-bleed className="relative isolate flex overflow-hidden px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-0 lg:pt-0 lg:pb-[5.25rem] lg:pl-[12.9375rem]">
-      <Image
-        src="/nia/responsible-answers.png"
-        alt=""
-        fill
-        sizes="100vw"
-        className="-z-10 object-cover object-[60%_center] lg:object-center"
-      />
+      {/* Framed as Figma crops it (9144:290): the photo is 141.63% of the frame's height,
+          bottom-aligned, so the top of the tower runs off the frame and the blue logo sits a
+          third of the way down, above the card. Figma also stretches it about 1.3× sideways;
+          here it keeps its true proportions. Taller still on phones, where the card covers
+          more of the section. */}
+      <div aria-hidden className="absolute inset-x-0 bottom-0 -z-10 h-[160%] lg:h-[141.63%]">
+        <Image
+          src={buildingPhoto}
+          alt=""
+          fill
+          placeholder="blur"
+          sizes="(min-width: 64rem) 100vw, 200vw"
+          className="object-cover object-[42%_bottom] lg:object-bottom"
+        />
+      </div>
       <div aria-hidden className="absolute inset-0 -z-10" style={{ backgroundImage: mediaPhotoOverlay }} />
 
       <FadeIn className="w-full lg:w-auto">

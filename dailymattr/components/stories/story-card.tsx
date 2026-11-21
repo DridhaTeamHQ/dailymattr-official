@@ -1,15 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { VolumeX } from "lucide-react"
 import { useReducedMotion } from "motion/react"
 
+import { fromSoundToggle, setVideosMuted, SoundToggle, useVideosMuted } from "@/components/shared/sound-toggle"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import type { VideoAsset } from "@/lib/videos"
 
 // 9:16 portrait tile, radius 24, fill #DEDEDE (--placeholder).
 // Pass the cover <Image fill /> as children. With a `video`, hovering the card lifts it a
-// little and plays the clip, with sound, over the cover; leaving pauses it and rewinds.
+// little and plays the clip, with sound, over the cover; leaving pauses it and rewinds. A small
+// speaker button in the corner mutes and unmutes it (for every card, see SoundToggle).
 // Touch screens have no hover, so there a tap plays the clip and another tap stops it; the
 // carousel passes `tapped` so only one card plays at a time.
 // Nothing is downloaded until the card is first hovered or tapped.
@@ -37,14 +38,15 @@ export function StoryCard({
   const [playing, setPlaying] = React.useState(false)
   // True while the browser keeps the clip muted (no click/tap/key on the page yet).
   const [soundBlocked, setSoundBlocked] = React.useState(false)
+  const userMuted = useVideosMuted()
 
   const canPlay = !!video && !reduceMotion
   const armed = canPlay && (hoverArmed || tapped)
   const active = hovered || tapped
 
-  // Plays with sound. Browsers refuse unmuted playback until the visitor has clicked, tapped or
-  // pressed a key on the page, so until then it plays muted and the first such interaction
-  // (while still hovering) turns the sound on.
+  // Plays with sound unless the visitor muted videos. Browsers refuse unmuted playback until
+  // the visitor has clicked, tapped or pressed a key on the page, so until then it plays muted
+  // and the first such interaction (while still hovering) turns the sound on.
   React.useEffect(() => {
     const el = videoRef.current
     if (!el || !armed) return
@@ -53,20 +55,31 @@ export function StoryCard({
       el.currentTime = 0
       return
     }
-    el.muted = false
+    el.muted = userMuted
     el.play().then(() => setSoundBlocked(false)).catch(() => {
       el.muted = true
       setSoundBlocked(true)
       el.play().catch(() => {})
     })
-    const unmute = () => {
+    if (userMuted) return
+    const unmute = (e: Event) => {
+      if (fromSoundToggle(e)) return
       el.muted = false
       setSoundBlocked(false)
     }
     const events = ["pointerdown", "keydown"] as const
     events.forEach((e) => window.addEventListener(e, unmute, { capture: true }))
     return () => events.forEach((e) => window.removeEventListener(e, unmute, { capture: true }))
-  }, [active, armed])
+  }, [active, armed, userMuted])
+
+  const muted = userMuted || soundBlocked
+  const toggleSound = () => {
+    const el = videoRef.current
+    // Set on the element inside the click itself, which browsers accept as permission for sound
+    if (el) el.muted = !muted
+    setSoundBlocked(false)
+    setVideosMuted(!muted)
+  }
 
   return (
     <div
@@ -102,12 +115,7 @@ export function StoryCard({
             ))}
           </video>
         )}
-        {active && playing && soundBlocked && (
-          <span className="pointer-events-none absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-sm font-medium whitespace-nowrap text-white backdrop-blur-sm">
-            <VolumeX className="size-4" aria-hidden />
-            Click for sound
-          </span>
-        )}
+        {active && playing && <SoundToggle muted={muted} onToggle={toggleSound} />}
       </AspectRatio>
     </div>
   )

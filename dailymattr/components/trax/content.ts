@@ -8,6 +8,71 @@ export const hero = {
   cta: { label: "Listen with Trax", href: "/formats/trax#featured" },
 }
 
+export type TraxHeroEpisode = {
+  id: string
+  title: string
+  topic: string
+  /** 1080×1920 poster (Fevicol's is 1080×1700), cropped to the square artwork frame. */
+  art: string
+  /**
+   * Vertical framing of the poster in its square frame (CSS object-position y, 0 = top): set
+   * per poster so its title stays whole.
+   */
+  focusY: number
+  /** Placeholder song made by scripts/make-trax-songs.mjs; swap for the episode's audio. */
+  audio: string
+}
+
+/**
+ * Cover-flow player above the hero copy (Figma 9278:702), left to right as drawn; the middle
+ * one starts in the centre slot. Nothing plays until the visitor presses play or a card.
+ */
+export const heroPlayer = {
+  episodes: [
+    {
+      id: "cricket",
+      title: "Cricket",
+      topic: "The Origin of Sports",
+      art: "/trax/hero/art-cricket.png",
+      focusY: 9,
+      audio: "/trax/hero/audio/cricket.mp3",
+    },
+    {
+      id: "insurance",
+      title: "Insurance 101 : Basics",
+      topic: "Finance Explained",
+      art: "/trax/hero/art-insurance.png",
+      focusY: 73,
+      audio: "/trax/hero/audio/insurance.mp3",
+    },
+    {
+      id: "fevicol",
+      title: "Fevicol",
+      topic: "Made In India",
+      art: "/trax/hero/art-fevicol.jpg",
+      focusY: 3,
+      audio: "/trax/hero/audio/fevicol.mp3",
+    },
+    {
+      id: "cricket-balls",
+      title: "Behind Cricket Balls",
+      topic: "How Things are Made",
+      art: "/trax/hero/art-cricket-balls.png",
+      focusY: 18,
+      audio: "/trax/hero/audio/cricket-balls.mp3",
+    },
+    {
+      id: "self-driving-cars",
+      title: "Self Driving Cars",
+      topic: "Before It's Big",
+      art: "/trax/hero/art-self-driving-cars.png",
+      focusY: 16,
+      audio: "/trax/hero/audio/self-driving-cars.mp3",
+    },
+  ] satisfies TraxHeroEpisode[],
+  initial: 2,
+}
+
 export type TraxExperience = { icon: string; title: string; description: string }
 
 export const experiences = {

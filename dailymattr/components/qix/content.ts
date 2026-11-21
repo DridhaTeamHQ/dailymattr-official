@@ -1,8 +1,8 @@
 /** Copy and data for the Qix page. Figma frame: "Qix · DailyMattr" (8646:2608). */
 
+/** Hero copy. Figma 9278:984 breaks the title after "bigger". */
 export const hero = {
-  tag: "Qix · Watch",
-  title: "See the bigger picture.",
+  titleLines: ["See the bigger", "picture."],
   description:
     "From today's biggest developments to the ideas that shaped our world, Qix makes learning visual, engaging, and easy to follow.",
   cta: { label: "Watch Qix", href: "/formats/qix#gallery" },
@@ -16,24 +16,21 @@ export const experience = {
   frames: [1, 2, 3, 4],
 }
 
-export type QixPillar = { icon: string; title: string; description: string }
+export type QixPillar = { title: string; description: string }
 
+/** The three content pillars, shown under the hero's thumbnail arc (Figma 9278:993). */
 export const pillars = {
-  eyebrow: "Three content pillars",
   items: [
     {
-      icon: "/qix/pillar-motion.svg",
       title: "News in motion.",
       description: "Follow important developments through concise, visual explainers.",
     },
     {
-      icon: "/qix/pillar-visible.svg",
       title: "Ideas made visible.",
       description:
         "Understand science, history, economics, technology, and the forces shaping everyday life.",
     },
     {
-      icon: "/qix/pillar-explore.svg",
       title: "Stories worth exploring.",
       description:
         "Discover the connections, people, and events that make the world more interesting.",

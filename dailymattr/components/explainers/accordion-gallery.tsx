@@ -2,11 +2,12 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { Play, VolumeX } from "lucide-react"
+import { Play } from "lucide-react"
 import { motion, useReducedMotion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 import { SiteVideo } from "@/components/shared/site-video"
+import { fromSoundToggle, setVideosMuted, SoundToggle, useVideosMuted } from "@/components/shared/sound-toggle"
 import type { VideoAsset } from "@/lib/videos"
 
 export type GalleryItem = {
@@ -81,15 +82,23 @@ export function AccordionGallery({
 }) {
   // Which panel is open; null = all closed. Hovering opens one, leaving the gallery closes it.
   const [active, setActive] = React.useState<number | null>(defaultIndex)
-  // The active video plays with sound. Browsers refuse unmuted autoplay until the visitor has
-  // clicked, tapped or pressed a key on the page, so until then it plays muted (`blocked`) and
-  // the first such interaction anywhere turns the sound on.
+  // The active video plays with sound, unless the visitor muted it with the corner button
+  // (SoundToggle). Browsers refuse unmuted autoplay until the visitor has clicked, tapped or
+  // pressed a key on the page, so until then it plays muted (`blocked`) and the first such
+  // interaction anywhere turns the sound on.
   const [blocked, setBlocked] = React.useState(false)
-  const soundOn = !blocked
+  const userMuted = useVideosMuted()
+  const soundOn = !blocked && !userMuted
   const onSoundBlocked = React.useCallback(() => setBlocked(true), [])
+  const toggleSound = () => {
+    setBlocked(false)
+    setVideosMuted(soundOn)
+  }
   React.useEffect(() => {
     if (!blocked) return
-    const unblock = () => setBlocked(false)
+    const unblock = (e: Event) => {
+      if (!fromSoundToggle(e)) setBlocked(false)
+    }
     const events = ["pointerdown", "keydown", "touchstart"] as const
     events.forEach((e) => window.addEventListener(e, unblock, { capture: true }))
     return () => events.forEach((e) => window.removeEventListener(e, unblock, { capture: true }))
@@ -259,14 +268,8 @@ export function AccordionGallery({
               >
                 <Play className="size-4 fill-current" />
               </span>
-              {/* Shown only while the browser keeps the video muted (no click/tap/key yet). Any
-                  click on the page, this panel included, turns the sound on and hides it. */}
-              {item.video && isActive && engaged && blocked && (
-                <span className="pointer-events-none absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-sm font-medium whitespace-nowrap text-white backdrop-blur-sm">
-                  <VolumeX className="size-4" aria-hidden />
-                  Click for sound
-                </span>
-              )}
+              {/* Mute / unmute in the corner while the open panel plays */}
+              {item.video && isActive && engaged && <SoundToggle muted={!soundOn} onToggle={toggleSound} />}
             </motion.div>
 
             {/* Figma shows the category only; the title stays for screen readers */}

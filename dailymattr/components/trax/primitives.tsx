@@ -40,7 +40,7 @@ export function TraxButton({ href, children }: { href: string; children: React.R
       <span className="text-base leading-4 font-medium tracking-[-0.0125rem] whitespace-nowrap text-white">
         {children}
       </span>
-      <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/20">
+      <span className="grid size-6 shrink-0 place-items-center rounded-[0.5rem] bg-white/20">
         <Image src="/trax/arrow-up-right.svg" alt="" width={12} height={12} className="block" />
       </span>
     </Link>

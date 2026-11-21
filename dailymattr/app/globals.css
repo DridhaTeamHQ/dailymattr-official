@@ -92,6 +92,20 @@
 }
 
 /*
+ * Trax hero entrance (components/trax/hero-player.tsx): each piece arrives from its own offset
+ * (--intro-x / --intro-y / --intro-scale) into its normal place. Uses the individual translate
+ * and scale properties, so it stacks with the cards' rotateY transform. Kept out of @theme so
+ * it is always emitted for the arbitrary animate-[trax-intro_…] classes.
+ */
+@keyframes trax-intro {
+  from {
+    opacity: 0;
+    translate: var(--intro-x, 0) var(--intro-y, 0);
+    scale: var(--intro-scale, 1);
+  }
+}
+
+/*
  * News IQ (/quizz) colours, from the dailymattr brand book v1. brand-blue (#3979ff, the logo's
  * blue) passes against white only at 24px and up, so small blue text and white-on-blue buttons
  * use brand-blue-deep instead.

@@ -1,6 +1,6 @@
 import { seoMetadata } from "@/lib/seo"
 
-import { QixExperience, QixGallery, QixGetStarted, QixHero, QixPillars } from "@/components/qix"
+import { QixExperience, QixGallery, QixGetStarted, QixHero } from "@/components/qix"
 
 export const generateMetadata = () => seoMetadata("/formats/qix")
 
@@ -9,7 +9,6 @@ export default function QixPage() {
     <main className="flex-1 bg-white">
       <QixHero />
       <QixExperience />
-      <QixPillars />
       <QixGallery />
       <QixGetStarted />
     </main>

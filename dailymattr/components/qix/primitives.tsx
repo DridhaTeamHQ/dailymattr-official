@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 
+import { AnchorLink } from "@/components/shared/anchor-link"
 import { cn } from "@/lib/utils"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
@@ -37,10 +37,10 @@ export function QixEyebrow({ children, className }: { children: React.ReactNode;
 export const QIX_H2 =
   "text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-12 lg:tracking-[-0.0938rem]"
 
-/** Blue pill link with the arrow chip ("Watch Qix", "Explore Qix"). Figma 8646:2673. */
+/** Blue pill link with the arrow chip ("Explore Qix"); glides to same-page anchors. Figma 8646:2673. */
 export function QixButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <Link
+    <AnchorLink
       href={href}
       className="flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-[#3979ff] py-2 pr-2 pl-4 transition-[translate,background-color] hover:-translate-y-px hover:bg-[#2f6bf0]"
     >
@@ -50,7 +50,7 @@ export function QixButton({ href, children }: { href: string; children: React.Re
       <span className="grid size-6 shrink-0 place-items-center rounded-lg bg-white/20">
         <Image src="/shared/arrow-up-right-white.svg" alt="" width={12} height={12} className="block size-3" />
       </span>
-    </Link>
+    </AnchorLink>
   )
 }
 

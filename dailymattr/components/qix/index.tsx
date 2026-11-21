@@ -1,1 +1,2 @@
-export { QixExperience, QixGallery, QixGetStarted, QixHero, QixPillars } from "./sections"
+export { QixHero } from "./hero"
+export { QixExperience, QixGallery, QixGetStarted } from "./sections"
