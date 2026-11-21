@@ -16,14 +16,17 @@ export type Format = {
   sparkle?: boolean
 }
 
-// Figma 8859:12720: seven tabs over the app mockup (8859:12714). Every tab shows the same
-// mockup until each format has its own footage.
+/** A clip in public/inside_videos/, served as-is (file names may contain spaces). */
+const inside = (file: string) => `/inside_videos/${encodeURIComponent(file)}`
+
+// Figma 8859:12720: seven tabs over the app mockup (8859:12714). Each tab plays its own clip
+// from public/inside_videos/; a tab without a videoSrc would show the mockup still.
 export const formats: Format[] = [
-  { value: "pix", title: "Pix", subtitle: "Read visual stories", image: appMockup, duration: "10:00" },
-  { value: "nia", title: "NIA", subtitle: "Understand both sides", image: appMockup, duration: "10:00", sparkle: true },
-  { value: "qix", title: "Qix", subtitle: "Watch short explainers", image: appMockup, duration: "10:00" },
-  { value: "trax", title: "Trax", subtitle: "Listen to stories", image: appMockup, duration: "10:00" },
-  { value: "xplaind", title: "Xplaind", subtitle: "Understand topics better", image: appMockup, duration: "10:00" },
-  { value: "streaks", title: "Streaks", subtitle: "Keep your habit going", image: appMockup, duration: "10:00" },
-  { value: "polls", title: "Polls", subtitle: "Share your opinion", image: appMockup, duration: "10:00" },
+  { value: "pix", title: "Pix", subtitle: "Read visual stories", image: appMockup, videoSrc: inside("pix.mp4"), duration: "10:00" },
+  { value: "nia", title: "NIA", subtitle: "Understand both sides", image: appMockup, videoSrc: inside("nia.mp4"), duration: "10:00", sparkle: true },
+  { value: "qix", title: "Qix", subtitle: "Watch short explainers", image: appMockup, videoSrc: inside("qix final.mp4"), duration: "10:00" },
+  { value: "trax", title: "Trax", subtitle: "Listen to stories", image: appMockup, videoSrc: inside("trax.mp4"), duration: "10:00" },
+  { value: "xplaind", title: "Xplaind", subtitle: "Understand topics better", image: appMockup, videoSrc: inside("explained.mp4"), duration: "10:00" },
+  { value: "streaks", title: "Streaks", subtitle: "Keep your habit going", image: appMockup, videoSrc: inside("streaks.mp4"), duration: "10:00" },
+  { value: "polls", title: "Polls", subtitle: "Share your opinion", image: appMockup, videoSrc: inside("LIVE POLLS.mp4"), duration: "10:00" },
 ]
