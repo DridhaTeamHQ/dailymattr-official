@@ -14,6 +14,7 @@ import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "re
 import { cn } from "@/lib/utils"
 import { heroPlayer, type TraxHeroEpisode } from "./content"
 import { useActiveEpisode } from "./hero-state"
+import { announceTraxPlay, useOnOtherTraxPlay } from "./use-track"
 
 const { episodes } = heroPlayer
 const count = episodes.length
@@ -146,12 +147,16 @@ export function TraxHeroPlayer() {
     const audio = audioRef.current
     if (!audio) return
     if (!playing) return audio.pause()
+    announceTraxPlay("trax-hero")
     audio.play().catch((error: DOMException) => {
       // AbortError: a quick skip replaced the song before it started. Anything else (e.g.
       // the browser refused to play) leaves the player paused.
       if (error.name !== "AbortError") setPlaying(false)
     })
   }, [playing, active])
+
+  // One Trax player at a time: pause when a featured episode starts.
+  useOnOtherTraxPlay("trax-hero", () => setPlaying(false))
 
   // Next keeps a page you leave mounted but hidden (cacheComponents), <audio> and all, so the
   // song would play on under the next page. Effects clean up when that happens: stop it here,

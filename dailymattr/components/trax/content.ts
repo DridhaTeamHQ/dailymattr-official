@@ -122,53 +122,40 @@ export const whyAudio = {
   played: 36,
 }
 
+/**
+ * A playable episode in the featured section. For now the title and description are the ones
+ * printed on the thumbnail (the hero episode's title and topic); replace them per episode
+ * when the real copy arrives. The duration shown is read from the audio file itself.
+ */
 export type TraxEpisode = {
   id: string
-  topic: string
-  duration: string
+  tag: string
   title: string
   description: string
-  /** Progress line art exported from the frame (the first card's bar is a touch heavier). */
-  progress: string
+  art: string
+  focusY: number
+  audio: string
 }
+
+const toEpisode = (e: TraxHeroEpisode): TraxEpisode => ({
+  id: e.id,
+  tag: "Trax",
+  title: e.title,
+  description: e.topic,
+  art: e.art,
+  focusY: e.focusY,
+  audio: e.audio,
+})
 
 export const featured = {
   eyebrow: "Featured listening",
   title: "Press play on something that matters.",
-  episode: {
-    topic: "Topic",
-    duration: "00 min",
-    title: "Episode title",
-    description: "Short description of the episode.",
-    elapsed: "1:25",
-    total: "3:15",
-  },
-  episodes: [
-    {
-      id: "episode-1",
-      topic: "Topic",
-      duration: "00 min",
-      title: "Episode title",
-      description: "Short description of the episode.",
-      progress: "/trax/progress-card-a.svg",
-    },
-    {
-      id: "episode-2",
-      topic: "Topic",
-      duration: "00 min",
-      title: "Episode title",
-      description: "Short description of the episode.",
-      progress: "/trax/progress-card-b.svg",
-    },
-    {
-      id: "episode-3",
-      topic: "Topic",
-      duration: "00 min",
-      title: "Episode title",
-      description: "Short description of the episode.",
-      progress: "/trax/progress-card-b.svg",
-    },
-  ] satisfies TraxEpisode[],
+  // The big player: every hero episode, in order; previous / next step through them.
+  playlist: heroPlayer.episodes.map(toEpisode),
+  // The three cards: one episode each, played on their own (no previous / next).
+  episodes: (["insurance", "fevicol", "self-driving-cars"] as const).map((id) =>
+    toEpisode(heroPlayer.episodes.find((e) => e.id === id)!)
+  ),
 }
 
 export const getStarted = {
