@@ -11,13 +11,13 @@ import { StoriesSection } from "@/components/stories";
 import { TemplatesSection } from "@/components/templates";
 import { SoftReveal } from "@/components/shared/fade-in";
 
-// Landing page, Figma 8585:9489. Every text style in the frame is Helvetica Neue
-// (Regular / Medium / Bold); font-helvetica falls back to Inter Tight where it isn't installed.
+// Landing page, Figma 8585:9489. The frame's Helvetica Neue text styles are set in Inter Tight,
+// the site font (app/layout.tsx).
 export const generateMetadata = () => seoMetadata("/")
 
 export default function Home() {
   return (
-    <main className="flex-1 font-helvetica">
+    <main className="flex-1">
       {/* The home page keeps its original soft reveal; every other page uses the fade-up. */}
       <SoftReveal>
         <Hero />

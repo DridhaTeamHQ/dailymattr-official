@@ -146,7 +146,7 @@ export function NiaHowItWorks() {
     // Figma 8856:9958: 120 top, 160 bottom. Capped at the same 1200px as the sections
     // below so it lines up with the rest of the page on very wide screens.
     <section className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8 lg:pt-[120px] lg:pb-[160px]">
-      <div className="relative isolate mx-auto flex max-w-[1200px] flex-col font-tight">
+      <div className="relative isolate mx-auto flex max-w-[1200px] flex-col">
         {/* Glow is anchored to the content, not the screen edge, so it stays behind the panel */}
         <div
           aria-hidden
@@ -252,7 +252,7 @@ export function NiaHowItWorks() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0, y: -8 }}
                       transition={{ duration: 0.3 }}
-                      className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center font-tight"
+                      className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center"
                     >
                       <p className="text-xl leading-tight font-medium text-white sm:text-2xl">
                         {howItWorksIntro.title}

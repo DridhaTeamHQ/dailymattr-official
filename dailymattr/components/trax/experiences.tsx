@@ -7,11 +7,11 @@ import { TraxSectionIntro } from "./primitives"
 
 function ExperienceCard({ item }: { item: TraxExperience }) {
   return (
-    <div className="flex h-full flex-col items-start gap-4 rounded-[1rem] bg-[#f7f7f7] p-6 font-helvetica sm:p-8 lg:min-h-[14.75rem] lg:p-10">
+    <div className="flex h-full flex-col items-start gap-4 rounded-[1rem] bg-[#f7f7f7] p-6 sm:p-8 lg:min-h-[14.75rem] lg:p-10">
       <span className="grid size-12 shrink-0 place-items-center rounded-[0.75rem] bg-white shadow-[0px_1px_1px_rgba(16,24,40,0.06),0px_4px_6px_rgba(16,24,40,0.04)]">
         <Image src={item.icon} alt="" width={24} height={24} />
       </span>
-      <h3 className="text-xl leading-7 font-medium tracking-[-0.025rem] text-black">{item.title}</h3>
+      <h3 className="text-xl leading-7 font-bold tracking-[-0.025rem] text-black">{item.title}</h3>
       <p className="max-w-[19rem] text-base leading-6 tracking-[-0.0125rem] text-[#696969]">
         {item.description}
       </p>

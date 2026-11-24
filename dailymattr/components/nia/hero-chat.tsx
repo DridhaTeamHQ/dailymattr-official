@@ -199,7 +199,7 @@ export function HeroChat() {
   return (
     <div className="relative flex flex-col overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_13.11%,rgba(255,255,255,0)_100%),linear-gradient(90deg,rgb(14,14,15)_0%,rgb(14,14,15)_100%)] shadow-[0px_7px_8px_-4px_rgba(0,0,0,0.2),0px_11px_28px_-4px_rgba(0,0,0,0.2),0px_0px_0px_0.5px_rgba(255,255,255,0.16),inset_0px_0px_11px_0px_rgba(255,255,255,0.1)]">
       {/* Card header */}
-      <div className="flex h-[72px] shrink-0 items-center gap-3 pr-4 pl-5 font-roboto lg:h-[90px] lg:pl-7">
+      <div className="flex h-[72px] shrink-0 items-center gap-3 pr-4 pl-5 lg:h-[90px] lg:pl-7">
         <NiaMark size={34} iconSize={18} />
         <p className="text-lg leading-5.5 font-semibold tracking-[-0.3px] text-white lg:text-xl lg:leading-6.5">
           {heroChat.title}
@@ -208,7 +208,7 @@ export function HeroChat() {
 
       {/* Conversation. A fixed height keeps the card the same size from the empty start to the
           last reply; the chat scrolls inside it as more questions are asked. */}
-      <div className="relative h-[358px] font-roboto lg:h-[410px]">
+      <div className="relative h-[358px] lg:h-[410px]">
         {/* Welcome in the empty chat; fades away once the first question is sent */}
         <AnimatePresence>
           {sent === 0 && (

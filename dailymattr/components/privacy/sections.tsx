@@ -20,7 +20,7 @@ export function PrivacyHero() {
     // runs to the screen edges on laptops.
     <section className="bg-[#1c1c1e] px-4 pt-20 pb-16 sm:px-6 sm:pt-28 lg:px-[6.5625vw] lg:pt-[15rem] lg:pb-[7.5rem]">
       <FadeIn className="mx-auto flex max-w-[104.25rem] flex-col gap-5 lg:gap-[1.6875rem]">
-        <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+        <p className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
           {hero.eyebrow}
         </p>
 
@@ -34,7 +34,7 @@ export function PrivacyHero() {
           </h1>
 
           {/* Paragraph widths shrink with the 21→18px type so the lines break as in Figma. */}
-          <div className="flex flex-col gap-6 font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:gap-6 lg:text-lg">
+          <div className="flex flex-col gap-6 text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:gap-6 lg:text-lg">
             <p className="max-w-[37.875rem]">{hero.body[0]}</p>
             <p className="max-w-[33.75rem]">{hero.body[1]}</p>
           </div>
@@ -97,7 +97,7 @@ export function PrivacyChoices() {
           <span className="grid size-[4.5rem] shrink-0 place-items-center rounded-[1.25rem] bg-white shadow-[0px_0px_0px_1px_rgba(57,121,255,0.14),0px_24px_64px_0px_rgba(57,121,255,0.16),0px_8px_24px_0px_rgba(142,115,240,0.1)]">
             <Image src="/privacy/lock.svg" alt="" width={32} height={32} className="size-8" />
           </span>
-          <h2 className="flex-1 font-helvetica text-3xl leading-none font-medium tracking-[-0.0938rem] text-[#1c1b17] lg:text-display lg:leading-11">
+          <h2 className="flex-1 text-3xl leading-none font-medium tracking-[-0.0938rem] text-[#1c1b17] lg:text-display lg:leading-11">
             {cta.title}
           </h2>
           <DarkArrowLink href={cta.button.href} className="shrink-0">

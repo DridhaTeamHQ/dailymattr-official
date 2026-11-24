@@ -21,7 +21,7 @@ export function CareersHero() {
       <div className="mx-auto flex max-w-[104.25rem] flex-col gap-5 lg:gap-[1.6875rem]">
         <FadeIn
           as="p"
-          className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+          className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
         >
           {hero.eyebrow}
         </FadeIn>
@@ -40,7 +40,7 @@ export function CareersHero() {
 
           <FadeIn
             delay={0.2}
-            className="flex flex-col items-start gap-6 font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:text-lg"
+            className="flex flex-col items-start gap-6 text-base leading-7 tracking-[-0.0125rem] text-white/60 lg:text-lg"
           >
             <p className="max-w-[37.875rem]">{hero.body[0]}</p>
             <p className="max-w-[33.75rem]">{hero.body[1]}</p>

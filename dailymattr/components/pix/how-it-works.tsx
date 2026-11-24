@@ -5,11 +5,11 @@ import { PixSectionIntro } from "./primitives"
 
 function StepCard({ step }: { step: PixStep }) {
   return (
-    <div className="flex h-full flex-col gap-4 rounded-[1rem] border border-[#ebebeb] bg-white p-6 font-helvetica lg:min-h-[14.125rem] lg:p-7">
+    <div className="flex h-full flex-col gap-4 rounded-[1rem] border border-[#ebebeb] bg-white p-6 lg:min-h-[14.125rem] lg:p-7">
       <span className="grid size-10 shrink-0 place-items-center rounded-[0.625rem] bg-[#eaf1ff] text-md leading-none font-medium tracking-[0.0187rem] text-[#3979ff]">
         {step.number}
       </span>
-      <h3 className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black lg:max-w-[14rem]">
+      <h3 className="text-lg leading-6 font-bold tracking-[-0.0125rem] text-black lg:max-w-[14rem]">
         {step.title}
       </h3>
       <p className="text-base leading-6 tracking-[-0.0125rem] text-[#696969] lg:max-w-[14rem]">

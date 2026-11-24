@@ -53,7 +53,7 @@ export function TemplatesSection() {
         <p className="text-lg leading-[1.125rem] font-medium text-[#3979ff] uppercase">
           Happening now
         </p>
-        <h2 className="font-tight text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1b17] sm:text-4xl lg:text-5xl lg:leading-[3.6rem] lg:tracking-[-0.12rem]">
+        <h2 className="text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1b17] sm:text-4xl lg:text-5xl lg:leading-[3.6rem] lg:tracking-[-0.12rem]">
           Start with today&rsquo;s stories.
         </h2>
         <p className="max-w-[28.375rem] text-base tracking-[-0.025rem] text-[#1c1b17] lg:text-xl lg:leading-7">

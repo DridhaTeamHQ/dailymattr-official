@@ -43,7 +43,7 @@ export function AdvertiseHero() {
       <div className={cn(column, "flex flex-col items-start gap-5 lg:gap-6")}>
         <FadeIn
           as="p"
-          className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
+          className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase"
         >
           {hero.eyebrow}
         </FadeIn>

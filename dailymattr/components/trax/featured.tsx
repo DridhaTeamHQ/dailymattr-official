@@ -133,7 +133,7 @@ function FeaturedPlayer() {
 
   return (
     <div
-      className="grid gap-8 overflow-hidden rounded-[1.5rem] p-5 font-helvetica sm:p-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-center lg:h-[25rem] lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-12 lg:p-10"
+      className="grid gap-8 overflow-hidden rounded-[1.5rem] p-5 sm:p-8 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-center lg:h-[25rem] lg:grid-cols-[20rem_minmax(0,1fr)] lg:gap-12 lg:p-10"
       style={{ backgroundImage: traxGlow("linear-gradient(#f7f7f7, #f7f7f7)") }}
     >
       <audio {...track.audioProps} />
@@ -148,7 +148,7 @@ function FeaturedPlayer() {
         </div>
 
         <div className="flex flex-col gap-1">
-          <h3 className="text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1b17] lg:text-display lg:leading-11 lg:tracking-[-0.0938rem]">
+          <h3 className="text-3xl leading-tight font-bold tracking-[-0.0625rem] text-[#1c1b17] lg:text-display lg:leading-11 lg:tracking-[-0.0938rem]">
             {episode.title}
           </h3>
           <p className="text-base leading-6 tracking-[-0.0125rem] text-[#696969] lg:text-lg lg:leading-7">
@@ -206,7 +206,7 @@ function EpisodeCard({ episode }: { episode: TraxEpisode }) {
   const track = useTrack(episode.audio)
 
   return (
-    <div className="flex h-full flex-col gap-3.5 rounded-[1rem] border border-[#ebebeb] bg-white p-6 font-helvetica">
+    <div className="flex h-full flex-col gap-3.5 rounded-[1rem] border border-[#ebebeb] bg-white p-6">
       <audio {...track.audioProps} />
       <Art episode={episode} sizes="(min-width: 1024px) 340px, (min-width: 640px) 45vw, 90vw" className="h-[11.25rem] w-full shrink-0 rounded-[0.875rem]" />
 
@@ -221,7 +221,7 @@ function EpisodeCard({ episode }: { episode: TraxEpisode }) {
         </span>
       </div>
 
-      <h3 className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black">{episode.title}</h3>
+      <h3 className="text-lg leading-6 font-bold tracking-[-0.0125rem] text-black">{episode.title}</h3>
       <p className="text-base leading-6 tracking-[-0.0125rem] text-[#696969]">{episode.description}</p>
 
       <div className="mt-auto flex items-center gap-3 pt-1">

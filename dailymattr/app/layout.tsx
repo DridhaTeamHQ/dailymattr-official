@@ -12,7 +12,8 @@ import { SmoothScroll } from "@/components/shared/smooth-scroll";
 import { siteScaleScript } from "@/lib/site-scale";
 import { jsonLdHtml, site, siteJsonLd } from "@/lib/site";
 
-// Inter Tight is the site's only sans: font-sans, plus the font-tight alias used by headings and NIA.
+// Inter Tight is the site's only font. <html> sets font-sans and every page inherits it, so
+// components don't set a font family of their own.
 const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-sans" });
 
 // Site-wide SEO defaults (lib/site.ts). Pages override title / description / canonical with

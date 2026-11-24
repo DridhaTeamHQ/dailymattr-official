@@ -168,7 +168,7 @@ export function FormatTabs() {
             14.93, gap 9.33; play icon 9.33 × 11.2; Helvetica Neue Medium 13.07/22.4 −0.13px white. */}
         <span
           aria-hidden
-          className="pointer-events-none absolute top-3 left-3 flex h-[1.8667rem] items-center justify-center gap-[0.5833rem] rounded-[0.5833rem] bg-black/15 py-[0.2333rem] pr-[0.7rem] pl-[0.9333rem] font-helvetica text-[0.8167rem] leading-[1.4rem] font-medium tracking-[-0.0082rem] whitespace-nowrap text-white tabular-nums sm:top-[1.5625rem] sm:left-6"
+          className="pointer-events-none absolute top-3 left-3 flex h-[1.8667rem] items-center justify-center gap-[0.5833rem] rounded-[0.5833rem] bg-black/15 py-[0.2333rem] pr-[0.7rem] pl-[0.9333rem] text-[0.8167rem] leading-[1.4rem] font-medium tracking-[-0.0082rem] whitespace-nowrap text-white tabular-nums sm:top-[1.5625rem] sm:left-6"
         >
           <Image src={durationPlay} alt="" className="h-[0.7rem] w-[0.5833rem] shrink-0" />
           {durationText}
@@ -192,7 +192,7 @@ export function FormatTabs() {
                 key={f.value}
                 value={f.value}
                 // The background lives in the sliding pill below, not on the trigger itself.
-                className="group/trigger h-full min-w-20 flex-1 flex-col gap-[0.2333rem] rounded-[0.7rem] border-0 bg-transparent font-helvetica text-white hover:text-white dark:text-white dark:hover:text-white data-active:bg-transparent data-active:text-white group-data-[variant=default]/tabs-list:data-active:shadow-none dark:data-active:bg-transparent dark:data-active:text-white"
+                className="group/trigger h-full min-w-20 flex-1 flex-col gap-[0.2333rem] rounded-[0.7rem] border-0 bg-transparent text-white hover:text-white dark:text-white dark:hover:text-white data-active:bg-transparent data-active:text-white group-data-[variant=default]/tabs-list:data-active:shadow-none dark:data-active:bg-transparent dark:data-active:text-white"
               >
                 {isActive &&
                   (reduceMotion ? (

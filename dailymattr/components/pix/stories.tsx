@@ -10,7 +10,7 @@ function StoryCard({ story }: { story: PixStory }) {
   return (
     <Link
       href={story.href}
-      className="group flex h-full flex-col overflow-hidden rounded-[1rem] border border-[#ebebeb] bg-white font-helvetica transition-shadow hover:shadow-[0rem_0.5rem_1.5rem_rgba(16,24,40,0.08)]"
+      className="group flex h-full flex-col overflow-hidden rounded-[1rem] border border-[#ebebeb] bg-white transition-shadow hover:shadow-[0rem_0.5rem_1.5rem_rgba(16,24,40,0.08)]"
     >
       <div className="relative h-[13.75rem] shrink-0 overflow-hidden bg-[#e6e7ea]">
         {story.image && (
@@ -26,7 +26,7 @@ function StoryCard({ story }: { story: PixStory }) {
       </div>
       <div className="flex flex-col items-start gap-2.5 px-5 pt-5 pb-6">
         <PixTag>{story.category}</PixTag>
-        <h3 className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black">
+        <h3 className="text-lg leading-6 font-bold tracking-[-0.0125rem] text-black">
           {story.headline}
         </h3>
         <p className="text-base leading-6 tracking-[-0.0125rem] text-[#696969]">{story.fact}</p>

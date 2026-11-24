@@ -146,7 +146,7 @@ export function WhyPixVisual({ className }: { className?: string }) {
     <div ref={frameRef} className={cn("aspect-[652/759]", className)}>
       <FadeIn delay={0.4} className="h-full w-full">
         <div
-          className="relative origin-top-left font-jakarta"
+          className="relative origin-top-left"
           style={{ width: CANVAS_W, height: CANVAS_H, transform: `scale(${scale})` }}
         >
           {/* Yellow blocks peeking out behind the photo. Figma 8636:2496. */}

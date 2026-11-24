@@ -37,7 +37,7 @@ export function NewsroomHero() {
       <div className="mx-auto flex w-full max-w-[75rem] flex-1 flex-col items-center gap-10">
         {/* No wash over the photo here, so a soft shadow keeps the white title legible. */}
         <FadeIn className="my-auto flex flex-col items-center gap-5 text-center [text-shadow:0_2px_24px_rgba(0,0,0,0.55)] lg:gap-6">
-          <p className="font-helvetica text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
+          <p className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
             {hero.eyebrow}
           </p>
           <h1 className="text-[2.75rem] leading-[1.05] font-medium sm:text-5xl lg:text-6xl lg:leading-16 lg:whitespace-nowrap text-white">
@@ -111,7 +111,7 @@ export function NewsroomCta() {
           <span className="grid size-[4.5rem] shrink-0 place-items-center rounded-[1.25rem] bg-[#18181b] shadow-[0px_0px_0px_1px_rgba(57,121,255,0.24),0px_24px_64px_0px_rgba(57,121,255,0.16),0px_8px_24px_0px_rgba(142,115,240,0.1)]">
             <Image src="/newsroom/newspaper.svg" alt="" width={32} height={32} className="size-8" />
           </span>
-          <h2 className="flex-1 font-helvetica text-3xl leading-none font-medium tracking-[-0.0938rem] text-white lg:text-display lg:leading-11">
+          <h2 className="flex-1 text-3xl leading-none font-medium tracking-[-0.0938rem] text-white lg:text-display lg:leading-11">
             {cta.title}
           </h2>
           <DarkArrowLink href={cta.button.href} className="shrink-0">

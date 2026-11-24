@@ -7,11 +7,11 @@ export function PixGetStarted() {
   return (
     <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-[10rem]">
       <FadeIn className="mx-auto flex max-w-[75rem] flex-col gap-10 overflow-hidden rounded-[1.5rem] bg-[#f7f7f7] p-8 sm:p-12 lg:h-[28.75rem] lg:flex-row lg:items-center lg:justify-between lg:p-20">
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-4 font-helvetica">
+        <div className="flex min-w-0 flex-1 flex-col items-start gap-4">
           <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
             {getStarted.eyebrow}
           </p>
-          <h2 className="max-w-[36.25rem] text-3xl leading-none font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
+          <h2 className="max-w-[36.25rem] text-3xl leading-none font-bold tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
             {getStarted.title}
           </h2>
           <div className="pt-4">

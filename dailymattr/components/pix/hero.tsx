@@ -16,12 +16,15 @@ export function PixHero() {
       {/* lg+: the 16:9 section can run past the fold, so centre the copy in the part that's
           on screen (section height capped at the viewport under the header), not the whole box */}
       <div className="relative z-10 mx-auto flex w-full max-w-[75rem] items-center px-4 pt-12 pb-16 sm:px-6 sm:pt-16 lg:absolute lg:inset-x-0 lg:top-0 lg:h-[min(100%,calc(100svh-var(--chrome-height,5.5rem)))] lg:py-0 lg:px-8">
-        <FadeIn className="flex max-w-[33.75rem] flex-col items-start gap-5 font-helvetica lg:gap-6">
+        <FadeIn className="flex max-w-[33.75rem] flex-col items-start gap-5 lg:gap-6">
           <PixTag>{hero.tag}</PixTag>
 
-          <h1 className="text-display leading-none font-medium tracking-[-0.0938rem] text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
+          {/* Phones: 40px, shrinking under 400px wide so "More understanding." still fits one line */}
+          <h1 className="text-[min(2.5rem,10vw)] leading-none font-bold tracking-[-0.0938rem] text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
             {hero.titleLines.map((line) => (
-              <span key={line} className="block">
+              // One line per phrase: "More understanding." never splits (it can run a little past
+              // the copy column on desktop, into the empty space left of the phone).
+              <span key={line} className="block whitespace-nowrap">
                 {line}
               </span>
             ))}

@@ -16,7 +16,7 @@ export function NiaHero() {
       {/* Figma 8856:9100: copy (540) + 133 gap + chat card (430) = a 1103px column */}
       <div className="mx-auto flex max-w-[1103px] flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
         {/* Copy */}
-        <FadeIn className="flex w-full max-w-[540px] flex-col gap-5 font-helvetica lg:gap-6">
+        <FadeIn className="flex w-full max-w-[540px] flex-col gap-5 lg:gap-6">
           <span className="w-fit rounded-[6px] bg-[rgba(28,104,255,0.1)] px-2 py-1 text-sm leading-4 font-medium tracking-[0.78px] text-[#3979ff] uppercase shadow-[0px_3px_3px_0px_rgba(39,39,42,0.3),inset_0px_0px_3px_0px_rgba(255,255,255,0.25)]">
             NIA · Ask
           </span>

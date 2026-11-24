@@ -48,11 +48,11 @@ export function TraxHero() {
           className="-top-[4.5rem] left-1/2 h-[25rem] w-[65rem] -translate-x-1/2"
           overhang="inset-[-40%_-15.38%]"
         />
-        <FadeIn className="relative flex flex-col items-center gap-5 text-center font-helvetica lg:gap-6">
+        <FadeIn className="relative flex flex-col items-center gap-5 text-center lg:gap-6">
           <TraxTag className="bg-[rgba(28,104,255,0.2)] leading-[0.8125rem]">{hero.tag}</TraxTag>
 
           {/* One line on desktop; on phones it breaks between the two sentences */}
-          <h1 className="text-display leading-none font-medium tracking-[-0.0938rem] text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
+          <h1 className="text-display leading-none font-bold tracking-[-0.0938rem] text-white sm:text-5xl sm:leading-none lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]">
             {hero.titleLines.map((line, i) => (
               <Fragment key={line}>
                 {i > 0 && " "}

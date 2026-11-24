@@ -35,7 +35,7 @@ export function QixEyebrow({ children, className }: { children: React.ReactNode;
 
 /** 48px section heading. Figma 8646:2706: 48/48, −1.5px. */
 export const QIX_H2 =
-  "text-3xl leading-tight font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-12 lg:tracking-[-0.0938rem]"
+  "text-3xl leading-tight font-bold tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-12 lg:tracking-[-0.0938rem]"
 
 /** Blue pill link with the arrow chip ("Explore Qix"); glides to same-page anchors. Figma 8646:2673. */
 export function QixButton({ href, children }: { href: string; children: React.ReactNode }) {

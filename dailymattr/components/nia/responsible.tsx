@@ -15,7 +15,7 @@ const photoOverlay = [
  */
 export function NiaResponsible() {
   return (
-    <section className="relative isolate overflow-hidden font-tight lg:h-[747px]">
+    <section className="relative isolate overflow-hidden lg:h-[747px]">
       <Image
         src="/nia/responsible-answers.png"
         alt=""

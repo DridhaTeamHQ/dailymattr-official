@@ -22,7 +22,7 @@ export function QixHero() {
       <div className="relative lg:h-[62.5em]">
         {/* Figma 9278:984: 64px down, 32px between title and copy */}
         <FadeIn className="relative z-10 flex flex-col items-center gap-6 text-center lg:gap-[2em] lg:pt-[4em]">
-          <h1 className="text-[2.5em] leading-[1.1] font-medium tracking-[-0.039em] text-white sm:text-[3em] lg:text-[4em] lg:leading-[1.125]">
+          <h1 className="text-[2.5em] leading-[1.1] font-bold tracking-[-0.039em] text-white sm:text-[3em] lg:text-[4em] lg:leading-[1.125]">
             {hero.titleLines.map((line) => (
               <span key={line} className="block">
                 {line}
@@ -80,7 +80,7 @@ function Pillars() {
     <div className="relative z-10 mx-auto mt-10 grid max-w-[25em] gap-8 text-center md:max-w-none md:grid-cols-3 md:gap-6 lg:mt-[1em] lg:grid-cols-[repeat(3,minmax(0,25em))] lg:justify-center lg:gap-x-[6.5em]">
       {pillars.items.map((item, i) => (
         <FadeIn key={item.title} delay={revealDelay(i, 3)} className="flex flex-col items-center gap-2 lg:gap-[0.75em]">
-          <h2 className="text-[1.25em] leading-[1.4] font-medium tracking-[-0.0167em] text-white lg:text-[1.5em] lg:leading-[1.3333]">
+          <h2 className="text-[1.25em] leading-[1.4] font-bold tracking-[-0.0167em] text-white lg:text-[1.5em] lg:leading-[1.3333]">
             {item.title}
           </h2>
           <p className="text-[0.9375em] leading-[1.6] text-white/56 lg:text-[1em] lg:leading-[1.5]">{item.description}</p>

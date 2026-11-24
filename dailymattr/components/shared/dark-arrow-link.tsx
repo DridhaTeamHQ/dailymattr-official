@@ -4,7 +4,7 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 
 export const darkPill =
-  "flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-black py-2 pr-2 pl-4 font-helvetica transition-[translate,background-color] hover:-translate-y-px hover:bg-[#1c1c1e] [.theme-nia_&]:bg-[#3979ff] [.theme-nia_&]:hover:bg-[#3979ff]/90"
+  "flex h-10 w-fit items-center gap-2.5 rounded-[0.8125rem] bg-black py-2 pr-2 pl-4 transition-[translate,background-color] hover:-translate-y-px hover:bg-[#1c1c1e] [.theme-nia_&]:bg-[#3979ff] [.theme-nia_&]:hover:bg-[#3979ff]/90"
 
 export function PillContent({ children }: { children: React.ReactNode }) {
   return (

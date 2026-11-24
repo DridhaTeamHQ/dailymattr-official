@@ -7,7 +7,7 @@ import { hero, media, purpose } from "./content"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
 const HEADING =
-  "font-helvetica text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
+  "text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
 
 /**
  * Hero over the office photo: "About" beside the dailymattr wordmark at the bottom left, the
@@ -49,7 +49,7 @@ export function AboutHero() {
             </span>
           </span>
         </h1>
-        <p className="max-w-[36rem] font-helvetica text-base leading-7 tracking-[-0.0125rem] text-white/80 sm:text-lg lg:max-w-[30rem] lg:text-[1.1125rem] xl:max-w-[36rem]">
+        <p className="max-w-[36rem] text-base leading-7 tracking-[-0.0125rem] text-white/80 sm:text-lg lg:max-w-[30rem] lg:text-[1.1125rem] xl:max-w-[36rem]">
           {hero.body}
         </p>
       </FadeIn>
@@ -61,7 +61,7 @@ export function AboutHero() {
 export function AboutPurpose() {
   return (
     <section className="bg-[#f5f5f7] px-4 py-24 sm:px-6 lg:py-[10rem]">
-      <FadeIn className="mx-auto flex max-w-[61.25rem] flex-col items-center gap-6 text-center font-helvetica">
+      <FadeIn className="mx-auto flex max-w-[61.25rem] flex-col items-center gap-6 text-center">
         <p className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
           {purpose.eyebrow}
         </p>
@@ -123,7 +123,7 @@ export function AboutMedia() {
           frost 15 → blur(7.5px) (Figma radius ≈ 2σ) and depth → a faint 11px inner glow.
           No white light rim on the edge, only the faint blue border.
         */}
-        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 font-helvetica shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
+        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
           <div className="flex flex-col gap-4 lg:w-[37.0625rem]">
             <h2 className="text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
               {media.title}

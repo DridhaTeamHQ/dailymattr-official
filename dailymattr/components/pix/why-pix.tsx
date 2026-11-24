@@ -8,12 +8,12 @@ import { WhyPixVisual } from "./why-pix-visual"
 
 function FeatureItem({ feature }: { feature: PixFeature }) {
   return (
-    <div className="flex items-start gap-4 font-helvetica">
+    <div className="flex items-start gap-4">
       <span className="grid size-12 shrink-0 place-items-center rounded-[0.75rem] bg-white drop-shadow-[0rem_0.0625rem_0.0625rem_rgba(16,24,40,0.06)] drop-shadow-[0rem_0.25rem_0.375rem_rgba(16,24,40,0.04)]">
         <Image src={feature.icon} alt="" width={24} height={24} className="block" />
       </span>
       <div className="flex flex-col gap-1.5">
-        <h3 className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black">
+        <h3 className="text-lg leading-6 font-bold tracking-[-0.0125rem] text-black">
           {feature.title}
         </h3>
         <p className="max-w-[15rem] text-base leading-6 tracking-[-0.0125rem] text-[#696969]">
