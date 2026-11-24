@@ -5,7 +5,7 @@ import getStartedPhoto from "@/public/qix/hero/qix.png"
 
 /** Hero copy. Figma 9278:984 breaks the title after "bigger". */
 export const hero = {
-  titleLines: ["See the bigger", "picture."],
+  titleLines: ["See the bigger picture."],
   description:
     "From today's biggest developments to the ideas that shaped our world, Qix makes learning visual, engaging, and easy to follow.",
   cta: { label: "Watch Qix", href: "/formats/qix#gallery" },
