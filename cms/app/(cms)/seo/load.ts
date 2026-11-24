@@ -10,7 +10,7 @@ import {
   seoChecks,
   type WebsiteDefaults,
 } from "@/lib/seo/fields"
-import { getWebsiteDefaults, websiteUrl } from "@/lib/seo/website"
+import { getWebsiteDefaults, websiteSetupProblem, websiteUrl } from "@/lib/seo/website"
 
 import type { SeoListItem } from "./seo-table"
 
@@ -19,11 +19,21 @@ import type { SeoListItem } from "./seo-table"
  * `error` is set when the website can't be reached.
  */
 export async function loadSeoBase() {
+  // Setup mistakes (no WEBSITE_URL, localhost on Vercel) get a precise message up front.
+  const problem = websiteSetupProblem()
+  if (problem) return { error: problem, websiteUrl } as const
+
   let defaults: WebsiteDefaults
   try {
     defaults = await getWebsiteDefaults()
   } catch (error) {
-    return { error: error instanceof Error ? error.message : String(error), websiteUrl } as const
+    // Production hides the real error message (it's thrown inside a cached function), so
+    // say what was tried instead. Dev shows the real one.
+    const detail = process.env.NODE_ENV === "development" && error instanceof Error ? ` (${error.message})` : ""
+    return {
+      error: `Couldn't load the SEO defaults from ${websiteUrl}/api/seo/defaults. Check that the website is deployed and that WEBSITE_URL is its address.${detail}`,
+      websiteUrl,
+    } as const
   }
   const settings = await getSeoSettings()
   return {
