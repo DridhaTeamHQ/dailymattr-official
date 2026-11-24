@@ -30,7 +30,8 @@ function saveConsent(value: CookieConsent) {
   window.dispatchEvent(new Event(CONSENT_EVENT))
 }
 
-function subscribe(onChange: () => void) {
+/** Calls `onChange` whenever the visitor's choice changes (this tab or another). */
+export function subscribeToCookieConsent(onChange: () => void) {
   window.addEventListener(CONSENT_EVENT, onChange)
   window.addEventListener("storage", onChange)
   return () => {
@@ -47,7 +48,7 @@ const ANSWERED = "answered"
  * NIA pins the root font size to 16px, so there it zooms by the laptop scale to match other pages.
  */
 export function CookieConsentPopup() {
-  const consent = React.useSyncExternalStore(subscribe, getCookieConsent, () => ANSWERED)
+  const consent = React.useSyncExternalStore(subscribeToCookieConsent, getCookieConsent, () => ANSWERED)
   const show = consent === null
 
   // Slide in on the frame after mount, so the entrance animates.

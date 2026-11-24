@@ -4,29 +4,42 @@ import { storyBodies } from "@/components/news/articles"
 import { newsCategories, newsPath } from "@/components/news/content"
 import { stories, storyImage } from "@/components/news/stories"
 import { editions, quizPath } from "@/components/quizz/content"
+import { getCmsSeo, type ChangeFrequency } from "./cms"
+import { getSiteSeo } from "./site-seo"
 import { site } from "./site"
 
 /**
- * Per-page SEO, kept behind one function so it can move to the CMS later.
- *
- * Today getPageSeo() returns the local defaults below. When the CMS is ready, change only
- * getPageSeo() to fetch the entry for `path` (falling back to these defaults when the CMS has
- * none) — every page, the sitemap and the share cards already read from it.
+ * Per-page SEO. The defaults below live in code; the CMS (lib/cms.ts) can override any
+ * field of any page, and add pages that aren't listed here. getPageSeo() layers the CMS
+ * entry for a path over its default, and every page, the sitemap and the share cards
+ * read from it. The CMS shows these defaults through app/api/seo/defaults.
  */
 export type PageSeo = {
-  /** Short page title; the root layout's template appends " · dailyMattr". */
+  /** Short page title; the site's title template (" · dailyMattr") is added around it. */
   title: string
   description: string
-  /** Absolute or site-relative share image; omit to use app/opengraph-image.tsx. */
+  /** Absolute or site-relative share image; omit to use the site's default share card. */
   image?: string
   /** Keep this page out of search results (it is also left out of the sitemap). */
   noindex?: boolean
   /** Sitemap hints. */
   priority?: number
-  changeFrequency?: "daily" | "weekly" | "monthly" | "yearly"
+  changeFrequency?: ChangeFrequency
+  // Set from the CMS only:
+  /** Focus keywords (the first is the main one); without them the site keywords apply. */
+  keywords?: string[]
+  /** Canonical URL when another address is the main copy; defaults to the page's own path. */
+  canonical?: string
+  /** Share-card title and description when they should differ from the page's. */
+  ogTitle?: string
+  ogDescription?: string
+  /** Ask search engines not to follow this page's links. */
+  nofollow?: boolean
+  /** JSON-LD for this page, rendered by components/shared/cms-json-ld.tsx. */
+  jsonLd?: unknown
 }
 
-/** Local defaults, keyed by route. Add new pages here (or in the CMS, once it exists). */
+/** Local defaults, keyed by route. Add new pages here, or add them in the CMS. */
 export const defaultSeo: Record<string, PageSeo> = {
   "/": {
     title: site.title,
@@ -180,14 +193,18 @@ export const defaultSeo: Record<string, PageSeo> = {
   },
 }
 
-/** The SEO entry for a route. The single place to connect the CMS. */
+/** The SEO entry for a route: its CMS overrides over its default from defaultSeo. */
 export async function getPageSeo(path: string): Promise<PageSeo> {
-  return defaultSeo[path] ?? { title: site.title, description: site.description }
+  const [{ pages }, siteSeo] = await Promise.all([getCmsSeo(), getSiteSeo()])
+  const fallback = defaultSeo[path] ?? { title: site.title, description: siteSeo.description }
+  return { ...fallback, ...pages[path] }
 }
 
-/** All routes that belong in the sitemap. Swap for a CMS listing later. */
+/** Every route with SEO (the defaults plus pages added in the CMS), for the sitemap. */
 export async function getSeoRoutes(): Promise<(PageSeo & { path: string })[]> {
-  return Object.entries(defaultSeo).map(([path, seo]) => ({ path, ...seo }))
+  const { pages } = await getCmsSeo()
+  const paths = new Set([...Object.keys(defaultSeo), ...Object.keys(pages)])
+  return Promise.all([...paths].map(async (path) => ({ path, ...(await getPageSeo(path)) })))
 }
 
 /**
@@ -199,37 +216,43 @@ export async function getSeoRoutes(): Promise<(PageSeo & { path: string })[]> {
  * Next replaces (not merges) a parent's openGraph object, so the full set is built here.
  */
 export async function seoMetadata(path: string): Promise<Metadata> {
-  const seo = await getPageSeo(path)
+  const [seo, siteSeo] = await Promise.all([getPageSeo(path), getSiteSeo()])
   const isHome = path === "/"
-  const fullTitle = isHome ? seo.title : `${seo.title} · ${site.name}`
+  // The home page uses its title as-is; other pages go through the site's title template.
+  const fullTitle = isHome ? seo.title : siteSeo.titleTemplate.replace("%s", seo.title)
+  const shareTitle = seo.ogTitle ?? fullTitle
+  const shareDescription = seo.ogDescription ?? seo.description
+  const canonical = seo.canonical ?? path
   // A page's openGraph replaces the layout's, which drops the inherited share card, so the
-  // default (app/opengraph-image.tsx, 1200 × 630) is named here explicitly.
+  // default (the CMS's default image, else app/opengraph-image.tsx, 1200 × 630) is named here.
+  const image = seo.image ?? siteSeo.image
   const images = [
-    seo.image
-      ? { url: seo.image }
-      : { url: "/opengraph-image", width: 1200, height: 630, alt: `${site.name} – Understand the world within seconds.` },
+    image
+      ? { url: image }
+      : { url: "/opengraph-image", width: 1200, height: 630, alt: `${siteSeo.name} – Understand the world within seconds.` },
   ]
 
   return {
-    // The home page uses its title as-is; other pages get the " · dailyMattr" template.
-    title: isHome ? { absolute: seo.title } : seo.title,
+    title: { absolute: fullTitle },
     description: seo.description,
-    alternates: { canonical: path },
-    ...(seo.noindex && { robots: { index: false, follow: true } }),
+    ...(seo.keywords?.length && { keywords: seo.keywords }),
+    alternates: { canonical },
+    ...((seo.noindex || seo.nofollow) && { robots: { index: !seo.noindex, follow: !seo.nofollow } }),
     openGraph: {
       type: "website",
-      siteName: site.name,
+      siteName: siteSeo.name,
       locale: site.locale,
-      url: path,
-      title: fullTitle,
-      description: seo.description,
+      url: canonical,
+      title: shareTitle,
+      description: shareDescription,
       images,
     },
     twitter: {
       card: "summary_large_image",
-      title: fullTitle,
-      description: seo.description,
+      title: shareTitle,
+      description: shareDescription,
       images,
+      ...(siteSeo.twitterHandle && { site: siteSeo.twitterHandle, creator: siteSeo.twitterHandle }),
     },
   }
 }

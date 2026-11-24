@@ -2,6 +2,11 @@
  * Site-wide SEO settings. Everything search engines see (canonical URLs, Open Graph, the
  * sitemap, robots.txt, structured data) is built from this one place.
  *
+ * These are the defaults. The CMS can override the name, title template, default
+ * description, keywords and share image, the X handle and the verification codes: read
+ * them through getSiteSeo() in lib/site-seo.ts. This file stays free of CMS code because
+ * client components (the support and advertise forms) import it too.
+ *
  * - NEXT_PUBLIC_SITE_URL: the live domain, e.g. https://www.dailymattr.com. Canonical and
  *   social-card URLs must be absolute, so set it in the production environment.
  * - NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: the Google Search Console "HTML tag" code (just the

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # original video masters (encode with `npm run videos`)
 /media-src
+
+# Prisma client (npm install / npm run db:generate recreates it)
+/lib/generated

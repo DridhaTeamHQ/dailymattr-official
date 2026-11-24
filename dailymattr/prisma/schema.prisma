@@ -1,0 +1,66 @@
+// The website's read-only view of the CMS database (Supabase Postgres).
+//
+// The CMS owns these tables and their migrations (cms/prisma/schema.prisma). This file
+// only mirrors the SEO tables the website reads. Never run `prisma migrate` from here;
+// when the CMS changes a table, copy the change across and run `npm run db:generate`.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ChangeFrequency {
+  always
+  hourly
+  daily
+  weekly
+  monthly
+  yearly
+  never
+
+  @@map("change_frequency")
+}
+
+/// Per-page SEO overrides set in the CMS. Null (or an empty list) = use the default in lib/seo.ts.
+model SeoPage {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  path            String           @unique(map: "seo_pages_path_unique")
+  title           String?
+  description     String?
+  keywords        String[]
+  canonical       String?
+  ogTitle         String?          @map("og_title")
+  ogDescription   String?          @map("og_description")
+  image           String?
+  noindex         Boolean?
+  nofollow        Boolean?
+  priority        Float?           @db.Real
+  changeFrequency ChangeFrequency? @map("change_frequency")
+  jsonLd          Json?            @map("json_ld")
+  updatedBy       String?          @map("updated_by")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("seo_pages")
+}
+
+/// Site-wide SEO overrides set in the CMS (a single row, id 1). Null = use lib/site.ts.
+model SeoSettings {
+  id                 Int      @id @default(1) @db.SmallInt
+  siteName           String?  @map("site_name")
+  titleTemplate      String?  @map("title_template")
+  defaultDescription String?  @map("default_description")
+  defaultKeywords    String[] @map("default_keywords")
+  defaultImage       String?  @map("default_image")
+  twitterHandle      String?  @map("twitter_handle")
+  googleVerification String?  @map("google_verification")
+  bingVerification   String?  @map("bing_verification")
+  updatedBy          String?  @map("updated_by")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("seo_settings")
+}
