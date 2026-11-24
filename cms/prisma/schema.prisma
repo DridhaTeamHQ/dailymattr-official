@@ -1,0 +1,106 @@
+// dailymattr CMS database (Supabase Postgres).
+//
+// Every table has row level security turned on with no policies (see the first
+// migration): the CMS connects as the database owner, while Supabase's public Data API
+// (anon / authenticated keys) can't read these tables.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  admin
+  member
+
+  @@map("user_role")
+}
+
+enum UserStatus {
+  pending
+  approved
+  rejected
+
+  @@map("user_status")
+}
+
+/// Everyone who has signed in to the CMS with Google. New accounts start as pending
+/// until an admin approves or rejects them. Admins come from AUTH_ADMIN_EMAILS.
+model User {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email       String     @unique(map: "users_email_unique")
+  name        String?
+  image       String?
+  role        UserRole   @default(member)
+  status      UserStatus @default(pending)
+  /// Email of the admin who last approved or rejected this user.
+  reviewedBy  String?    @map("reviewed_by")
+  reviewedAt  DateTime?  @map("reviewed_at") @db.Timestamptz(6)
+  lastLoginAt DateTime?  @map("last_login_at") @db.Timestamptz(6)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+}
+
+enum ChangeFrequency {
+  always
+  hourly
+  daily
+  weekly
+  monthly
+  yearly
+  never
+
+  @@map("change_frequency")
+}
+
+/// Per-page SEO overrides for the dailymattr website, one row per route path.
+/// The defaults live in the website's code (dailymattr/lib/seo.ts). Every field is
+/// optional: null (or an empty list) means "use the website's default".
+model SeoPage {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// Route path on the website, e.g. "/formats/pix". No trailing slash (except "/").
+  path            String           @unique(map: "seo_pages_path_unique")
+  title           String?
+  description     String?
+  /// Focus keywords; the first is the main one.
+  keywords        String[]
+  canonical       String?
+  ogTitle         String?          @map("og_title")
+  ogDescription   String?          @map("og_description")
+  image           String?
+  noindex         Boolean?
+  nofollow        Boolean?
+  priority        Float?           @db.Real
+  changeFrequency ChangeFrequency? @map("change_frequency")
+  jsonLd          Json?            @map("json_ld")
+  updatedBy       String?          @map("updated_by")
+  createdAt       DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("seo_pages")
+}
+
+/// Site-wide SEO overrides: a single row with id 1 (enforced by a check constraint in
+/// the migration). Null fields fall back to the website's defaults in dailymattr/lib/site.ts.
+model SeoSettings {
+  id                 Int      @id @default(1) @db.SmallInt
+  siteName           String?  @map("site_name")
+  /// Page title pattern; "%s" is replaced by the page title, e.g. "%s · dailyMattr".
+  titleTemplate      String?  @map("title_template")
+  defaultDescription String?  @map("default_description")
+  defaultKeywords    String[] @map("default_keywords")
+  defaultImage       String?  @map("default_image")
+  twitterHandle      String?  @map("twitter_handle")
+  googleVerification String?  @map("google_verification")
+  bingVerification   String?  @map("bing_verification")
+  updatedBy          String?  @map("updated_by")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("seo_settings")
+}
