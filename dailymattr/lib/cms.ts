@@ -2,7 +2,7 @@ import "server-only"
 
 import { cacheLife, cacheTag } from "next/cache"
 
-import { prisma } from "./db"
+import { getPrisma } from "./db"
 import type { SeoPage, SeoSettings } from "./generated/prisma/client"
 
 /**
@@ -58,7 +58,8 @@ export async function getCmsSeo(): Promise<CmsSeo> {
   cacheTag(CMS_SEO_TAG)
   cacheLife("minutes")
 
-  if (!process.env.DATABASE_URL) return { settings: {}, pages: {} }
+  const prisma = getPrisma()
+  if (!prisma) return { settings: {}, pages: {} }
   try {
     const [pages, settings] = await Promise.all([
       prisma.seoPage.findMany(),
