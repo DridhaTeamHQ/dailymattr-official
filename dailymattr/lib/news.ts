@@ -203,17 +203,55 @@ export async function getPixShowcase(): Promise<PixShowcaseItem[]> {
       [hidden, SHOWCASE_SECTIONS.flatMap(pixCategoriesFor)]
     )
     return rows
-      .map((row) => {
-        const story = toStory(row)
-        const points = toBody(row).points
-        return { story, slides: toSlides(row.web_pages, story.headline, points) }
-      })
+      .map(toShowcaseItem)
       .filter((item) => item.slides.length > 0)
       .sort((a, b) => SHOWCASE_SECTIONS.indexOf(a.story.category ?? "") - SHOWCASE_SECTIONS.indexOf(b.story.category ?? ""))
   } catch (error) {
     console.warn("[news] Couldn't read the Pix showcase:", error)
     return []
   }
+}
+
+/** How many Pix the home page's "Happening now" row shows. */
+const LATEST_PIX = 12
+
+/**
+ * The home page's "Happening now" row: the newest visible stories from every section that
+ * have their rendered Pix slides. Empty when the Pix database can't be read; the row then
+ * keeps its design cards.
+ */
+export async function getLatestPix(): Promise<PixShowcaseItem[]> {
+  "use cache"
+  cacheTag(CMS_NEWS_TAG)
+  cacheLife("minutes")
+
+  const pool = getPixPool()
+  if (!pool) return []
+  try {
+    const hidden = await getHiddenIds()
+    // A few spare rows, in case some stories' slides aren't in the Pix media bucket.
+    const { rows } = await pool.query<PixStoryRow & { web_pages: unknown }>(
+      `select ${LIST_COLUMNS}, detail_body, summary, source_url, web_pages
+         from pix_posts
+        where published_id ~ '^[0-9]+$' and not (id = any($1::uuid[]))
+          and jsonb_typeof(web_pages) = 'array' and jsonb_array_length(web_pages) > 0
+        order by published_at desc
+        limit $2`,
+      [hidden, LATEST_PIX + 8]
+    )
+    return rows
+      .map(toShowcaseItem)
+      .filter((item) => item.slides.length > 0)
+      .slice(0, LATEST_PIX)
+  } catch (error) {
+    console.warn("[news] Couldn't read the latest Pix:", error)
+    return []
+  }
+}
+
+function toShowcaseItem(row: PixStoryRow & { web_pages: unknown }): PixShowcaseItem {
+  const story = toStory(row)
+  return { story, slides: toSlides(row.web_pages, story.headline, toBody(row).points) }
 }
 
 /** pix_posts.web_pages → slides in order, keeping only images in the Pix media bucket. */

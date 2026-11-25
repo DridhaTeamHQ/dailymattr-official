@@ -1,8 +1,11 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { storyHref } from "@/components/news/stories"
+import { PixRow } from "@/components/pix/pix-row"
 import { Carousel } from "@/components/ui/apple-cards-carousel"
 import { FadeIn } from "@/components/shared/fade-in"
+import { getLatestPix } from "@/lib/news"
 
 // Figma 8859:13168 "Happening now" — header block (24px gaps) 80px above a full-width row of
 // 300 × 478 story cards with 20px gaps. Each story image already carries its headline and date.
@@ -46,7 +49,14 @@ function StoryCard({ story }: { story: Story }) {
   )
 }
 
-export function TemplatesSection() {
+/**
+ * "Happening now": the latest real Pix (lib/news.ts getLatestPix) in a sideways-scrolling row
+ * of the Pix page's cards (components/pix/pix-row.tsx). Keeps the design's story cards when
+ * Pix can't be read.
+ */
+export async function TemplatesSection() {
+  const latest = await getLatestPix()
+
   return (
     <section className="flex w-full flex-col items-center gap-20 py-20">
       <FadeIn className="flex flex-col items-center gap-6 px-6 text-center">
@@ -60,7 +70,7 @@ export function TemplatesSection() {
           Explore the latest updates, then follow the stories that catch your attention.
         </p>
         <Link
-          href="/"
+          href="/news"
           className="flex h-10 items-center gap-2 rounded-[0.8125rem] bg-[#3979ff] pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)] hover:bg-[#3979ff]/90"
         >
           See all latest stories
@@ -68,15 +78,29 @@ export function TemplatesSection() {
         </Link>
       </FadeIn>
 
-      {/* Card row bleeds to the full screen width. */}
-      <FadeIn className="w-[98%]">
-        <Carousel
-          className="[&>div]:rounded-none [&>div>div]:gap-5"
-          items={stories.map((story, index) => (
-            <StoryCard key={index} story={story} />
-          ))}
-        />
-      </FadeIn>
+      {latest.length > 0 ? (
+        <FadeIn className="w-full">
+          <PixRow
+            items={latest.map(({ story, slides }) => ({
+              id: story.id,
+              headline: story.headline,
+              href: storyHref(story),
+              // Only the cover (headline) slide here; the full Pix is on the story page.
+              slides: slides.slice(0, 1),
+            }))}
+          />
+        </FadeIn>
+      ) : (
+        // Card row bleeds to the full screen width.
+        <FadeIn className="w-[98%]">
+          <Carousel
+            className="[&>div]:rounded-none [&>div>div]:gap-5"
+            items={stories.map((story, index) => (
+              <StoryCard key={index} story={story} />
+            ))}
+          />
+        </FadeIn>
+      )}
     </section>
   )
 }

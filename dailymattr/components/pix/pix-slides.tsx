@@ -46,7 +46,14 @@ export function PixSlideCard({
       <div
         ref={track}
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
-        className="absolute inset-0 flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        // A one-slide card (the home page row shows only the cover) doesn't scroll, so
+        // scrolling over it moves the page or row it sits in.
+        className={cn(
+          "absolute inset-0 flex",
+          slides.length > 1
+            ? "snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            : "overflow-hidden",
+        )}
         role="group"
         aria-roledescription="carousel"
         aria-label={`Pix: ${headline}`}

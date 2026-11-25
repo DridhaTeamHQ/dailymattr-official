@@ -4,7 +4,7 @@ import { after } from "next/server"
 
 import { CMS_SEO_TAG, getCmsSeo } from "@/lib/cms"
 import { CMS_FORMATS_TAG, getQixContent, getTraxContent } from "@/lib/formats"
-import { CMS_NEWS_TAG, getNewsPage, getStories } from "@/lib/news"
+import { CMS_NEWS_TAG, getLatestPix, getNewsPage, getStories } from "@/lib/news"
 
 /**
  * POST /api/revalidate: the CMS calls this after every SEO save, news show / hide and Qix / Trax edit,
@@ -44,7 +44,14 @@ export async function GET(request: Request) {
 async function warmCache() {
   // Two reads: the first starts the refresh, the second waits until the new copy is cached.
   const read = () =>
-    Promise.all([getCmsSeo(), getStories(), getNewsPage({ page: 1 }), getQixContent(), getTraxContent()])
+    Promise.all([
+      getCmsSeo(),
+      getStories(),
+      getNewsPage({ page: 1 }),
+      getLatestPix(),
+      getQixContent(),
+      getTraxContent(),
+    ])
   await read()
   await new Promise((resolve) => setTimeout(resolve, 250))
   await read()
