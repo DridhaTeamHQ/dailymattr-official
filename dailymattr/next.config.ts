@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
         pathname: "/storage/v1/object/public/pix-media/**",
         search: "",
       },
+      // Qix covers and Trax artwork uploaded in the CMS (its "cms-media" bucket, lib/formats.ts).
+      {
+        protocol: "https",
+        hostname: "simstmysvbvdfqyouamm.supabase.co",
+        pathname: "/storage/v1/object/public/cms-media/**",
+        search: "",
+      },
     ],
   },
   experimental: {

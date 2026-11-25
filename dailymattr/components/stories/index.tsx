@@ -1,8 +1,11 @@
 import { SectionHeading } from "@/components/shared/section-heading"
 import { StoryCarousel } from "./story-carousel"
 import { FadeIn } from "@/components/shared/fade-in"
+import { getQixContent } from "@/lib/formats"
 
-export function StoriesSection() {
+export async function StoriesSection() {
+  // The stories switched on for the home page in the CMS (cached; refreshed when it saves)
+  const { homeCovers } = await getQixContent()
   return (
     <section className="w-full overflow-hidden py-16 sm:py-20 lg:pt-20 lg:pb-10">
       <SectionHeading
@@ -15,7 +18,7 @@ export function StoriesSection() {
       />
 
       <FadeIn className="mt-10 sm:mt-12 lg:mt-24">
-        <StoryCarousel />
+        {homeCovers.length > 0 && <StoryCarousel covers={homeCovers} />}
       </FadeIn>
     </section>
   )

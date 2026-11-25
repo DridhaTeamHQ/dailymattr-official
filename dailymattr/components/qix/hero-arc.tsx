@@ -13,21 +13,27 @@ import {
   type AnimationPlaybackControls,
   type MotionValue,
 } from "motion/react"
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import { SiteVideo } from "@/components/shared/site-video"
-import { storyCovers, type StoryCover } from "@/components/stories/covers"
+import type { StoryCover } from "@/components/stories/covers"
 import { cn } from "@/lib/utils"
+import type { VideoAsset } from "@/lib/videos"
 
 /**
- * The ring: the home page's story covers, twice round. Nine show at a time, so a ring of
- * eight would put one cover in two places; with sixteen the only repeat is the far L4/R4
- * pair, both turned nearly edge-on. Amaron starts in the centre, where Figma has its green
- * featured placeholder.
+ * The ring: the Qix stories (set in the CMS), repeated in whole rounds until there are at least
+ * sixteen cards. Nine show at a time, so a ring of eight would put one cover in two places;
+ * with sixteen the only repeat is the far L4/R4 pair, both turned nearly edge-on. The third
+ * story starts in the centre, where Figma has its green featured placeholder.
  */
-const RING = [...storyCovers, ...storyCovers]
-const COUNT = RING.length
+const MIN_RING = 16
 const START = 2
+
+function ringOf(covers: StoryCover[]) {
+  const ring: StoryCover[] = []
+  while (ring.length < MIN_RING) ring.push(...covers)
+  return ring
+}
 
 /**
  * Where a card sits by its distance from the centre, in Figma px on the 1920×760 stage:
@@ -48,12 +54,12 @@ const SLOTS = [
 /** Every card is the featured card's 173×250 box, centred on the stage, then moved into its slot. */
 const BOX_W = 173
 
-const wrap = (i: number) => ((i % COUNT) + COUNT) % COUNT
+const wrap = (i: number, count: number) => ((i % count) + count) % count
 
-/** Card i's signed distance from the centre for a ring offset, in [-COUNT/2, COUNT/2). */
-function slotOf(i: number, offset: number) {
-  const d = wrap(i - START - offset)
-  return d >= COUNT / 2 ? d - COUNT : d
+/** Card i's signed distance from the centre for a ring offset, in [-count/2, count/2). */
+function slotOf(i: number, offset: number, count: number) {
+  const d = wrap(i - START - offset, count)
+  return d >= count / 2 ? d - count : d
 }
 
 /** Figma's 3D transform for a slot, interpolated between neighbours while cards move. */
@@ -97,7 +103,9 @@ type Drag = { id: number; x0: number; from: number; perCard: number; x: number; 
  * Below lg it sits under the copy in a shorter box, sized from the screen width so about
  * 800 design px (the centre five cards) span a phone, and 1024 (seven cards) a tablet.
  */
-export function QixHeroArc() {
+export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
+  const ring = useMemo(() => ringOf(covers), [covers])
+  const count = ring.length
   const offset = useMotionValue(0)
   const [center, setCenter] = useState(START)
   const [playingCard, setPlayingCard] = useState(START)
@@ -116,7 +124,7 @@ export function QixHeroArc() {
   const dragged = useRef(false)
   const hold = useRef({ hover: false, focus: false, drag: false, sound: false, until: 0 })
 
-  useMotionValueEvent(offset, "change", (v) => setCenter(wrap(START + Math.round(v))))
+  useMotionValueEvent(offset, "change", (v) => setCenter(wrap(START + Math.round(v), count)))
 
   // A new card in the centre starts its video once it settles
   useEffect(() => {
@@ -214,7 +222,7 @@ export function QixHeroArc() {
     pause()
     if (i === center) return toggleSound()
     const now = offset.get()
-    glide(Math.round(now + slotOf(i, now)))
+    glide(Math.round(now + slotOf(i, now, count)))
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -255,7 +263,7 @@ export function QixHeroArc() {
       className="group relative mt-4 h-[26em] cursor-grab touch-pan-y outline-none select-none text-[length:min(1rem,calc(100vw_/_50))] active:cursor-grabbing md:text-[length:min(1rem,calc(100vw_/_64))] lg:absolute lg:inset-x-0 lg:top-[15em] lg:mt-0 lg:h-[47.5em] lg:text-[length:1em]"
     >
       <p className="sr-only">
-        {RING[center].alt}. Drag, or use the left and right arrow keys, to move through the stories;
+        {ring[center % count]?.alt}. Drag, or use the left and right arrow keys, to move through the stories;
         press Enter to turn the sound {sound ? "off" : "on"}.
       </p>
 
@@ -263,15 +271,16 @@ export function QixHeroArc() {
         ref={stageRef}
         className="absolute top-1/2 left-1/2 h-[47.5em] w-[120em] -translate-x-1/2 -translate-y-1/2 perspective-[50.1875em]"
       >
-        {storyCovers.map((cover, i) => (
-          <Glow key={cover.alt} cover={cover} shown={center % storyCovers.length === i} />
+        {covers.map((cover, i) => (
+          <Glow key={cover.id} cover={cover} shown={center % covers.length === i} />
         ))}
 
-        {RING.map((cover, i) => (
+        {ring.map((cover, i) => (
           <Card
-            key={`${cover.alt}-${i}`}
+            key={`${cover.id}-${i}`}
             cover={cover}
             index={i}
+            count={count}
             offset={offset}
             isCenter={center === i}
             playing={playingCard === i && center === i}
@@ -312,6 +321,7 @@ function Glow({ cover, shown }: { cover: StoryCover; shown: boolean }) {
 function Card({
   cover,
   index,
+  count,
   offset,
   isCenter,
   playing,
@@ -321,6 +331,7 @@ function Card({
 }: {
   cover: StoryCover
   index: number
+  count: number
   offset: MotionValue<number>
   isCenter: boolean
   /** Settled in the centre: mount and play its video. */
@@ -329,12 +340,12 @@ function Card({
   onSelect: (i: number) => void
   onSoundBlocked: () => void
 }) {
-  const transform = useTransform(() => slotTransform(slotOf(index, offset.get())))
+  const transform = useTransform(() => slotTransform(slotOf(index, offset.get(), count)))
   // Fully shown out to L4/R4, then fades as it turns away
-  const opacity = useTransform(() => Math.min(1, Math.max(0, (4.5 - Math.abs(slotOf(index, offset.get()))) / 0.5)))
+  const opacity = useTransform(() => Math.min(1, Math.max(0, (4.5 - Math.abs(slotOf(index, offset.get(), count))) / 0.5)))
   // Nearer the centre paints on top, as in Figma's layer order
-  const zIndex = useTransform(() => Math.round(100 - Math.abs(slotOf(index, offset.get())) * 10))
-  const pointerEvents = useTransform(() => (Math.abs(slotOf(index, offset.get())) > 4.5 ? "none" : "auto"))
+  const zIndex = useTransform(() => Math.round(100 - Math.abs(slotOf(index, offset.get(), count)) * 10))
+  const pointerEvents = useTransform(() => (Math.abs(slotOf(index, offset.get(), count)) > 4.5 ? "none" : "auto"))
 
   return (
     <motion.div
@@ -357,7 +368,7 @@ function Card({
         style={{ objectPosition: FOCUS }}
       />
 
-      {playing && <CardVideo cover={cover} sound={sound} onSoundBlocked={onSoundBlocked} />}
+      {playing && cover.video && <CardVideo video={cover.video} sound={sound} onSoundBlocked={onSoundBlocked} />}
 
       {/* Figma's 1px white/12 card edge, drawn inside over the picture */}
       <span className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]" />
@@ -367,11 +378,11 @@ function Card({
 
 /** The centre card's story, faded in over its cover once it is actually playing. */
 function CardVideo({
-  cover,
+  video,
   sound,
   onSoundBlocked,
 }: {
-  cover: StoryCover
+  video: VideoAsset
   sound: boolean
   onSoundBlocked: () => void
 }) {
@@ -380,7 +391,7 @@ function CardVideo({
   return (
     <>
       <SiteVideo
-        video={cover.video}
+        video={video}
         priority
         // Turned on by a click or key press, which browsers accept; if one still refuses,
         // the card drops back to muted and its icon says so

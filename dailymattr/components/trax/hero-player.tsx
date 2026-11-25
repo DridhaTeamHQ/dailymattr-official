@@ -12,15 +12,13 @@ import {
 import { useEffect, useEffectEvent, useLayoutEffect, useRef, useState } from "react"
 
 import { cn } from "@/lib/utils"
-import { heroPlayer, type TraxHeroEpisode } from "./content"
-import { useActiveEpisode } from "./hero-state"
+import type { TraxHeroEpisode } from "./content"
+import { useActiveEpisode, useHeroEpisodes } from "./hero-state"
 import { announceTraxPlay, useOnOtherTraxPlay } from "./use-track"
 
-const { episodes } = heroPlayer
-const count = episodes.length
-const wrap = (i: number) => ((i % count) + count) % count
+const wrap = (i: number, count: number) => ((i % count) + count) % count
 /** Shortest signed distance on the ring, in [-count/2, count/2). */
-const ringOffset = (d: number) => {
+const ringOffset = (d: number, count: number) => {
   const o = ((d % count) + count) % count
   return o >= count / 2 ? o - count : o
 }
@@ -94,7 +92,10 @@ const CARD_EDGE = "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.28),0_2rem_4rem_0_
  * and when it ends the next card slides into the centre and plays.
  */
 export function TraxHeroPlayer() {
-  // Shared with the wash behind the hero, which takes the centre cover's colours
+  // The episodes (from the CMS) and the one in the centre, shared with the wash behind the
+  // hero, which takes the centre cover's colours
+  const { episodes, initial } = useHeroEpisodes()
+  const count = episodes.length
   const [active, setActive] = useActiveEpisode()
   const [playing, setPlaying] = useState(false)
   const [muted, setMuted] = useState(false)
@@ -104,7 +105,7 @@ export function TraxHeroPlayer() {
   // again restarts its CSS animations. So as the page is hidden (this cleanup runs then), the
   // entrance is set up again around the card in the centre now, not the one the page first
   // opened on, and it plays from there when the visitor comes back.
-  const [introCenter, setIntroCenter] = useState(heroPlayer.initial)
+  const [introCenter, setIntroCenter] = useState(initial)
   const [entered, setEntered] = useState(false)
   const setUpEntrance = useEffectEvent(() => {
     setIntroCenter(active)
@@ -115,8 +116,8 @@ export function TraxHeroPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   // Where the ring is, in episodes; never wrapped, so it can spring smoothly past either end.
-  const position = useMotionValue<number>(heroPlayer.initial)
-  const target = useRef<number>(heroPlayer.initial)
+  const position = useMotionValue<number>(initial)
+  const target = useRef<number>(initial)
   const reduceMotion = useReducedMotion()
 
   // Fallback for --trax-hero-fit (see TraxHero) where CSS can't divide lengths
@@ -183,15 +184,15 @@ export function TraxHeroPlayer() {
   }, [playing, active, progress])
 
   const goTo = (index: number) => {
-    const step = ringOffset(index - active)
+    const step = ringOffset(index - active, count)
     if (step === 0) return
     progress.set(0)
-    setActive(wrap(index))
+    setActive(wrap(index, count))
     target.current += step
     animate(position, target.current, reduceMotion ? { duration: 0 } : SLIDE_SPRING)
   }
 
-  const current = episodes[active]
+  const current = episodes[active] ?? episodes[0]
 
   return (
     <div
@@ -218,16 +219,17 @@ export function TraxHeroPlayer() {
           {episodes.map((episode, i) => {
             const isCurrent = i === active
             // From the card the entrance is built around (fixed while it plays)
-            const start = ringOffset(i - introCenter)
+            const start = ringOffset(i - introCenter, count)
             return (
               <EpisodeCard
                 key={episode.id}
                 episode={episode}
                 index={i}
+                count={count}
                 position={position}
                 className={cn(!entered && INTRO[start + 2], "motion-reduce:animate-none")}
                 isCurrent={isCurrent}
-                preload={i === heroPlayer.initial}
+                preload={i === initial}
                 onClick={() => {
                   if (isCurrent) return setPlaying(!playing)
                   goTo(i)
@@ -312,6 +314,7 @@ export function TraxHeroPlayer() {
 function EpisodeCard({
   episode,
   index,
+  count,
   position,
   className,
   isCurrent,
@@ -321,6 +324,7 @@ function EpisodeCard({
 }: {
   episode: TraxHeroEpisode
   index: number
+  count: number
   position: MotionValue<number>
   className: string
   isCurrent: boolean
@@ -328,7 +332,7 @@ function EpisodeCard({
   label: string
   onClick: () => void
 }) {
-  const depth = useTransform(() => ringOffset(index - position.get()))
+  const depth = useTransform(() => ringOffset(index - position.get(), count))
   const x = useTransform(depth, DEPTH, FLOW.x)
   const rotateY = useTransform(depth, DEPTH, FLOW.rotateY)
   const scale = useTransform(depth, DEPTH, FLOW.scale)

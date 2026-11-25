@@ -124,10 +124,10 @@ function Art({ episode, sizes, className }: { episode: TraxEpisode; sizes: strin
  * step through it (wrapping), keeping it playing if it was; a finished episode moves on to
  * the next. Pause holds the playhead, so play picks up where it stopped.
  */
-function FeaturedPlayer() {
-  const { playlist } = featured
+function FeaturedPlayer({ playlist }: { playlist: TraxEpisode[] }) {
   const [index, setIndex] = useState(0)
-  const episode = playlist[index]
+  // In range even if the CMS list got shorter
+  const episode = playlist[index % playlist.length]
   const go = (step: number) => setIndex((i) => (i + step + playlist.length) % playlist.length)
   const track = useTrack(episode.audio, { onEnded: () => go(1) })
 
@@ -250,19 +250,21 @@ function EpisodeCard({ episode }: { episode: TraxEpisode }) {
   )
 }
 
-/** Featured player plus three episode cards. Figma 8595:12017. */
-export function TraxFeatured() {
+/** Featured player plus three episode cards (both set in the CMS, lib/formats.ts). Figma 8595:12017. */
+export function TraxFeatured({ playlist, cards }: { playlist: TraxEpisode[]; cards: TraxEpisode[] }) {
   return (
     <section id="featured" className="scroll-mt-24 bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-[10rem]">
       <div className="mx-auto max-w-[75rem]">
         <TraxSectionIntro eyebrow={featured.eyebrow} title={featured.title} />
 
-        <FadeIn delay={0.4} className="mt-10 lg:mt-16">
-          <FeaturedPlayer />
-        </FadeIn>
+        {playlist.length > 0 && (
+          <FadeIn delay={0.4} className="mt-10 lg:mt-16">
+            <FeaturedPlayer playlist={playlist} />
+          </FadeIn>
+        )}
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:mt-6 lg:grid-cols-3 lg:gap-6">
-          {featured.episodes.map((episode, i) => (
+          {cards.map((episode, i) => (
             <FadeIn key={episode.id} delay={revealDelay(i, 3)} className="h-full">
               <EpisodeCard episode={episode} />
             </FadeIn>

@@ -10,6 +10,8 @@ const links = [
   { href: "/", label: "Dashboard" },
   { href: "/news", label: "News" },
   { href: "/seo", label: "SEO" },
+  { href: "/qix", label: "Qix" },
+  { href: "/trax", label: "Trax" },
 ]
 
 /** Page links as pills, like the website's news section pills: the current page in blue. */

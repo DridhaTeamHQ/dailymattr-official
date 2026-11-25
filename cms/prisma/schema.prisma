@@ -124,3 +124,86 @@ model NewsVisibility {
   @@index([showOnWebsite], map: "news_visibility_show_idx")
   @@map("news_visibility")
 }
+
+// ── Qix and Trax (the CMS's Qix and Trax pages) ────────────────────────────────────────────
+// Media URLs are a path on the website ("/stories/mrf.mp4", in dailymattr/public) or a full
+// URL (uploads go to the public "cms-media" storage bucket). Lists show in sort_order; rows with
+// published = false stay in the CMS but not on the website.
+
+/// A Qix story: a 9:16 cover with the video that plays on it. Shown in the top carousel of the
+/// Qix page (inHero), the story row on the Qix page (inGallery) and the one on the home page (inHome).
+model QixStory {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// What the story is, e.g. "MRF — Made in India". Also the cover's alt text.
+  title        String
+  coverUrl     String   @map("cover_url")
+  /// Required (the CMS won't save a story without one).
+  videoUrl     String   @map("video_url")
+  /// Smaller WebM copy, played first where the browser supports it (optional).
+  videoWebmUrl String?  @map("video_webm_url")
+  /// Still of the video's first frame, shown while it loads.
+  posterUrl    String?  @map("poster_url")
+  videoWidth   Int      @default(720) @map("video_width")
+  videoHeight  Int      @default(1280) @map("video_height")
+  inHero       Boolean  @default(true) @map("in_hero")
+  inGallery    Boolean  @default(true) @map("in_gallery")
+  inHome       Boolean  @default(true) @map("in_home")
+  published    Boolean  @default(true)
+  sortOrder    Int      @default(0) @map("sort_order")
+  updatedBy    String?  @map("updated_by")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([sortOrder], map: "qix_stories_order_idx")
+  @@map("qix_stories")
+}
+
+/// One numbered step in the Qix page's "The experience" section: clips that play in turn.
+model QixExperienceStep {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// Caption under the step, e.g. "The question".
+  label        String
+  videoUrl     String   @map("video_url")
+  videoWebmUrl String?  @map("video_webm_url")
+  posterUrl    String?  @map("poster_url")
+  videoWidth   Int      @default(360) @map("video_width")
+  videoHeight  Int      @default(640) @map("video_height")
+  published    Boolean  @default(true)
+  sortOrder    Int      @default(0) @map("sort_order")
+  updatedBy    String?  @map("updated_by")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([sortOrder], map: "qix_experience_steps_order_idx")
+  @@map("qix_experience_steps")
+}
+
+/// A Trax audio episode. inHero: a card in the hero's cover-flow player (and the big featured
+/// player's playlist). inFeaturedCards: one of the cards under it. heroStart: the card in the
+/// centre when the page opens (one at most).
+model TraxEpisode {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  /// Short line under the title, e.g. "Finance Explained".
+  topic           String
+  /// Longer text for the featured player and cards. Null = the topic is shown.
+  description     String?
+  /// Square artwork (a tall poster is cropped to a square at focusY).
+  artUrl          String   @map("art_url")
+  /// Vertical crop of the artwork in its square frame, 0 (top) to 100 (bottom).
+  focusY          Int      @default(50) @map("focus_y") @db.SmallInt
+  audioUrl        String   @map("audio_url")
+  /// Tempo, so the player's level meter moves in time with the audio.
+  bpm             Int      @default(96) @db.SmallInt
+  inHero          Boolean  @default(true) @map("in_hero")
+  inFeaturedCards Boolean  @default(false) @map("in_featured_cards")
+  heroStart       Boolean  @default(false) @map("hero_start")
+  published       Boolean  @default(true)
+  sortOrder       Int      @default(0) @map("sort_order")
+  updatedBy       String?  @map("updated_by")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([sortOrder], map: "trax_episodes_order_idx")
+  @@map("trax_episodes")
+}

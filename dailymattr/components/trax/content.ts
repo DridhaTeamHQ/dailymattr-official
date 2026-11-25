@@ -21,6 +21,8 @@ export type TraxHeroEpisode = {
    * per poster so its title stays whole.
    */
   focusY: number
+  /** Longer copy for the featured player and cards (set in the CMS); the topic when unset. */
+  description?: string
   /** Placeholder song made by scripts/make-trax-songs.mjs; swap for the episode's audio. */
   audio: string
   /**
@@ -31,7 +33,8 @@ export type TraxHeroEpisode = {
 }
 
 /**
- * Cover-flow player above the hero copy (Figma 9278:702), in ring order. `initial` is the one
+ * Cover-flow player above the hero copy (Figma 9278:702), in ring order. These are the built-in
+ * defaults: the live episodes are edited on the CMS's Trax page (read by lib/formats.ts). `initial` is the one
  * in the centre slot on load (Behind Cricket Balls), with the others round it in this order,
  * wrapping. Nothing plays until the visitor presses play or a card.
  */
@@ -139,11 +142,11 @@ export type TraxEpisode = {
   audio: string
 }
 
-const toEpisode = (e: TraxHeroEpisode): TraxEpisode => ({
+export const toEpisode = (e: TraxHeroEpisode): TraxEpisode => ({
   id: e.id,
   tag: "Trax",
   title: e.title,
-  description: e.topic,
+  description: e.description || e.topic,
   art: e.art,
   focusY: e.focusY,
   audio: e.audio,

@@ -1,6 +1,7 @@
 import { Fragment } from "react"
 
 import { FadeIn } from "@/components/shared/fade-in"
+import type { TraxContent } from "@/lib/formats"
 import { hero } from "./content"
 import { TraxHeroPlayer } from "./hero-player"
 import { TraxHeroState } from "./hero-state"
@@ -24,10 +25,10 @@ import { TraxButton, TraxTag } from "./primitives"
  * section, and a hidden-overflow box still scrolls when something inside takes focus, which
  * slid the cards up under the nav (or sideways). A clipped box can't scroll.
  */
-export function TraxHero() {
+export function TraxHero({ content }: { content: TraxContent }) {
   return (
     <section className="relative isolate flex flex-col items-center overflow-clip bg-[#0a0a0a] pt-[calc(2.5rem*var(--trax-hero-fit,1))] pb-16 [--trax-hero-need:26.5rem] supports-[zoom:calc(1px/1px)]:[--trax-hero-fit:clamp(0.6,calc((100svh_-_var(--chrome-height,6.375rem))_/_var(--trax-hero-need)),1)] sm:pt-[calc(3.5rem*var(--trax-hero-fit,1))] sm:pb-20 sm:[--trax-hero-need:35.75rem] md:[--trax-hero-need:39.5rem] lg:pt-[calc(6.25rem*var(--trax-hero-fit,1))] lg:pb-[7.6875rem] lg:[--trax-hero-need:56rem]">
-      <TraxHeroState>
+      <TraxHeroState episodes={content.heroEpisodes} initial={content.initial}>
         <HeroWash />
 
         <div className="relative w-full px-4 sm:px-6 lg:w-[95rem] lg:px-0">
@@ -37,7 +38,8 @@ export function TraxHero() {
             className="inset-x-0 -top-6 h-[calc(100%+3.25rem)]"
             overhang="inset-[-25%_-13.16%]"
           />
-          <TraxHeroPlayer />
+          {/* No cover-flow while the CMS has no episodes in it */}
+          {content.heroEpisodes.length > 0 && <TraxHeroPlayer />}
         </div>
       </TraxHeroState>
 

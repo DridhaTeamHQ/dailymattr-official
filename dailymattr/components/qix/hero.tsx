@@ -2,6 +2,7 @@ import Image from "next/image"
 
 import { AnchorLink } from "@/components/shared/anchor-link"
 import { FadeIn } from "@/components/shared/fade-in"
+import type { StoryCover } from "@/components/stories/covers"
 import { revealDelay } from "@/components/shared/reveal-delay"
 import { hero, pillars } from "./content"
 import { QixHeroArc } from "./hero-arc"
@@ -16,7 +17,7 @@ import { QixHeroArc } from "./hero-arc"
  * - below lg: the copy keeps body sizes, and the arc gets its own width-based size
  *   (see QixHeroArc) so phones still see the centre cards.
  */
-export function QixHero() {
+export function QixHero({ covers }: { covers: StoryCover[] }) {
   return (
     <section className="relative isolate overflow-hidden bg-[#050505] px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:px-8 lg:pt-0 lg:pb-[6em] lg:text-[length:clamp(0.7rem,calc((100svh_-_var(--chrome-height,6.375rem))_/_59.5),1rem)]">
       <div className="relative lg:h-[62.5em]">
@@ -36,7 +37,7 @@ export function QixHero() {
           </p>
         </FadeIn>
 
-        <QixHeroArc />
+        {covers.length > 0 && <QixHeroArc covers={covers} />}
 
         {/* Under the arc, in the curve below its small centre cards: the centre card ends at
             46.56em (stage 15em down + 23.75em to its middle + half its 15.625em height). */}

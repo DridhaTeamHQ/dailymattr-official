@@ -6,7 +6,7 @@ import AutoScroll from "embla-carousel-auto-scroll"
 
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { StoryCard } from "./story-card"
-import { storyCovers as covers } from "./covers"
+import type { StoryCover } from "./covers"
 
 // Slide step = card width + 16px gutter (CarouselItem's pl-4), matching the basis-* classes below.
 // On desktop the card is 13.9% of the screen (Figma: 267px of 1920), so lg is computed.
@@ -17,7 +17,7 @@ const MIN_CARDS = 10
 // The row has to be wider than the viewport, or the slides bunch up against the left edge with
 // dead space to their right (and Embla gives up on looping). Repeat the covers until they
 // overflow, so the strip reads as centred — edge to edge — at any window width.
-function useCardCount(ref: React.RefObject<HTMLDivElement | null>) {
+function useCardCount(ref: React.RefObject<HTMLDivElement | null>, cycle: number) {
   const [count, setCount] = React.useState(MIN_CARDS)
 
   React.useEffect(() => {
@@ -34,14 +34,14 @@ function useCardCount(ref: React.RefObject<HTMLDivElement | null>) {
       // +2 keeps a card in hand on each side while the loop wraps the tail onto the head.
       const needed = Math.max(MIN_CARDS, Math.ceil(el.clientWidth / step) + 2)
       // Whole cycles only, so the seam never puts the same cover next to itself.
-      setCount(Math.ceil(needed / covers.length) * covers.length)
+      setCount(Math.ceil(needed / cycle) * cycle)
     }
 
     measure()
     const observer = new ResizeObserver(measure)
     observer.observe(el)
     return () => observer.disconnect()
-  }, [ref])
+  }, [ref, cycle])
 
   return count
 }
@@ -50,9 +50,9 @@ function useCardCount(ref: React.RefObject<HTMLDivElement | null>) {
 // speed, so it scrolls continuously with no jump. It pauses on hover and resumes on leave;
 // dragging still works. On touch screens a tapped card plays its clip (one at a time) and the
 // row holds still until it is tapped again.
-export function StoryCarousel() {
+export function StoryCarousel({ covers }: { covers: StoryCover[] }) {
   const containerRef = React.useRef<HTMLDivElement>(null)
-  const cardCount = useCardCount(containerRef)
+  const cardCount = useCardCount(containerRef, Math.max(1, covers.length))
   const [api, setApi] = React.useState<CarouselApi>()
   const [tapped, setTapped] = React.useState<number | null>(null)
   // Leaving the page keeps it mounted, hidden (Next's cacheComponents): drop the tapped card so
@@ -107,7 +107,7 @@ export function StoryCarousel() {
             return (
               <CarouselItem key={i} className="basis-[13.5rem] sm:basis-[16rem] lg:basis-[calc(13.9vw+1rem)]">
                 <StoryCard
-                  video={cover.video}
+                  video={cover.video ?? undefined}
                   tapped={tapped === i}
                   onTap={() => setTapped((t) => (t === i ? null : i))}
                 >

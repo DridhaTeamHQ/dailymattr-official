@@ -6,8 +6,7 @@ import { useEffect, useLayoutEffect, useRef } from "react"
 import { useNavHeight } from "@/components/navbar/nav-height"
 import { publishTraxHeroUnderNav, publishTraxTint } from "@/components/navbar/nav-tint"
 import { cn } from "@/lib/utils"
-import { heroPlayer } from "./content"
-import { useActiveEpisode } from "./hero-state"
+import { useActiveEpisode, useHeroEpisodes } from "./hero-state"
 
 /**
  * The playing cover's colours behind the Trax hero (Figma 9278:801): the cover itself,
@@ -24,6 +23,7 @@ import { useActiveEpisode } from "./hero-state"
  */
 export function HeroWash() {
   const [active] = useActiveEpisode()
+  const { episodes } = useHeroEpisodes()
   const images = useRef<(HTMLImageElement | null)[]>([])
   const rootRef = useRef<HTMLDivElement>(null)
   const navHeight = useNavHeight()
@@ -67,7 +67,7 @@ export function HeroWash() {
       aria-hidden
       className="pointer-events-none absolute top-[-15rem] left-1/2 h-[117rem] w-[150rem] -translate-x-1/2"
     >
-      {heroPlayer.episodes.map((episode, i) => (
+      {episodes.map((episode, i) => (
         <div
           key={episode.id}
           className={cn(
