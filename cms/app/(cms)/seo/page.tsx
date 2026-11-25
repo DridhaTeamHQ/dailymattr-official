@@ -63,7 +63,7 @@ async function SeoList({ searchParams }: Pick<PageProps<"/seo">, "searchParams">
           label="Pages"
           value={totals.pages}
           icon={FileText}
-          tone="green"
+          tone="blue"
           footer={<span>On the website and added here</span>}
         />
         <StatCard
@@ -82,7 +82,7 @@ async function SeoList({ searchParams }: Pick<PageProps<"/seo">, "searchParams">
           label="Hidden from search"
           value={totals.hidden}
           icon={EyeOff}
-          tone="orange"
+          tone="amber"
           footer={
             <>
               <Badge variant="warning">{percent(totals.hidden, totals.pages)}</Badge>
@@ -94,7 +94,7 @@ async function SeoList({ searchParams }: Pick<PageProps<"/seo">, "searchParams">
           label="All checks passed"
           value={totals.passing}
           icon={CircleCheckBig}
-          tone="amber"
+          tone="green"
           footer={
             <>
               <Badge variant="success">{percent(totals.passing, totals.pages)}</Badge>

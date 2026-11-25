@@ -232,7 +232,7 @@ export function PageEditor({
           {/* Search appearance */}
           <Card>
             <CardHeader>
-              <SectionTitle icon={Search} tone="green">Search appearance</SectionTitle>
+              <SectionTitle icon={Search} tone="blue">Search appearance</SectionTitle>
               <CardDescription>
                 What people see in Google before they click. Leave a field blank to use the website&apos;s
                 default, shown in grey.
@@ -374,7 +374,7 @@ export function PageEditor({
           {/* Indexing & sitemap */}
           <Card>
             <CardHeader>
-              <SectionTitle icon={ScanSearch} tone="green">Indexing &amp; sitemap</SectionTitle>
+              <SectionTitle icon={ScanSearch} tone="blue">Indexing &amp; sitemap</SectionTitle>
               <CardDescription>Whether search engines list this page, and how it appears in sitemap.xml.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-5 sm:grid-cols-2">
@@ -467,7 +467,7 @@ export function PageEditor({
         <div className="flex flex-col gap-6 lg:sticky lg:top-20">
           <Card size="sm">
             <CardHeader>
-              <SectionTitle icon={Globe} tone="green">Google preview</SectionTitle>
+              <SectionTitle icon={Globe} tone="blue">Google preview</SectionTitle>
             </CardHeader>
             <CardContent>
               <GooglePreview

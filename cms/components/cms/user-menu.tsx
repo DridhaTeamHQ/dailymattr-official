@@ -28,7 +28,7 @@ export function UserMenu({ user, pendingCount }: { user: MenuUser; pendingCount:
     <DropdownMenu>
       <DropdownMenuTrigger
         aria-label="Account menu"
-        className="flex items-center gap-3 rounded-lg py-1 pr-1 pl-3 outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 data-popup-open:bg-muted"
+        className="flex items-center gap-3 rounded-full py-1 pr-1 pl-3 outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 data-popup-open:bg-muted"
       >
         <span className="hidden text-right leading-tight sm:block">
           <span className="block max-w-48 truncate text-sm font-medium">{user.name ?? user.email}</span>

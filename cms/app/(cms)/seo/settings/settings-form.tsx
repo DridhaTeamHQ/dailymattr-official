@@ -140,7 +140,7 @@ export function SettingsForm({ defaults, overrides, previewOrigin, updated }: Pr
         <div className="flex flex-col gap-6">
           <Card>
             <CardHeader>
-              <SectionTitle icon={Globe} tone="green">Site identity</SectionTitle>
+              <SectionTitle icon={Globe} tone="blue">Site identity</SectionTitle>
               <CardDescription>
                 Used on every page unless a page sets its own. Leave a field blank to keep the website&apos;s
                 default, shown in grey.
@@ -250,7 +250,7 @@ export function SettingsForm({ defaults, overrides, previewOrigin, updated }: Pr
 
           <Card>
             <CardHeader>
-              <SectionTitle icon={BadgeCheck} tone="green">Search engine verification</SectionTitle>
+              <SectionTitle icon={BadgeCheck} tone="blue">Search engine verification</SectionTitle>
               <CardDescription>
                 Prove you own the site. Choose the “HTML tag” method and paste only the code from content=&quot;…&quot;.
               </CardDescription>
@@ -293,7 +293,7 @@ export function SettingsForm({ defaults, overrides, previewOrigin, updated }: Pr
         <div className="flex flex-col gap-6 lg:sticky lg:top-20">
           <Card size="sm">
             <CardHeader>
-              <SectionTitle icon={Search} tone="green">Example result</SectionTitle>
+              <SectionTitle icon={Search} tone="blue">Example result</SectionTitle>
               <CardDescription>A page that only sets its title, “About Us”.</CardDescription>
             </CardHeader>
             <CardContent>

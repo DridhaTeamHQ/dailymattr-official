@@ -104,3 +104,23 @@ model SeoSettings {
 
   @@map("seo_settings")
 }
+
+/// Whether a Pix news story shows in the website's news section. The stories themselves
+/// live in the Pix database (Supabase project "PixAgent", table pix_posts; see lib/pix.ts).
+/// Every published Pix story shows by default; a row here records a choice made with the
+/// Customize button on the CMS News page. The website hides the rows where
+/// show_on_website is false.
+model NewsVisibility {
+  /// pix_posts.id in the Pix database.
+  postId        String   @id @map("post_id") @db.Uuid
+  /// The story's Pix ID (pix_posts.published_id): the number at the end of its website URL.
+  publishedId   String?  @map("published_id")
+  showOnWebsite Boolean  @default(true) @map("show_on_website")
+  /// Email of the CMS user who last changed it.
+  updatedBy     String?  @map("updated_by")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([showOnWebsite], map: "news_visibility_show_idx")
+  @@map("news_visibility")
+}

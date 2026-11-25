@@ -6,6 +6,7 @@ import {
   EyeOff,
   FilePlus2,
   FileText,
+  Newspaper,
   PenLine,
   Search,
   Settings2,
@@ -62,7 +63,7 @@ async function Dashboard() {
               label="Website pages"
               value={seo.totals.pages}
               icon={FileText}
-              tone="green"
+              tone="blue"
               footer={<span>Every page with SEO</span>}
             />
             <StatCard
@@ -81,7 +82,7 @@ async function Dashboard() {
               label="Hidden from search"
               value={seo.totals.hidden}
               icon={EyeOff}
-              tone="orange"
+              tone="amber"
               footer={
                 <>
                   <Badge variant="warning">{percent(seo.totals.hidden, seo.totals.pages)}</Badge>
@@ -93,7 +94,7 @@ async function Dashboard() {
               label="All checks passed"
               value={seo.totals.passing}
               icon={CircleCheckBig}
-              tone="amber"
+              tone="green"
               footer={
                 <>
                   <Badge variant="success">{percent(seo.totals.passing, seo.totals.pages)}</Badge>
@@ -157,7 +158,8 @@ async function Dashboard() {
                 <CardDescription>Jump straight to a task</CardDescription>
               </CardHeader>
               <CardContent className="grid gap-1 px-2">
-                <QuickAction href="/seo" icon={Search} tone="green" title="Edit page SEO" hint="Titles, descriptions, share cards" />
+                <QuickAction href="/news" icon={Newspaper} tone="violet" title="Website news" hint="Show or hide Pix stories" />
+                <QuickAction href="/seo" icon={Search} tone="blue" title="Edit page SEO" hint="Titles, descriptions, share cards" />
                 <QuickAction href="/seo/settings" icon={Settings2} tone="teal" title="Site settings" hint="Name, title template, verification" />
                 <QuickAction href="/seo/new" icon={FilePlus2} tone="orange" title="Add a page" hint="A new address on the website" />
               </CardContent>
@@ -185,7 +187,7 @@ function QuickAction({
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 rounded-lg px-2 py-2.5 outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+      className="flex items-center gap-3 rounded-xl px-2 py-2.5 outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
     >
       <IconChip icon={icon} tone={tone} />
       <span className="min-w-0 flex-1">

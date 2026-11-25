@@ -4,6 +4,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* dailymattr brand book v1 colours, as on the website (dailymattr/app/globals.css). */
+@theme {
+  --color-brand-blue: #3979ff;
+  --color-brand-blue-deep: #1f4fd1;
+  --color-brand-blue-soft: #eaf1ff;
+  --color-accent-yellow: #ffeb7a;
+  --color-ink: #141417;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -55,54 +64,56 @@
 }
 
 /*
- * dailymattr CMS theme: shadcn's neutral base with shadcn's green theme as primary and
- * shadcn's default chart colours, the same palette as the Influencer Links dashboard
- * (get.dailymattr.com). White page, grey structure; colour only in small doses (icon
- * chips, badges, avatars). success / warning / info sit beside shadcn's destructive for
- * statuses. Flat colours only: no gradients anywhere in the CMS.
+ * dailymattr CMS theme: the dailymattr website's look (dailymattr/app/globals.css and the
+ * brand book). Inter Tight, near-black ink on white cards over a soft grey page, the logo's
+ * blue for accents (brand-blue-deep where text or white-on-blue must stay readable), the
+ * brand book's yellow, black pill buttons like the website's "Get the app", and rounded-full
+ * pills for nav and filters. success / warning / info sit beside destructive for statuses.
+ * Flat colours only: no gradients anywhere in the CMS.
  */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* shadcn green (green-700) */
-  --primary: oklch(0.527 0.154 150.069);
-  --primary-foreground: oklch(0.982 0.018 155.826);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #f7f7f9;
+  --foreground: #141417;
+  --card: #ffffff;
+  --card-foreground: #141417;
+  --popover: #ffffff;
+  --popover-foreground: #141417;
+  /* brand-blue-deep: the website's active pills and links */
+  --primary: #1f4fd1;
+  --primary-foreground: #ffffff;
+  --secondary: #e9e9ee;
+  --secondary-foreground: #141417;
+  --muted: #f3f3f6;
+  --muted-foreground: #6b6b73;
+  /* brand-blue-soft: menu hovers and selected rows */
+  --accent: #eaf1ff;
+  --accent-foreground: #1f4fd1;
   --destructive: oklch(0.577 0.245 27.325);
   /* green-700, amber-700, teal-700: dark enough for text on their own pale tint. */
-  --success: oklch(0.527 0.154 150.069);
-  --success-foreground: oklch(0.982 0.018 155.826);
-  --warning: oklch(0.555 0.163 48.998);
-  --warning-foreground: oklch(0.987 0.022 95.277);
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --warning: #b45309;
+  --warning-foreground: #ffffff;
   --info: oklch(0.511 0.096 186.391);
   --info-foreground: oklch(0.984 0.014 180.72);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  /* shadcn's default chart colours: orange, teal, dark slate, yellow, amber. */
+  --border: #e5e4e8;
+  --input: #e0e0e6;
+  --ring: #3979ff;
+  /* Icon chips and charts: orange, teal, brand blue, violet, brand yellow. */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.627 0.194 149.214);
-  --sidebar-primary-foreground: oklch(0.982 0.018 155.826);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --chart-3: #1f4fd1;
+  --chart-4: oklch(0.541 0.247 293.009);
+  --chart-5: #ffeb7a;
+  --radius: 0.75rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #141417;
+  --sidebar-primary: #1f4fd1;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f3f3f6;
+  --sidebar-accent-foreground: #141417;
+  --sidebar-border: #e5e4e8;
+  --sidebar-ring: #3979ff;
 }
 
 .dark {
@@ -112,9 +123,9 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  /* shadcn green (green-800) */
-  --primary: oklch(0.448 0.119 151.328);
-  --primary-foreground: oklch(0.982 0.018 155.826);
+  /* brand-blue */
+  --primary: #3979ff;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -138,8 +149,8 @@
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.696 0.17 162.48);
-  --sidebar-primary-foreground: oklch(0.982 0.018 155.826);
+  --sidebar-primary: #3979ff;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);

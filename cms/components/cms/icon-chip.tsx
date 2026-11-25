@@ -2,15 +2,18 @@ import type { LucideIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-/** The CMS's accent colours, all shadcn theme tokens (app/globals.css). */
-export type Tone = "green" | "teal" | "orange" | "slate" | "amber" | "rose"
+/** The CMS's accent colours: the dailymattr brand blue and yellow, plus status tints (app/globals.css). */
+export type Tone = "blue" | "green" | "teal" | "orange" | "violet" | "slate" | "amber" | "rose"
 
 export const toneClasses: Record<Tone, string> = {
-  green: "bg-primary/10 text-primary",
+  blue: "bg-brand-blue-soft text-primary",
+  green: "bg-success/10 text-success",
   teal: "bg-info/10 text-info",
   orange: "bg-chart-1/12 text-chart-1",
-  slate: "bg-chart-3/10 text-chart-3",
-  amber: "bg-chart-4/25 text-warning",
+  violet: "bg-chart-4/10 text-chart-4",
+  slate: "bg-foreground/6 text-foreground",
+  // The brand book's yellow.
+  amber: "bg-accent-yellow/70 text-warning",
   rose: "bg-destructive/10 text-destructive",
 }
 
@@ -23,7 +26,7 @@ const sizes = {
 /** A pale coloured square with an icon: stat cards, section headings, folders. */
 export function IconChip({
   icon: Icon,
-  tone = "green",
+  tone = "blue",
   size = "md",
   className,
 }: {

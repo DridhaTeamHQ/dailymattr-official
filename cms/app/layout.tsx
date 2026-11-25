@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist_Mono, Inter_Tight } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// Inter Tight, the dailymattr website's only font (dailymattr/app/layout.tsx). Geist Mono is
+// kept for page paths and code.
+const interTight = Inter_Tight({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -27,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
+      className={cn("h-full", "antialiased", geistMono.variable, "font-sans", interTight.variable)}
     >
       <body className="min-h-full flex flex-col">
         {/* Toasts (components/ui/toast.tsx), e.g. "Saved" after editing SEO. */}

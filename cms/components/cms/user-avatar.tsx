@@ -13,7 +13,7 @@ export function initials(name: string | null, email: string) {
 }
 
 // Initials avatars get a pale colour that stays the same for the same person.
-const avatarTones: Tone[] = ["orange", "teal", "slate", "amber", "green"]
+const avatarTones: Tone[] = ["blue", "orange", "teal", "violet", "amber", "green"]
 
 function toneFor(email: string) {
   let hash = 0

@@ -1,7 +1,18 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    remotePatterns: [
+      // Pix story photos (the News page), in the Pix media bucket. Photos on other hosts are
+      // shown unoptimized instead.
+      {
+        protocol: "https",
+        hostname: "coggfnbqqyiqfsxvtaym.supabase.co",
+        pathname: "/storage/v1/object/public/pix-media/**",
+        search: "",
+      },
+    ],
+  },
   experimental: {
     agentFeedback: true,
   },
