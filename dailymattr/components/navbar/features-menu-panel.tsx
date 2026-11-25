@@ -40,11 +40,16 @@ const panelShadow =
 /**
  * The Features mega-menu card. Figma: "Container" — node 8856:12356.
  * A 340px NIA promo panel beside a 404px format list; the card is as tall as the list.
+ * Never wider than the screen: its width is the design's 48.75rem (340 + 404 + gap and
+ * padding) or the screen less 3rem, whichever is smaller. On tablets (md, before the laptop
+ * rem scaling starts at lg) the full card is ~780px, so there the NIA panel gives up width
+ * instead of the card running off the right edge. Even closed (invisible) it takes layout
+ * space, so without the cap the page would scroll sideways.
  */
 export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
   return (
     <div
-      className="relative grid grid-cols-[21.25rem_25.25rem] gap-3 overflow-clip rounded-[1.5rem] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
+      className="relative grid w-[min(48.75rem,calc(100vw-3rem))] grid-cols-[minmax(0,1fr)_25.25rem] gap-3 overflow-clip rounded-[1.5rem] bg-white p-3 [.theme-nia_&]:bg-[#18181b] [.theme-nia_&]:outline [.theme-nia_&]:-outline-offset-1 [.theme-nia_&]:outline-white/10"
       style={{ boxShadow: panelShadow }}
       data-node-id="8856:12356"
     >

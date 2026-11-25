@@ -25,6 +25,10 @@ export function FeaturesMenu({
   const [open, setOpen] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Set between a press on the trigger and its click. Pressing focuses the button, and focus
+  // opens the menu for keyboard users; without this the click right after would toggle it
+  // straight back closed, so a tap (tablets have no hover) could never open it.
+  const pressing = useRef(false)
 
   const cancelClose = () => {
     if (closeTimer.current) {
@@ -80,9 +84,11 @@ export function FeaturesMenu({
       onFocus={() => {
         cancelClose()
         cancelOpen()
-        setOpen(true)
+        if (!pressing.current) setOpen(true)
       }}
       onBlur={(e) => {
+        // A press that never became a click (dragged off) must not block keyboard focus later.
+        pressing.current = false
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
           setOpen(false)
         }
@@ -92,7 +98,14 @@ export function FeaturesMenu({
         type="button"
         aria-expanded={open}
         aria-haspopup="true"
-        onClick={() => setOpen((v) => !v)}
+        onPointerDown={() => {
+          pressing.current = true
+        }}
+        onClick={() => {
+          pressing.current = false
+          cancelOpen()
+          setOpen((v) => !v)
+        }}
         className={cn(
           "flex h-8 cursor-default items-center gap-1 rounded-[0.8125rem] px-3 py-2 text-sm whitespace-nowrap transition-colors",
           open ? "text-foreground" : "text-muted-foreground hover:text-foreground"
