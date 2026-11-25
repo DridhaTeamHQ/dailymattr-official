@@ -1,9 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
 
+import { storyHref } from "@/components/news/stories"
 import { FadeIn } from "@/components/shared/fade-in"
 import { revealDelay } from "@/components/shared/reveal-delay"
+import { getPixShowcase } from "@/lib/news"
 import { realStories, type PixStory } from "./content"
+import { PixSlideCard } from "./pix-slides"
 import { PixSectionIntro, PixTag } from "./primitives"
 
 function StoryCard({ story }: { story: PixStory }) {
@@ -35,20 +38,37 @@ function StoryCard({ story }: { story: PixStory }) {
   )
 }
 
-/** Story card row. Figma 8632:2261. */
-export function PixStories() {
+/**
+ * Story card row (Figma 8632:2261): real Pix from the Pix database (lib/news.ts
+ * getPixShowcase), the newest World, Business, Entertainment and Sports story, each as its
+ * swipeable slides with a "Read the story" button on them. Falls back to the design's
+ * placeholder cards when Pix can't be read.
+ */
+export async function PixStories() {
+  const showcase = await getPixShowcase()
+
   return (
     <section className="bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-[10rem]">
       <div className="mx-auto max-w-[75rem]">
         <PixSectionIntro eyebrow={realStories.eyebrow} title={realStories.title} />
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-6">
-          {realStories.stories.map((story, i) => (
-            <FadeIn key={story.id} delay={revealDelay(i, 4)} className="h-full">
-              <StoryCard story={story} />
-            </FadeIn>
-          ))}
-        </div>
+        {showcase.length > 0 ? (
+          <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-16 lg:grid-cols-4 lg:gap-6">
+            {showcase.map(({ story, slides }, i) => (
+              <FadeIn key={story.id} delay={revealDelay(i, 4)}>
+                <PixSlideCard slides={slides} headline={story.headline} href={storyHref(story)} />
+              </FadeIn>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:gap-6">
+            {realStories.stories.map((story, i) => (
+              <FadeIn key={story.id} delay={revealDelay(i, 4)} className="h-full">
+                <StoryCard story={story} />
+              </FadeIn>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

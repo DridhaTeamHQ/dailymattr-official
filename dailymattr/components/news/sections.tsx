@@ -1,14 +1,15 @@
+import { Suspense } from "react"
 import Link from "next/link"
 
-import { FadeIn } from "@/components/shared/fade-in"
 import { cn } from "@/lib/utils"
 import { latestNews, type NewsCategory } from "./content"
-import { NewsList } from "./news-list"
-import { storiesFor } from "./stories"
+import { DateFilter, DateFilterPlaceholder } from "./date-filter"
+import { NewsResults, NewsResultsSkeleton, SectionPills } from "./news-list"
 
 // News pages (/news and /news/<category>), laid out after the old site's /news page: breadcrumb,
-// title and intro, section pills with a date filter, then a grid of story cards.
-// UI only, on sample stories (stories.ts).
+// title and intro, section pills with a date filter, then a page of story cards and the page
+// numbers. No reveal animations here: the list shows as soon as it loads. The stories come
+// from the Pix database (lib/news.ts), one page at a time (?page=, ?date=).
 
 /**
  * Side gutters of the news pages: full width with 64px a side from lg, a true 64px like the
@@ -17,52 +18,64 @@ import { storiesFor } from "./stories"
 export const NEWS_GUTTER = "px-4 sm:px-6 lg:px-[64px]"
 
 /** A whole news page: Latest (no category) or one section's stories. */
-export function NewsPageView({ category }: { category?: NewsCategory }) {
+export function NewsPageView({
+  category,
+  searchParams,
+}: {
+  category?: NewsCategory
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
   const current = "text-[#141417]"
 
   return (
     <main className="flex-1 bg-white">
       <section className={cn(NEWS_GUTTER, "pt-8 pb-20 sm:pt-10 lg:pb-28")}>
         <div className="w-full">
-          <FadeIn>
-            <nav aria-label="Breadcrumb">
-              <ol className="flex items-center gap-1.5 text-[0.8125rem] leading-4 text-[#6b6b73]">
-                <li>
-                  <Link href="/" className="hover:text-[#141417]">
-                    Home
-                  </Link>
-                </li>
-                <li aria-hidden>›</li>
-                {category ? (
-                  <>
-                    <li>
-                      <Link href="/news" className="hover:text-[#141417]">
-                        News
-                      </Link>
-                    </li>
-                    <li aria-hidden>›</li>
-                    <li aria-current="page" className={current}>
-                      {category.label}
-                    </li>
-                  </>
-                ) : (
-                  <li aria-current="page" className={current}>
-                    News
+          <nav aria-label="Breadcrumb">
+            <ol className="flex items-center gap-1.5 text-[0.8125rem] leading-4 text-[#6b6b73]">
+              <li>
+                <Link href="/" className="hover:text-[#141417]">
+                  Home
+                </Link>
+              </li>
+              <li aria-hidden>›</li>
+              {category ? (
+                <>
+                  <li>
+                    <Link href="/news" className="hover:text-[#141417]">
+                      News
+                    </Link>
                   </li>
-                )}
-              </ol>
-            </nav>
+                  <li aria-hidden>›</li>
+                  <li aria-current="page" className={current}>
+                    {category.label}
+                  </li>
+                </>
+              ) : (
+                <li aria-current="page" className={current}>
+                  News
+                </li>
+              )}
+            </ol>
+          </nav>
 
-            <h1 className="mt-6 text-[1.625rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#141417] sm:mt-8 sm:text-[2.5rem]">
-              {category?.title ?? latestNews.title}
-            </h1>
-          </FadeIn>
-          <FadeIn as="p" delay={0.2} className="mt-3 max-w-[39.25rem] text-[0.9375rem] leading-[1.35] text-[#6b6b73]">
+          <h1 className="mt-6 text-[1.625rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#141417] sm:mt-8 sm:text-[2.5rem]">
+            {category?.title ?? latestNews.title}
+          </h1>
+          <p className="mt-3 max-w-[39.25rem] text-[0.9375rem] leading-[1.35] text-[#6b6b73]">
             {category?.description ?? latestNews.description}
-          </FadeIn>
+          </p>
 
           <div className="pt-6">
-            <NewsList stories={storiesFor(category?.slug)} active={category?.slug} sectionLabel={category?.label} />
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between md:gap-8">
+              <SectionPills active={category?.slug} />
+              <Suspense fallback={<DateFilterPlaceholder />}>
+                <DateFilter />
+              </Suspense>
+            </div>
+            <Suspense fallback={<NewsResultsSkeleton />}>
+              <NewsResults category={category?.slug} sectionLabel={category?.label} searchParams={searchParams} />
+            </Suspense>
           </div>
         </div>
       </section>

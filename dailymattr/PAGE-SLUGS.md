@@ -34,7 +34,7 @@ redirects `/about/` to `/about`.
 ### Latest News
 - **Slug:** `/news/`
 - **Old URL:** https://www.dailymattr.com/news/
-- **Status:** Exists (`app/news/page.tsx`), linked from the navbar's "Latest Stories", the announcement bar, the "today's stories" buttons, Pix and the footer's Latest Stories → Top. UI only: sample stories (`components/news/stories.ts`, the old site's list from 21 November 2026) until the CMS feed exists, so it stays `noindex`. Each story opens its own page at `/news/<story-slug>/` (the old site's URLs), served by `app/news/[slug]/page.tsx` with the old story page's layout and each story's key points and source (`components/news/articles.ts`), also `noindex`.
+- **Status:** Exists (`app/news/page.tsx`), linked from the navbar's "Latest Stories", the announcement bar, the "today's stories" buttons, Pix and the footer's Latest Stories → Top. Live: every published story in the Pix database (`lib/news.ts`), minus the ones hidden with Customize on the CMS's News page, 20 a page with numbered pages (`?page=2`) and a day filter (`?date=YYYY-MM-DD`), the same on each section page; no reveal animations; still `noindex` until the section is opened to search. Each story opens its own page at `/news/<story-slug>/` (the old site's URLs: the headline, cut to 79 characters, then `-<Pix ID>`; pages look stories up by the ID), served by `app/news/[slug]/page.tsx` with the old story page's layout and the story's key points and source from Pix, also `noindex`. A hidden story's page is a 404.
 - **Title:** Latest News
 - **Description:** News articles, updates and current affairs. Latest news, breaking news and the latest headlines today from India and around the world.
 
@@ -54,56 +54,56 @@ All category pages sit under `/news/<category>/`.
 ### India News
 - **Slug:** `/news/india/`
 - **Old URL:** https://www.dailymattr.com/news/india/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** India News
 - **Description:** Latest India news, national news headlines, politics news, government updates and current affairs.
 
 ### World News
 - **Slug:** `/news/world/`
 - **Old URL:** https://www.dailymattr.com/news/world/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** World News
 - **Description:** Latest world news, international news headlines, global affairs and major developments from around the world.
 
 ### Business News
 - **Slug:** `/news/business/`
 - **Old URL:** https://www.dailymattr.com/news/business/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** Business News
 - **Description:** Latest business news, financial updates, market developments, company news and economic current affairs.
 
 ### Technology News
 - **Slug:** `/news/technology/`
 - **Old URL:** https://www.dailymattr.com/news/technology/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** Technology News
 - **Description:** Latest technology news, artificial intelligence updates, digital innovation, gadgets and tech industry developments.
 
 ### Sports News
 - **Slug:** `/news/sports/`
 - **Old URL:** https://www.dailymattr.com/news/sports/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** Sports News
 - **Description:** Latest sports news, cricket updates, sports headlines, tournaments and major sporting events.
 
 ### Entertainment News
 - **Slug:** `/news/entertainment/`
 - **Old URL:** https://www.dailymattr.com/news/entertainment/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** Entertainment News
 - **Description:** Latest entertainment news, cinema news, movie updates, celebrity news and film industry headlines.
 
 ### Lifestyle News
 - **Slug:** `/news/lifestyle/`
 - **Old URL:** https://www.dailymattr.com/news/lifestyle/
-- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`, the /news layout filtered to this section), linked from the footer and the /news tabs. Live Pix stories in this section, still `noindex`.
 - **Title:** Lifestyle News
 - **Description:** Lifestyle news, health news, wellness topics, culture and everyday-interest stories.
 
 ### State News
 - **Slug:** `/news/states/`
 - **Old URL:** https://www.dailymattr.com/news/states/
-- **Status:** Exists (`app/news/[slug]/page.tsx`), linked from the /news tabs (not in the footer yet). UI only on sample stories, still `noindex`.
+- **Status:** Exists (`app/news/[slug]/page.tsx`), linked from the /news tabs (not in the footer yet). Live Pix stories in this section, still `noindex`.
 - **Title:** State News
 - **Description:** Latest state news, regional news, district news, local news updates and important developments across India.
 

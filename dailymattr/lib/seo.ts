@@ -1,8 +1,6 @@
 import type { Metadata } from "next"
 
-import { storyBodies } from "@/components/news/articles"
 import { newsCategories, newsPath } from "@/components/news/content"
-import { stories, storyImage } from "@/components/news/stories"
 import { editions, quizPath } from "@/components/quizz/content"
 import { getCmsSeo, type ChangeFrequency } from "./cms"
 import { getSiteSeo } from "./site-seo"
@@ -138,19 +136,8 @@ export const defaultSeo: Record<string, PageSeo> = {
       { title: c.title, description: c.description, noindex: true },
     ])
   ),
-  // One page per sample story (/news/<slug>), with its photo as the share image. Sample data
-  // (components/news/stories.ts), so kept out of search until the CMS feed replaces it.
-  ...Object.fromEntries(
-    stories.map((s): [string, PageSeo] => [
-      newsPath(s.slug),
-      {
-        title: s.headline,
-        description: storyBodies[s.slug]?.points[0] ?? s.headline,
-        image: storyImage(s),
-        noindex: true,
-      },
-    ])
-  ),
+  // Story pages (/news/<slug>) aren't listed: they come from the Pix database and build their
+  // SEO from the story itself (app/news/[slug]/page.tsx). The CMS can still override one.
   // Built, but the sign-up form isn't connected to a mailing list yet: drop noindex once it is.
   "/newsletter": {
     title: "Newsletter",
@@ -193,11 +180,14 @@ export const defaultSeo: Record<string, PageSeo> = {
   },
 }
 
-/** The SEO entry for a route: its CMS overrides over its default from defaultSeo. */
-export async function getPageSeo(path: string): Promise<PageSeo> {
+/**
+ * The SEO entry for a route: its CMS overrides over its default from defaultSeo, or over
+ * `fallback` for pages built from data (news stories).
+ */
+export async function getPageSeo(path: string, fallback?: PageSeo): Promise<PageSeo> {
   const [{ pages }, siteSeo] = await Promise.all([getCmsSeo(), getSiteSeo()])
-  const fallback = defaultSeo[path] ?? { title: site.title, description: siteSeo.description }
-  return { ...fallback, ...pages[path] }
+  const base = defaultSeo[path] ?? fallback ?? { title: site.title, description: siteSeo.description }
+  return { ...base, ...pages[path] }
 }
 
 /** Every route with SEO (the defaults plus pages added in the CMS), for the sitemap. */
@@ -213,10 +203,11 @@ export async function getSeoRoutes(): Promise<(PageSeo & { path: string })[]> {
  *
  *   export const generateMetadata = () => seoMetadata("/about")
  *
- * Next replaces (not merges) a parent's openGraph object, so the full set is built here.
+ * `fallback` is the default for a page that isn't in defaultSeo (e.g. a news story). Next
+ * replaces (not merges) a parent's openGraph object, so the full set is built here.
  */
-export async function seoMetadata(path: string): Promise<Metadata> {
-  const [seo, siteSeo] = await Promise.all([getPageSeo(path), getSiteSeo()])
+export async function seoMetadata(path: string, fallback?: PageSeo): Promise<Metadata> {
+  const [seo, siteSeo] = await Promise.all([getPageSeo(path, fallback), getSiteSeo()])
   const isHome = path === "/"
   // The home page uses its title as-is; other pages go through the site's title template.
   const fullTitle = isHome ? seo.title : siteSeo.titleTemplate.replace("%s", seo.title)

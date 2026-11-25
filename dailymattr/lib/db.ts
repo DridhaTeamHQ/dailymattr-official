@@ -23,7 +23,9 @@ export function getPrisma(): PrismaClient | null {
   if (!url) return null
 
   const cached = globalForPrisma.websitePrisma
-  if (cached && cached.url === url) return cached.client
+  // instanceof: after `npm run db:generate` in dev, a client made from the old generated code
+  // lacks the new tables, so it's remade too.
+  if (cached && cached.url === url && cached.client instanceof PrismaClient) return cached.client
   // A different login than last time: close the old pool before opening the new one.
   cached?.client?.$disconnect().catch(() => {})
 

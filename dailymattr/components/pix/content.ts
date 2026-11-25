@@ -76,6 +76,10 @@ export type PixStory = {
   image?: { src: string; alt: string; position?: string }
 }
 
+/**
+ * "Real stories" row. The cards below are the design's placeholders, shown only when the Pix
+ * database can't be read; normally the row shows real Pix (components/pix/stories.tsx).
+ */
 export const realStories = {
   eyebrow: "Real stories",
   title: "One swipe. A wider perspective.",

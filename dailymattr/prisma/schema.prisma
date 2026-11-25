@@ -1,8 +1,9 @@
 // The website's read-only view of the CMS database (Supabase Postgres).
 //
 // The CMS owns these tables and their migrations (cms/prisma/schema.prisma). This file
-// only mirrors the SEO tables the website reads. Never run `prisma migrate` from here;
-// when the CMS changes a table, copy the change across and run `npm run db:generate`.
+// only mirrors the tables the website reads (SEO and news visibility). Never run
+// `prisma migrate` from here; when the CMS changes a table, copy the change across and run
+// `npm run db:generate`.
 
 generator client {
   provider = "prisma-client"
@@ -63,4 +64,18 @@ model SeoSettings {
   updatedAt          DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("seo_settings")
+}
+
+/// Pix stories the CMS has shown or hidden with its Customize button (lib/news.ts). The news
+/// section leaves out the stories whose showOnWebsite is false; every other one shows.
+model NewsVisibility {
+  postId        String   @id @map("post_id") @db.Uuid
+  publishedId   String?  @map("published_id")
+  showOnWebsite Boolean  @default(true) @map("show_on_website")
+  updatedBy     String?  @map("updated_by")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([showOnWebsite], map: "news_visibility_show_idx")
+  @@map("news_visibility")
 }

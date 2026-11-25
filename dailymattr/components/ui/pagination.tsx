@@ -1,4 +1,5 @@
 import * as React from "react"
+import Link from "next/link"
 import { cn } from "cn"
 
 import { Button } from "@/components/ui/button"
@@ -33,10 +34,11 @@ function PaginationItem({ ...props }: React.ComponentProps<"li">) {
   return <li data-slot="pagination-item" {...props} />
 }
 
+// Links are next/link, so moving between pages is a client-side navigation.
 type PaginationLinkProps = {
   isActive?: boolean
 } & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">
+  React.ComponentProps<typeof Link>
 
 function PaginationLink({
   className,
@@ -51,7 +53,7 @@ function PaginationLink({
       className={cn(className)}
       nativeButton={false}
       render={
-        <a
+        <Link
           aria-current={isActive ? "page" : undefined}
           data-slot="pagination-link"
           data-active={isActive}

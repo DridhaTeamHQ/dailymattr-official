@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 import { getNewsCategory, newsPath } from "./content"
-import { storyHref, storyImage, type Story } from "./stories"
+import { isMediaImage, storyHref, type Story } from "./stories"
 
 /**
  * One story in the news grid, after the old site's /news card: a 3:4 photo with 16px corners
@@ -27,14 +27,18 @@ export function NewsCard({
     <article className="group flex flex-col gap-2.5">
       {/* The headline below is the link screen readers and keyboards use. */}
       <Link href={href} tabIndex={-1} aria-hidden className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-[#ececf0]">
-        <Image
-          src={storyImage(story)}
-          alt=""
-          fill
-          preload={priority}
-          sizes="(min-width: 1536px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover object-top transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
-        />
+        {story.image && (
+          <Image
+            src={story.image}
+            alt=""
+            fill
+            preload={priority}
+            // A few Pix photos sit on other sites, which next/image isn't allowed to fetch.
+            unoptimized={!isMediaImage(story.image)}
+            sizes="(min-width: 1536px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover object-top"
+          />
+        )}
       </Link>
       <Heading className="text-[0.96875rem] leading-[1.35] font-semibold tracking-[-0.01em] text-[#141417]">
         <Link href={href} className="underline-offset-2 hover:underline">

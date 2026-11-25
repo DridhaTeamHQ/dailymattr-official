@@ -26,13 +26,16 @@ function FeatureItem({ feature }: { feature: PixFeature }) {
 
 /**
  * Feature list beside the woman-with-phone collage. Figma 8632:2200.
+ * Side by side from lg (1024px): the site's rem sizes shrink with laptop screens (see
+ * app/globals.css), so the frame's two columns fit from there. Phones and tablets stack the
+ * collage under the copy.
  * Clipped sideways only (overflow-x: clip), so the collage, which sits on the bottom edge,
  * can rise into place from below without being cut off.
  */
 export function PixWhyPix() {
   return (
-    <section className="relative overflow-x-clip bg-[#f5f5f7] px-4 pt-20 sm:px-6 lg:px-8 xl:py-[10rem]">
-      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] gap-12 xl:grid-cols-[37.5rem_32.5rem] xl:gap-20">
+    <section className="relative overflow-x-clip bg-[#f5f5f7] px-4 pt-20 sm:px-6 lg:px-8 lg:py-[10rem]">
+      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[37.5rem_32.5rem] lg:gap-20">
         <div className="flex flex-col self-center">
           <PixSectionIntro align="start" eyebrow={whyPix.eyebrow} title={whyPix.title} />
 
@@ -45,10 +48,10 @@ export function PixWhyPix() {
           </div>
         </div>
 
-        {/* On xl the collage hangs off the right column and sits on the section's bottom
+        {/* From lg the collage hangs off the right column and sits on the section's bottom
             edge, as in the frame; below that it stacks under the copy. */}
-        <div className="relative xl:min-h-[35rem]">
-          <WhyPixVisual className="mx-auto w-full max-w-[40.75rem] xl:absolute xl:-bottom-[10rem] xl:left-0 xl:w-[min(40.75rem,calc(50vw-6rem))] xl:max-w-none" />
+        <div className="relative lg:min-h-[35rem]">
+          <WhyPixVisual className="mx-auto w-full max-w-[40.75rem] lg:absolute lg:-bottom-[10rem] lg:left-0 lg:w-[min(40.75rem,calc(50vw-6rem))] lg:max-w-none" />
         </div>
       </div>
     </section>
