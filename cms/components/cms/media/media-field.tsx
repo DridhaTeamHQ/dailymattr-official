@@ -222,7 +222,7 @@ export function MediaField({
 }
 
 /** Asks the CMS for a one-time link, then sends the file to Supabase Storage with progress. */
-async function putFile(folder: MediaFolder, kind: MediaKind, file: File, onProgress: (p: number) => void) {
+export async function putFile(folder: MediaFolder, kind: MediaKind, file: File, onProgress: (p: number) => void) {
   const signed = await requestUpload({ folder, kind, name: file.name, type: file.type, size: file.size })
   if (!signed.ok) throw new Error(signed.error)
 

@@ -26,6 +26,9 @@ export type QixStepItem = {
   label: string
   videoUrl: string
   posterUrl: string | null
+  /** The part of a shared video this step plays (seconds); null = the whole video. */
+  startSeconds: number | null
+  endSeconds: number | null
   videoWidth: number
   videoHeight: number
   published: boolean
@@ -78,6 +81,8 @@ export async function loadQix(): Promise<{ stories: QixStoryItem[]; steps: QixSt
       label: s.label,
       videoUrl: s.videoUrl,
       posterUrl: s.posterUrl,
+      startSeconds: s.startSeconds,
+      endSeconds: s.endSeconds,
       videoWidth: s.videoWidth,
       videoHeight: s.videoHeight,
       published: s.published,

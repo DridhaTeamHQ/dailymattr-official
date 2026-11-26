@@ -6,7 +6,15 @@ import { useAnimate, useReducedMotion } from "motion/react"
 import { cn } from "@/lib/utils"
 import type { VideoAsset } from "@/lib/videos"
 
-type Frame = { label: string; video: VideoAsset }
+/**
+ * One step. `start` / `end` (seconds): the part of the video it plays, when the steps share one
+ * video (set with "Split one video into steps" in the CMS). Unset = the whole video.
+ */
+type Frame = { label: string; video: VideoAsset; start?: number; end?: number }
+
+const isPart = (f: Frame) => f.start != null && f.end != null && f.end > f.start
+/** A step's video URL, opening on its part (a media fragment), so the right frame loads first. */
+const partSrc = (src: string, f: Frame) => (isPart(f) ? `${src}#t=${f.start}` : src)
 
 /** Soft ease-out (expo-like) for the fill sweeping across and the number changing colour. */
 const SWEEP = "cubic-bezier(0.22, 1, 0.36, 1)"
@@ -123,13 +131,32 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
     videoRefs.current.forEach((video, i) => {
       if (!video) return
       if (running && i === active) {
-        video.currentTime = 0
+        video.currentTime = frames[i]?.start ?? 0
         video.play().catch(() => {})
       } else {
         video.pause()
       }
     })
-  }, [active, running])
+  }, [active, running, frames])
+
+  // A step that plays part of a shared video ends at its end time (its video doesn't end there),
+  // so watch the playhead every frame and hand over to the next step on time.
+  useEffect(() => {
+    const step = frames[active]
+    const video = videoRefs.current[active]
+    if (!running || !step || !isPart(step) || !video) return
+    let raf = 0
+    const watch = () => {
+      if (video.currentTime >= step.end! - 0.04) {
+        video.pause()
+        setActive((active + 1) % frames.length)
+        return
+      }
+      raf = requestAnimationFrame(watch)
+    }
+    raf = requestAnimationFrame(watch)
+    return () => cancelAnimationFrame(raf)
+  }, [active, running, frames])
 
   // Phones: the four frames are wider than the screen and scroll sideways. Follow the timeline:
   // when a frame starts, slide the row so it sits at the left edge, easing the previous frame
@@ -169,7 +196,15 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
     const last = frames.length - 1
     const tick = () => {
       const video = videoRefs.current[active]
-      const progress = video?.duration ? Math.min(1, video.currentTime / video.duration) : 0
+      const step = frames[active]
+      // How far through this step: through its part of a shared video, or its whole clip.
+      const progress = !video
+        ? 0
+        : isPart(step)
+          ? Math.min(1, Math.max(0, (video.currentTime - step.start!) / (step.end! - step.start!)))
+          : video.duration
+            ? Math.min(1, video.currentTime / video.duration)
+            : 0
       // From this circle's right edge to the next one's left edge, so the line touches the next
       // circle just as its frame starts (and it fills). The last frame has no line after it.
       const start = active < last ? edge(active, "right") : edge(last, "left")
@@ -179,7 +214,7 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
     }
     frame = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(frame)
-  }, [active, running, frames.length])
+  }, [active, running, frames])
 
   return (
     <ol ref={listRef} className="relative grid w-[41rem] grid-cols-4 gap-4">
@@ -196,7 +231,7 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
         const isActive = running && i === active
         const isReached = running && i <= active
         return (
-          <li key={frame.label} className="relative flex w-[8.25rem] flex-col items-center gap-3">
+          <li key={`${i}-${frame.label}`} className="relative flex w-[8.25rem] flex-col items-center gap-3">
             <span className="relative h-[14.75rem] w-[8.25rem] overflow-hidden rounded-[0.875rem] bg-[#e6e7ea]">
               <video
                 ref={(el) => {
@@ -210,7 +245,7 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
                 className="absolute inset-0 size-full object-cover"
               >
                 {frame.video.sources.map((s) => (
-                  <source key={s.src} src={s.src} type={s.type} />
+                  <source key={s.src} src={partSrc(s.src, frame)} type={s.type} />
                 ))}
               </video>
               {/* Thumbnail on top until this frame's turn comes. */}

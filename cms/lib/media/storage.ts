@@ -111,3 +111,50 @@ export async function signUpload(
 
 /** An upload problem that's safe to show the editor. */
 export class UploadError extends Error {}
+
+/**
+ * Deletes uploaded files that a save has just replaced (or a delete removed), so storage
+ * only holds what the website uses. Only files in the cms-media bucket are touched (never the
+ * website's own files like "/stories/mrf.mp4"), and only once no Qix story, Qix step or Trax
+ * episode uses them any more. Best effort: a failure is logged and the save still counts.
+ */
+export async function deleteUnusedMedia(urls: (string | null | undefined)[]) {
+  const base = projectUrl()
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+  if (!base || !key) return
+  const prefix = `${base}/storage/v1/object/public/${MEDIA_BUCKET}/`
+  const candidates = [...new Set(urls.filter((u): u is string => !!u && u.startsWith(prefix)))]
+  if (!candidates.length) return
+
+  try {
+    const { prisma } = await import("@/lib/db")
+    const any = { in: candidates }
+    const [stories, steps, episodes] = await Promise.all([
+      prisma.qixStory.findMany({
+        where: { OR: [{ coverUrl: any }, { videoUrl: any }, { videoWebmUrl: any }, { posterUrl: any }] },
+        select: { coverUrl: true, videoUrl: true, videoWebmUrl: true, posterUrl: true },
+      }),
+      prisma.qixExperienceStep.findMany({
+        where: { OR: [{ videoUrl: any }, { videoWebmUrl: any }, { posterUrl: any }] },
+        select: { videoUrl: true, videoWebmUrl: true, posterUrl: true },
+      }),
+      prisma.traxEpisode.findMany({
+        where: { OR: [{ artUrl: any }, { audioUrl: any }] },
+        select: { artUrl: true, audioUrl: true },
+      }),
+    ])
+    const inUse = new Set([...stories, ...steps, ...episodes].flatMap((row) => Object.values(row)))
+    const paths = candidates.filter((u) => !inUse.has(u)).map((u) => decodeURIComponent(u.slice(prefix.length)))
+    if (!paths.length) return
+
+    const res = await fetch(`${base}/storage/v1/object/${MEDIA_BUCKET}`, {
+      method: "DELETE",
+      headers: { authorization: `Bearer ${key}`, apikey: key, "content-type": "application/json" },
+      body: JSON.stringify({ prefixes: paths }),
+      signal: AbortSignal.timeout(10000),
+    })
+    if (!res.ok) console.warn(`[media] Couldn't delete ${paths.length} replaced file(s) (${res.status}):`, await res.text().catch(() => ""))
+  } catch (error) {
+    console.warn("[media] Couldn't delete replaced files:", error)
+  }
+}

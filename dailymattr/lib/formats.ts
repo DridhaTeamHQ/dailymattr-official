@@ -30,8 +30,8 @@ export type QixContent = {
   galleryCovers: StoryCover[]
   /** The story row on the home page ("One place to catch up"). */
   homeCovers: StoryCover[]
-  /** "The experience" steps. */
-  frames: { label: string; video: VideoAsset }[]
+  /** "The experience" steps (start / end: the part of a shared video a step plays). */
+  frames: { label: string; video: VideoAsset; start?: number; end?: number }[]
 }
 
 export type TraxContent = {
@@ -95,6 +95,7 @@ export async function getQixContent(): Promise<QixContent> {
             .map((s) => ({
               label: s.label,
               video: videoAsset(s.videoUrl, s.videoWebmUrl, s.posterUrl, s.videoWidth, s.videoHeight),
+              ...(s.startSeconds != null && s.endSeconds != null ? { start: s.startSeconds, end: s.endSeconds } : {}),
             }))
         : defaultQix.frames,
     }

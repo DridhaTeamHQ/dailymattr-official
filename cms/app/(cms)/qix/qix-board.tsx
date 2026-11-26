@@ -11,11 +11,12 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { QixStepItem, QixStoryItem } from "@/lib/formats/data"
+import { MAX_QIX_STEPS as MAX_STEPS } from "@/lib/formats/limits"
 import { mediaSrc } from "@/lib/media/url"
 import { cn } from "@/lib/utils"
 
-import { reorderQixSteps, reorderQixStories, setQixStepPublished, setQixStoryFlags } from "./actions"
-import { StepDialog } from "./step-dialog"
+import { reorderQixStories, setQixStoryFlags } from "./actions"
+import { StepsEditor } from "./steps-editor"
 import { StoryDialog } from "./story-dialog"
 
 /** A list the editor can reorder at once; it follows the saved list whenever that changes. */
@@ -197,92 +198,17 @@ function PlaceToggle({
 // ── Experience steps ──────────────────────────────────────────────────────────────────────
 
 function StepsPanel({ steps, websiteUrl, uploads }: { steps: QixStepItem[]; websiteUrl: string; uploads: UploadSetup }) {
-  const [list, setList] = useLocalOrder(steps)
-  const [editing, setEditing] = useState<Editing<QixStepItem>>(null)
-  const [busy, startBusy] = useTransition()
-  const shown = list.filter((s) => s.published).length
-
-  function move(from: number, to: number) {
-    const next = moved(list, from, to)
-    setList(next)
-    startBusy(async () => showSaveToast(await reorderQixSteps(next.map((s) => s.id)), "Order saved"))
-  }
-
-  function publish(step: QixStepItem, published: boolean) {
-    setList(list.map((s) => (s.id === step.id ? { ...s, published } : s)))
-    startBusy(async () => showSaveToast(await setQixStepPublished(step.id, published)))
-  }
-
   return (
     <div className="flex flex-col gap-4">
-      <PanelIntro
-        title="The experience"
-        text="Numbered clips beside “Complicated topics. Clear explanations.” They play one after another, so together they read as one story. The design fits 4 steps; the caption goes under each number."
-        action={
-          <Button onClick={() => setEditing("new")}>
-            <Plus data-icon="inline-start" />
-            Add step
-          </Button>
-        }
-      />
-      {shown !== 4 && list.length > 0 && (
-        <p className="rounded-xl bg-warning/8 px-4 py-2.5 text-sm text-warning ring-1 ring-warning/25">
-          {shown} step{shown === 1 ? " is" : "s are"} showing. The section is laid out for 4, so it may look unbalanced.
+      <div className="max-w-3xl">
+        <h2 className="text-lg font-semibold tracking-tight">The experience</h2>
+        <p className="mt-0.5 text-sm text-muted-foreground">
+          Numbered clips beside “Complicated topics. Clear explanations.”, playing one after another. Choose one video
+          for all frames (it&apos;s split at its scene changes), or replace frames one by one. Nothing changes on the
+          website until you click Publish to website. The design fits {MAX_STEPS} frames.
         </p>
-      )}
-
-      {list.length === 0 ? (
-        <EmptyState text="No steps yet. The website shows its built-in steps until you add one." onAdd={() => setEditing("new")} />
-      ) : (
-        <ol className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {list.map((step, i) => (
-            <li key={step.id}>
-              <Card className={cn("h-full gap-0 overflow-hidden p-0", !step.published && "opacity-75")}>
-                <button
-                  type="button"
-                  onClick={() => setEditing(step)}
-                  className="group relative block aspect-[9/16] overflow-hidden bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                  aria-label={`Edit step ${i + 1}, ${step.label}`}
-                >
-                  <video
-                    src={mediaSrc(step.videoUrl, websiteUrl)}
-                    poster={step.posterUrl ? mediaSrc(step.posterUrl, websiteUrl) : undefined}
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className={cn("absolute inset-0 size-full object-cover", !step.published && "grayscale")}
-                    onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
-                    onMouseLeave={(e) => e.currentTarget.pause()}
-                  />
-                  <span className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-background/90 opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-                    <Pencil className="size-3.5" aria-hidden />
-                  </span>
-                </button>
-                <CardContent className="flex flex-col gap-2.5 p-3">
-                  <p className="flex items-center gap-2 text-sm font-semibold">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                      {i + 1}
-                    </span>
-                    <span className="truncate">{step.label}</span>
-                  </p>
-                  <div className="flex items-center justify-between gap-2">
-                    <MoveButtons index={i} count={list.length} onMove={move} disabled={busy} label={step.label} />
-                    <Switch
-                      checked={step.published}
-                      onCheckedChange={(published) => publish(step, published)}
-                      disabled={busy}
-                      aria-label={`Show ${step.label} on the website`}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </li>
-          ))}
-        </ol>
-      )}
-
-      <StepDialog editing={editing} onClose={() => setEditing(null)} websiteUrl={websiteUrl} uploads={uploads} />
+      </div>
+      <StepsEditor steps={steps} websiteUrl={websiteUrl} uploads={uploads} />
     </div>
   )
 }
@@ -314,4 +240,5 @@ export function EmptyState({ text, onAdd }: { text: string; onAdd: () => void })
     </Card>
   )
 }
+
 

@@ -166,6 +166,10 @@ model QixExperienceStep {
   videoUrl     String   @map("video_url")
   videoWebmUrl String?  @map("video_webm_url")
   posterUrl    String?  @map("poster_url")
+  /// The part of the video this step plays, in seconds (several steps can share one video).
+  /// Both null = the whole video.
+  startSeconds Float?   @map("start_seconds") @db.Real
+  endSeconds   Float?   @map("end_seconds") @db.Real
   videoWidth   Int      @default(360) @map("video_width")
   videoHeight  Int      @default(640) @map("video_height")
   published    Boolean  @default(true)

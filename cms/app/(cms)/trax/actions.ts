@@ -5,6 +5,7 @@ import { refresh } from "next/cache"
 import { requireApprovedUser } from "@/lib/dal"
 import { prisma } from "@/lib/db"
 import { bool, int, media, text, UUID, validIds, type FieldErrors } from "@/lib/formats/data"
+import { deleteUnusedMedia } from "@/lib/media/storage"
 import type { SaveResult } from "@/lib/seo/forms"
 import { notifyWebsite } from "@/lib/seo/website"
 
@@ -54,6 +55,7 @@ export async function saveTraxEpisode(input: TraxEpisodeInput): Promise<SaveResu
   if (Object.keys(errors).length) return { ok: false, error: "Check the highlighted fields.", fieldErrors: errors }
   if (input.id && !UUID.test(input.id)) return { ok: false, error: "Unknown episode." }
 
+  const before = input.id ? await prisma.traxEpisode.findUnique({ where: { id: input.id } }) : null
   const saved = await prisma.$transaction(async (tx) => {
     let id = input.id
     if (id) {
@@ -70,6 +72,8 @@ export async function saveTraxEpisode(input: TraxEpisodeInput): Promise<SaveResu
     return true
   })
   if (!saved) return { ok: false, error: "That episode was deleted. Reload the page." }
+  // Replaced artwork or audio leaves storage.
+  if (before) await deleteUnusedMedia([before.artUrl, before.audioUrl])
   return done()
 }
 
@@ -93,7 +97,9 @@ export async function setTraxFlags(
 export async function deleteTraxEpisode(id: string): Promise<SaveResult> {
   await requireApprovedUser()
   if (typeof id !== "string" || !UUID.test(id)) return { ok: false, error: "Unknown episode." }
+  const episode = await prisma.traxEpisode.findUnique({ where: { id } })
   await prisma.traxEpisode.deleteMany({ where: { id } })
+  if (episode) await deleteUnusedMedia([episode.artUrl, episode.audioUrl])
   return done()
 }
 
