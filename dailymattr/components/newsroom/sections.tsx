@@ -40,7 +40,7 @@ export function NewsroomHero() {
           <p className="text-md leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
             {hero.eyebrow}
           </p>
-          <h1 className="text-[2.75rem] leading-[1.05] font-medium sm:text-5xl lg:text-6xl lg:leading-16 lg:whitespace-nowrap text-white">
+          <h1 className="text-[2.75rem] leading-[1.05] font-bold sm:text-5xl lg:text-6xl lg:leading-16 lg:whitespace-nowrap text-white">
             {hero.title.join(" ")}
           </h1>
           <p className="max-w-[36rem] text-lg leading-7 font-semibold text-white lg:text-xl">

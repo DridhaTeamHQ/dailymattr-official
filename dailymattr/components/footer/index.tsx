@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { PANEL_WIDTH } from "@/components/shared/layout"
 import { appStoreLinks, footerGroups } from "./footer-links"
+import { FooterSocialLinks } from "./social-links"
 
 /**
  * Site footer, from the landing-page Figma frame: brand + newsletter sign-up on the left,
@@ -35,6 +36,7 @@ export function Footer() {
                 &quot;dailymattr&quot; brings you the story behind the headline with context, clarity, and
                 perspective that help you understand what really matters.
               </p>
+              <FooterSocialLinks />
             </div>
 
             <div className="flex flex-col items-start">

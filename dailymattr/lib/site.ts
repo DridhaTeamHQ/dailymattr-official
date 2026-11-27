@@ -40,13 +40,15 @@ export const site = {
     android: "https://play.google.com/store/apps/details?id=com.dailymattr&pcampaignid=web_share",
     ios: "https://apps.apple.com/in/app/dailymattr/id6791996138",
   },
-  socialProfiles: [
-    "https://www.instagram.com/dailymattr/",
-    "https://youtube.com/@dailymattr",
-    "https://x.com/dailymattr_news",
-    "https://www.linkedin.com/company/dailymattr/",
-    "https://www.facebook.com/profile.php?id=61595620943543",
-  ],
+  /** Official profiles: the footer's social links, and sameAs in the structured data. */
+  social: {
+    x: "https://x.com/dailymattr_news",
+    linkedin: "https://www.linkedin.com/company/dailymattr",
+    instagram: "https://www.instagram.com/dailymattr",
+    youtube: "https://www.youtube.com/@dailymattr",
+  },
+  /** Listed in the structured data too (from the old site), not in the footer. */
+  facebook: "https://www.facebook.com/profile.php?id=61595620943543",
   publisher: {
     name: "Dridha Technologies Private Limited",
     email: "admin@dridhatechnologies.com",
@@ -81,7 +83,7 @@ export function organizationLd() {
       width: site.publisherLogo.width,
       height: site.publisherLogo.height,
     },
-    sameAs: [site.apps.android, site.apps.ios, ...site.socialProfiles],
+    sameAs: [site.apps.android, site.apps.ios, ...Object.values(site.social), site.facebook],
     contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: site.supportEmail },
   }
 }
