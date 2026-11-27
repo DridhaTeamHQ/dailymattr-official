@@ -3,7 +3,8 @@
 import { useRef, useState, useTransition } from "react"
 import { Disc3, EyeOff, LayoutGrid, Pause, Pencil, Play, Plus, Star } from "lucide-react"
 
-import { MoveButtons, moved } from "@/components/cms/media/list-controls"
+import { DragHandle, useDragSort } from "@/components/cms/media/drag-sort"
+import { moved } from "@/components/cms/media/list-controls"
 import type { UploadSetup } from "@/components/cms/media/media-field"
 import { showSaveToast } from "@/components/cms/seo/form-parts"
 import { Button } from "@/components/ui/button"
@@ -41,10 +42,12 @@ export function TraxBoard({
   const cards = list.filter((e) => e.published && e.inFeaturedCards).length
 
   function move(from: number, to: number) {
+    if (from === to || to < 0 || to >= list.length) return
     const next = moved(list, from, to)
     setList(next)
     startBusy(async () => showSaveToast(await reorderTraxEpisodes(next.map((e) => e.id)), "Order saved"))
   }
+  const { itemProps } = useDragSort(move, busy)
 
   function flag(episode: TraxEpisodeItem, flags: Flags) {
     setList(
@@ -72,7 +75,7 @@ export function TraxBoard({
       <audio ref={audioRef} onEnded={() => setPlaying(null)} className="hidden" />
       <PanelIntro
         title="Episodes"
-        text="Cover-flow: a card in the player at the top of the Trax page, and a track in the big featured player. Featured card: one of the cards under the big player. The order here is the order on the website."
+        text="Cover-flow: a card in the player at the top of the Trax page, and a track in the big featured player. Featured card: one of the cards under the big player. The order here is the order on the website: drag a card to move it."
         action={
           <Button onClick={() => setEditing("new")}>
             <Plus data-icon="inline-start" />
@@ -89,80 +92,86 @@ export function TraxBoard({
       {list.length === 0 ? (
         <EmptyState text="No episodes yet. The website shows its built-in episodes until you add one." onAdd={() => setEditing("new")} />
       ) : (
-        <ol className="flex flex-col gap-3">
+        <ol className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {list.map((episode, i) => (
-            <li key={episode.id}>
-              <Card className={cn("p-0", !episode.published && "opacity-75")}>
-                <CardContent className="flex flex-wrap items-center gap-4 p-3 sm:flex-nowrap">
-                  <span className="w-5 shrink-0 text-center text-sm font-semibold text-muted-foreground tabular-nums">{i + 1}</span>
-
-                  <button
-                    type="button"
-                    onClick={() => listen(episode)}
-                    className="group relative size-20 shrink-0 overflow-hidden rounded-xl bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-                    aria-label={playing === episode.id ? `Pause ${episode.title}` : `Listen to ${episode.title}`}
+            <li
+              key={episode.id}
+              {...itemProps(i)}
+            >
+              <Card className={cn("h-full gap-0 overflow-hidden p-0", !episode.published && "opacity-75")}>
+                {/* Artwork: click to listen */}
+                <button
+                  type="button"
+                  onClick={() => listen(episode)}
+                  className="group relative block aspect-square w-full overflow-hidden bg-muted outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  aria-label={playing === episode.id ? `Pause ${episode.title}` : `Listen to ${episode.title}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- media from any host */}
+                  <img
+                    src={mediaSrc(episode.artUrl, websiteUrl)}
+                    alt=""
+                    draggable={false}
+                    className={cn("absolute inset-0 size-full object-cover", !episode.published && "grayscale")}
+                    style={{ objectPosition: `50% ${episode.focusY}%` }}
+                  />
+                  <span
+                    className={cn(
+                      "absolute inset-0 flex items-center justify-center bg-black/35 text-white transition-opacity",
+                      playing === episode.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                    )}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element -- media from any host */}
-                    <img
-                      src={mediaSrc(episode.artUrl, websiteUrl)}
-                      alt=""
-                      className={cn("absolute inset-0 size-full object-cover", !episode.published && "grayscale")}
-                      style={{ objectPosition: `50% ${episode.focusY}%` }}
-                    />
-                    <span
-                      className={cn(
-                        "absolute inset-0 flex items-center justify-center bg-black/35 text-white transition-opacity",
-                        playing === episode.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                      )}
-                    >
-                      {playing === episode.id ? <Pause className="size-6" /> : <Play className="size-6" />}
+                    {playing === episode.id ? <Pause className="size-7" /> : <Play className="size-7" />}
+                  </span>
+                  <span className="absolute top-2 left-2 rounded-full bg-background/90 px-2 py-0.5 text-xs font-semibold tabular-nums shadow-sm">
+                    {i + 1}
+                  </span>
+                  {!episode.published && (
+                    <span className="absolute inset-x-2 bottom-2 flex items-center gap-1.5 rounded-lg bg-background px-2 py-1 text-xs font-medium shadow-sm">
+                      <EyeOff className="size-3.5 text-warning" aria-hidden />
+                      Hidden
                     </span>
-                  </button>
+                  )}
+                </button>
 
-                  <div className="min-w-0 flex-1 basis-56">
-                    <p className="flex items-center gap-2 font-semibold">
-                      <span className="truncate">{episode.title}</span>
-                      {!episode.published && (
-                        <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-warning">
-                          <EyeOff className="size-3.5" aria-hidden />
-                          Hidden
-                        </span>
-                      )}
+                <CardContent className="flex flex-1 flex-col gap-2 p-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold" title={episode.title}>
+                      {episode.title}
                     </p>
-                    <p className="truncate text-sm text-muted-foreground">{episode.topic}</p>
-                    {episode.description && <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{episode.description}</p>}
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      <Pill on={episode.inHero} icon={Disc3} label="Cover-flow" disabled={busy} onClick={() => flag(episode, { inHero: !episode.inHero })} />
-                      <Pill
-                        on={episode.inFeaturedCards}
-                        icon={LayoutGrid}
-                        label="Featured card"
-                        disabled={busy}
-                        onClick={() => flag(episode, { inFeaturedCards: !episode.inFeaturedCards })}
-                      />
-                      <Pill
-                        on={episode.heroStart}
-                        icon={Star}
-                        label="Opens here"
-                        disabled={busy || !episode.inHero}
-                        onClick={() => flag(episode, { heroStart: !episode.heroStart })}
-                      />
-                    </div>
+                    <p className="truncate text-xs text-muted-foreground" title={episode.topic}>
+                      {episode.topic}
+                    </p>
                   </div>
-
-                  <div className="ml-auto flex shrink-0 items-center gap-3">
-                    <MoveButtons index={i} count={list.length} onMove={move} disabled={busy} label={episode.title} />
+                  <div className="flex flex-wrap gap-1">
+                    <Pill on={episode.inHero} icon={Disc3} label="Cover-flow" disabled={busy} onClick={() => flag(episode, { inHero: !episode.inHero })} />
+                    <Pill
+                      on={episode.inFeaturedCards}
+                      icon={LayoutGrid}
+                      label="Featured card"
+                      disabled={busy}
+                      onClick={() => flag(episode, { inFeaturedCards: !episode.inFeaturedCards })}
+                    />
+                    <Pill
+                      on={episode.heroStart}
+                      icon={Star}
+                      label="Opens here"
+                      disabled={busy || !episode.inHero}
+                      onClick={() => flag(episode, { heroStart: !episode.heroStart })}
+                    />
+                  </div>
+                  <div className="mt-auto flex items-center justify-between gap-1 pt-1">
+                    <DragHandle index={i} count={list.length} onMove={move} disabled={busy} label={episode.title} />
                     <Switch
                       checked={episode.published}
                       onCheckedChange={(published) => flag(episode, { published })}
                       disabled={busy}
                       aria-label={`Show ${episode.title} on the website`}
                     />
-                    <Button variant="outline" size="sm" onClick={() => setEditing(episode)}>
-                      <Pencil data-icon="inline-start" />
-                      Edit
-                    </Button>
                   </div>
+                  <Button variant="outline" size="sm" className="w-full" onClick={() => setEditing(episode)}>
+                    <Pencil data-icon="inline-start" />
+                    Edit
+                  </Button>
                 </CardContent>
               </Card>
             </li>

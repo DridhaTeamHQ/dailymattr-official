@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react"
 import {
-  ArrowLeft,
-  ArrowRight,
   CircleAlert,
   Eye,
   EyeOff,
@@ -19,6 +17,7 @@ import {
   Undo2,
 } from "lucide-react"
 
+import { DragHandle, useDragSort } from "@/components/cms/media/drag-sort"
 import { putFile, type UploadSetup } from "@/components/cms/media/media-field"
 import { showSaveToast } from "@/components/cms/seo/form-parts"
 import { Button } from "@/components/ui/button"
@@ -305,6 +304,7 @@ export function StepsEditor({ steps, websiteUrl, uploads }: { steps: QixStepItem
   }
 
   function move(i: number, to: number) {
+    if (i === to || to < 0 || to >= frames.length) return
     setFrames((list) => {
       const next = [...list]
       const [f] = next.splice(i, 1)
@@ -312,6 +312,7 @@ export function StepsEditor({ steps, websiteUrl, uploads }: { steps: QixStepItem
       return next
     })
   }
+  const { itemProps } = useDragSort(move, busy)
 
   function discard() {
     setFrames(base.frames)
@@ -615,7 +616,7 @@ export function StepsEditor({ steps, websiteUrl, uploads }: { steps: QixStepItem
               )
               const up = progress?.frames[f.key]
               return (
-                <li key={f.key} className="flex min-w-0 flex-col gap-2">
+                <li key={f.key} {...itemProps(i)} className={cn("flex min-w-0 flex-col gap-2", itemProps(i).className)}>
                   <FrameMedia
                     src={srcOf(f)}
                     start={f.start}
@@ -702,12 +703,7 @@ export function StepsEditor({ steps, websiteUrl, uploads }: { steps: QixStepItem
                   )}
                 </div>
                 <div className="flex gap-1">
-                  <IconButton label={`Move frame ${i + 1} left`} onClick={() => move(i, i - 1)} disabled={busy || i === 0}>
-                    <ArrowLeft />
-                  </IconButton>
-                  <IconButton label={`Move frame ${i + 1} right`} onClick={() => move(i, i + 1)} disabled={busy || i === frames.length - 1}>
-                    <ArrowRight />
-                  </IconButton>
+                  <DragHandle index={i} count={frames.length} onMove={move} disabled={busy} label={`frame ${i + 1}`} />
                   <IconButton
                     label={f.published ? `Hide frame ${i + 1} on the website` : `Show frame ${i + 1} on the website`}
                     onClick={() => update(f.key, { published: !f.published })}
@@ -758,7 +754,7 @@ function FrameMedia({
   const input = useRef<HTMLInputElement>(null)
   return (
     <div
-      className={cn("group relative aspect-[9/16] w-full overflow-hidden rounded-[0.875rem] bg-[#e6e7ea]", hidden && "opacity-60 grayscale")}
+      className={cn("group relative aspect-[9/16] w-full overflow-hidden rounded-[0.875rem] bg-[#e6e7ea] select-none", hidden && "opacity-60 grayscale")}
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault()
@@ -786,6 +782,7 @@ function FrameMedia({
             muted
             playsInline
             preload="metadata"
+            draggable={false}
             className="absolute inset-0 size-full object-cover"
           />
           {thumb && (
@@ -793,6 +790,7 @@ function FrameMedia({
             <img
               src={thumb}
               alt=""
+              draggable={false}
               className={cn("absolute inset-0 size-full object-cover transition-opacity duration-300", playing ? "opacity-0" : "opacity-100")}
             />
           )}

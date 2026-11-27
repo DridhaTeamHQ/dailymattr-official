@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react"
 import { Clapperboard, EyeOff, GalleryHorizontal, House, Pencil, Plus } from "lucide-react"
 
-import { MoveButtons, moved } from "@/components/cms/media/list-controls"
+import { DragHandle, useDragSort } from "@/components/cms/media/drag-sort"
+import { moved } from "@/components/cms/media/list-controls"
 import type { UploadSetup } from "@/components/cms/media/media-field"
 import { showSaveToast } from "@/components/cms/seo/form-parts"
 import { Button } from "@/components/ui/button"
@@ -65,10 +66,12 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
   const [busy, startBusy] = useTransition()
 
   function move(from: number, to: number) {
+    if (from === to || to < 0 || to >= list.length) return
     const next = moved(list, from, to)
     setList(next)
     startBusy(async () => showSaveToast(await reorderQixStories(next.map((s) => s.id)), "Order saved"))
   }
+  const { itemProps } = useDragSort(move, busy)
 
   function flag(story: QixStoryItem, flags: Partial<Pick<QixStoryItem, "published" | "inHero" | "inGallery" | "inHome">>) {
     setList(list.map((s) => (s.id === story.id ? { ...s, ...flags } : s)))
@@ -79,7 +82,7 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
     <div className="flex flex-col gap-4">
       <PanelIntro
         title="Stories"
-        text="Each story is a 9:16 cover with a video that plays on it. Top carousel: the 3D carousel under “See the bigger picture” on the Qix page. Qix row: the scrolling row under “A world of stories” on the Qix page. Home: the scrolling row under “One place to catch up” on the home page. Click a pill to switch a place on or off. Order here is the order on the website."
+        text="Each story is a 9:16 cover with a video that plays on it. Top carousel: the 3D carousel under “See the bigger picture” on the Qix page. Qix row: the scrolling row under “A world of stories” on the Qix page. Home: the scrolling row under “One place to catch up” on the home page. Click a pill to switch a place on or off. The order here is the order on the website: drag a card to move it."
         action={
           <Button onClick={() => setEditing("new")}>
             <Plus data-icon="inline-start" />
@@ -93,7 +96,7 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
       ) : (
         <ol className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {list.map((story, i) => (
-            <li key={story.id}>
+            <li key={story.id} {...itemProps(i)}>
               <Card className={cn("h-full gap-0 overflow-hidden p-0", !story.published && "opacity-75")}>
                 <button
                   type="button"
@@ -105,6 +108,7 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
                   <img
                     src={mediaSrc(story.coverUrl, websiteUrl)}
                     alt=""
+                    draggable={false}
                     className={cn("absolute inset-0 size-full object-cover transition", !story.published && "grayscale")}
                   />
                   {story.videoUrl && (
@@ -143,7 +147,7 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
                     <PlaceToggle on={story.inHome} icon={House} label="Home" disabled={busy} onClick={() => flag(story, { inHome: !story.inHome })} />
                   </div>
                   <div className="mt-auto flex items-center justify-between gap-2">
-                    <MoveButtons index={i} count={list.length} onMove={move} disabled={busy} label={story.title} />
+                    <DragHandle index={i} count={list.length} onMove={move} disabled={busy} label={story.title} />
                     <Switch
                       checked={story.published}
                       onCheckedChange={(published) => flag(story, { published })}
@@ -205,7 +209,7 @@ function StepsPanel({ steps, websiteUrl, uploads }: { steps: QixStepItem[]; webs
         <p className="mt-0.5 text-sm text-muted-foreground">
           Numbered clips beside “Complicated topics. Clear explanations.”, playing one after another. Choose one video
           for all frames (it&apos;s split at its scene changes), or replace frames one by one. Nothing changes on the
-          website until you click Publish to website. The design fits {MAX_STEPS} frames.
+          website until you click Publish to website. Drag a frame to change the order. The design fits {MAX_STEPS} frames.
         </p>
       </div>
       <StepsEditor steps={steps} websiteUrl={websiteUrl} uploads={uploads} />
