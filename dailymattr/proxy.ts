@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 
-import { appStoreLinks } from "@/components/footer/footer-links"
+import { storeFor } from "@/lib/store-link"
 
 /*
  * /download is the one link everyone shares (the app's referral invites, "Get the app" across
@@ -15,12 +15,10 @@ import { appStoreLinks } from "@/components/footer/footer-links"
  *   shared link shows a card and a laptop gets store badges and a QR code to scan.
  *
  * Unlike the old site, a Mac is not sent to the App Store: the app is for phones, so a Mac
- * sees the page. An iPad in desktop mode (which reports itself as a Mac) sees it too, with the
- * App Store badge one tap away.
+ * sees the page. An iPad in desktop mode reports itself as a Mac, so the server can't tell it
+ * apart; the page spots its touch screen and sends it on (components/download/store-redirect.tsx).
  */
 
-const APPLE_MOBILE = /iphone|ipad|ipod/i
-const ANDROID = /android/i
 const PREVIEW_BOT = /whatsapp|facebookexternalhit|twitterbot|telegrambot|slackbot|discordbot|linkedinbot/i
 
 /** The answer depends on who is asking, so no shared cache may keep it. */
@@ -28,13 +26,7 @@ const noSharedCache = { "Cache-Control": "no-store", Vary: "User-Agent" }
 
 export function proxy(request: NextRequest) {
   const ua = request.headers.get("user-agent") ?? ""
-  const store = PREVIEW_BOT.test(ua)
-    ? null
-    : APPLE_MOBILE.test(ua)
-      ? appStoreLinks.apple
-      : ANDROID.test(ua)
-        ? appStoreLinks.google
-        : null
+  const store = PREVIEW_BOT.test(ua) ? null : storeFor(ua)
 
   if (!store) return NextResponse.next()
 
