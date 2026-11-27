@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import { notFound } from "next/navigation"
 
 import { seoMetadata } from "@/lib/seo"
+import { SeoJsonLd } from "@/components/shared/seo-json-ld"
 
 import { Quiz, QuizMain, QuizSkeleton } from "@/components/quizz"
 import { editions, getEdition, quizPath } from "@/components/quizz/content"
@@ -39,5 +40,10 @@ async function StoryQuiz({ params }: { params: Params }) {
   // Unknown slugs are a 404.
   if (!getEdition(slug)) notFound()
   // Keyed by story so moving between stories always starts fresh at question 1.
-  return <Quiz key={slug} slug={slug} />
+  return (
+    <>
+      <SeoJsonLd path={quizPath(slug)} />
+      <Quiz key={slug} slug={slug} />
+    </>
+  )
 }

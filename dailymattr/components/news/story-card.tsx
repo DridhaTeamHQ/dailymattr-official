@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { getNewsCategory, newsPath } from "./content"
+import { getNewsCategory, newsSectionHref } from "./content"
 import { isMediaImage, storyHref, type Story } from "./stories"
 
 /**
@@ -50,7 +50,7 @@ export function NewsCard({
           {story.date}
         </time>
         {category && (
-          <Link href={newsPath(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
+          <Link href={newsSectionHref(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
             {category.label}
           </Link>
         )}

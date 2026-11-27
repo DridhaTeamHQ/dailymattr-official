@@ -20,7 +20,7 @@ export function ExplainersSection() {
       >
         <Button
           nativeButton={false}
-          render={<Link href="/explainers" />}
+          render={<Link href="/explainers/" />}
           className="h-10 gap-2 rounded-lg pr-2 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
         >
           Browse explainers

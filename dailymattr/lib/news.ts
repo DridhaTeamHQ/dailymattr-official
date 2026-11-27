@@ -68,6 +68,13 @@ type PixStoryRow = PixRow & { detail_body: string | null; summary: string | null
 
 const LIST_COLUMNS = "id, published_id, headline, main_image_url, category_id, published_at"
 
+/**
+ * A story is on the website, as on the old site, once it has a numeric Pix ID, its publish
+ * time has passed and its headline has a letter or digit (the headline-less "Daily Wrap"
+ * cards are app-only). The dailymattr_reader role only sees published, non-rejected rows.
+ */
+const LIVE = "published_id ~ '^[0-9]+$' and published_at <= now() and headline ~ '[[:alnum:]]'"
+
 // The last good reads, so a short database outage keeps the news up (best effort, per instance).
 let lastStories: Story[] | null = null
 let lastHidden: string[] | null = null
@@ -102,8 +109,8 @@ export async function getStories(): Promise<Story[]> {
     const hidden = await getHiddenIds()
     const { rows } = await pool.query<PixRow>(
       `select ${LIST_COLUMNS} from pix_posts
-        where published_id ~ '^[0-9]+$' and not (id = any($1::uuid[]))
-        order by published_at desc
+        where ${LIVE} and not (id = any($1::uuid[]))
+        order by published_at desc, id desc
         limit $2`,
       [hidden, LIST_SIZE]
     )
@@ -141,7 +148,7 @@ export async function getNewsPage({
   try {
     const hidden = await getHiddenIds()
     const params: unknown[] = [hidden]
-    const clauses = ["published_id ~ '^[0-9]+$'", "not (id = any($1::uuid[]))"]
+    const clauses = [LIVE, "not (id = any($1::uuid[]))"]
     if (category) {
       params.push(pixCategoriesFor(category))
       clauses.push(`category_id = any($${params.length}::int[])`)
@@ -157,7 +164,7 @@ export async function getNewsPage({
       pool.query<{ n: number }>(`select count(*)::int as n from pix_posts where ${where}`, params),
       pool.query<PixRow>(
         `select ${LIST_COLUMNS} from pix_posts where ${where}
-          order by published_at desc
+          order by published_at desc, id desc
           limit ${NEWS_PAGE_SIZE} offset ${offset}`,
         params
       ),
@@ -195,7 +202,7 @@ export async function getPixShowcase(): Promise<PixShowcaseItem[]> {
     const { rows } = await pool.query<PixStoryRow & { web_pages: unknown }>(
       `select distinct on (category_id) ${LIST_COLUMNS}, detail_body, summary, source_url, web_pages
          from pix_posts
-        where published_id ~ '^[0-9]+$' and not (id = any($1::uuid[]))
+        where ${LIVE} and not (id = any($1::uuid[]))
           and category_id = any($2::int[])
           and jsonb_typeof(web_pages) = 'array' and jsonb_array_length(web_pages) > 0
           and published_at > now() - interval '30 days'
@@ -233,7 +240,7 @@ export async function getLatestPix(): Promise<PixShowcaseItem[]> {
     const { rows } = await pool.query<PixStoryRow & { web_pages: unknown }>(
       `select ${LIST_COLUMNS}, detail_body, summary, source_url, web_pages
          from pix_posts
-        where published_id ~ '^[0-9]+$' and not (id = any($1::uuid[]))
+        where ${LIVE} and not (id = any($1::uuid[]))
           and jsonb_typeof(web_pages) = 'array' and jsonb_array_length(web_pages) > 0
         order by published_at desc
         limit $2`,
@@ -279,8 +286,19 @@ function pixCategoriesFor(section: string) {
     .map(([id]) => Number(id))
 }
 
+/** What a story page needs for its search and share tags (lib/seo.ts storySeo). */
+export type StoryArticle = {
+  /** ISO times; modifiedAt is never before publishedAt. */
+  publishedAt: string
+  modifiedAt: string
+  /** The story's pictures for its structured data: the artwork, then the rendered Pix slides. */
+  images: string[]
+  /** The share card: the first Pix slide (the headline is on it) at share size, else the artwork. */
+  shareImage: { url: string; width?: number; height?: number } | null
+}
+
 /** One story with its key points, by Pix ID; null when it doesn't exist or is hidden. */
-export async function getStory(id: string): Promise<{ story: Story; body: StoryBody } | null> {
+export async function getStory(id: string): Promise<{ story: Story; body: StoryBody; article: StoryArticle } | null> {
   "use cache"
   cacheTag(CMS_NEWS_TAG)
   cacheLife("minutes")
@@ -290,18 +308,85 @@ export async function getStory(id: string): Promise<{ story: Story; body: StoryB
   try {
     const [hidden, { rows }] = await Promise.all([
       getHiddenIds(),
-      pool.query<PixStoryRow>(
-        `select ${LIST_COLUMNS}, detail_body, summary, source_url from pix_posts where published_id = $1 limit 1`,
+      pool.query<PixStoryRow & { updated_at: Date | null; web_pages: unknown }>(
+        `select ${LIST_COLUMNS}, detail_body, summary, source_url, updated_at, web_pages
+           from pix_posts where published_id = $1 and ${LIVE} limit 1`,
         [id]
       ),
     ])
     const row = rows[0]
     if (!row || hidden.includes(row.id)) return null
-    return { story: toStory(row), body: toBody(row) }
+    return { story: toStory(row), body: toBody(row), article: toArticle(row) }
   } catch (error) {
     console.warn(`[news] Couldn't read story ${id}:`, error)
     return null
   }
+}
+
+/* ---------- Sitemaps ---------- */
+
+/** A story's entry in the news sitemaps. */
+export type SitemapStory = { slug: string; headline: string; publishedAt: string; modifiedAt: string }
+
+type SitemapRow = Pick<PixRow, "id" | "published_id" | "headline" | "published_at"> & { updated_at: Date | null }
+
+const toSitemapStory = (row: SitemapRow): SitemapStory => ({
+  slug: storySlug(row.headline ?? "", row.published_id),
+  headline: plain(row.headline ?? ""),
+  publishedAt: new Date(row.published_at).toISOString(),
+  modifiedAt: modifiedAt(row),
+})
+
+/** The first month with live stories: the news sitemaps start here. */
+export const FIRST_SITEMAP_MONTH = { year: 2026, month: 8 }
+
+/**
+ * The Google News sitemap's stories (app/news/sitemap.xml): the last 48 hours, newest first,
+ * at most 1,000, as on the old site.
+ */
+export async function getNewsSitemapStories(): Promise<SitemapStory[]> {
+  "use cache"
+  cacheTag(CMS_NEWS_TAG)
+  cacheLife("minutes")
+
+  const pool = getPixPool()
+  if (!pool) return []
+  const hidden = await getHiddenIds()
+  const { rows } = await pool.query<SitemapRow>(
+    `select id, published_id, headline, published_at, updated_at from pix_posts
+      where ${LIVE} and not (id = any($1::uuid[])) and published_at >= now() - interval '48 hours'
+      order by published_at desc, id desc
+      limit 1000`,
+    [hidden]
+  )
+  return rows.map(toSitemapStory)
+}
+
+/**
+ * Every story published in one month (UTC), for its archive sitemap
+ * (/news/sitemap-YYYY-MM.xml), newest change first. Past months don't change, so they are
+ * kept for a day; a show / hide in the CMS still refreshes them at once.
+ */
+export async function getMonthSitemapStories(year: number, month: number): Promise<SitemapStory[]> {
+  "use cache"
+  cacheTag(CMS_NEWS_TAG)
+  const now = new Date()
+  const current = year === now.getUTCFullYear() && month === now.getUTCMonth() + 1
+  if (current) cacheLife("minutes")
+  else cacheLife("days")
+
+  const pool = getPixPool()
+  if (!pool) return []
+  const hidden = await getHiddenIds()
+  const start = new Date(Date.UTC(year, month - 1, 1)).toISOString()
+  const end = new Date(Date.UTC(year, month, 1)).toISOString()
+  const { rows } = await pool.query<SitemapRow>(
+    `select id, published_id, headline, published_at, updated_at from pix_posts
+      where ${LIVE} and not (id = any($1::uuid[])) and published_at >= $2 and published_at < $3
+      order by greatest(published_at, coalesce(updated_at, published_at)) desc, published_at desc, id desc`,
+    [hidden, start, end]
+  )
+  return rows.map(toSitemapStory)
 }
 
 /* ---------- Pix row → story ---------- */
@@ -318,32 +403,37 @@ function plain(text: string) {
     .trim()
 }
 
-/** Longest headline part of a story slug, before "-<Pix ID>" (matches the old site's URLs). */
-const MAX_SLUG = 79
+/** Pix wraps highlighted words in [brackets], (parens) or {braces}; slugs drop the markers. */
+const MARKERS = /[[\](){}]/g
 
 /**
- * The old site's story slug: the headline in lower case, "%" as "percent" and "₹" as "rs",
- * apostrophes dropped, everything else between words a hyphen, cut at a word to 79
- * characters, then "-<Pix ID>". Pages look stories up by the ID alone, so an old link with
- * a slightly different headline part still opens the story.
+ * The old site's story slug (its api/_lib/slug.js, unchanged so every story keeps its URL),
+ * from the raw Pix headline: the highlight markers dropped, "₹" as "rs", "&" as "and", "%" as
+ * "percent", quotes dropped, accents removed, lower case, everything else between words a
+ * hyphen, cut back to a whole word when longer than 80 characters, then "-<Pix ID>". A column
+ * tag stays in ("[#dailymattrwrites]" -> "dailymattrwrites-..."), as it did on the old site.
+ * Pages look stories up by the ID alone and redirect any other slug to this one.
  */
 export function storySlug(headline: string, id: string) {
-  const words = headline
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/%/g, " percent ")
+  let slug = headline
+    .replace(MARKERS, "")
+    .replace(/\s+/g, " ")
+    .trim()
     .replace(/₹/g, " rs ")
     .replace(/&/g, " and ")
-    .replace(/['’‘`]/g, "")
+    .replace(/%/g, " percent ")
+    .replace(/[‘’“”'"`]/g, "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-  let short = words
-  if (words.length > MAX_SLUG) {
-    const cut = words.slice(0, MAX_SLUG + 1).lastIndexOf("-")
-    short = cut > 0 ? words.slice(0, cut) : words.slice(0, MAX_SLUG)
+  if (slug.length > 80) {
+    slug = slug.slice(0, 80)
+    const cut = slug.lastIndexOf("-")
+    if (cut > 40) slug = slug.slice(0, cut)
   }
-  return short ? `${short}-${id}` : id
+  return `${slug || "story"}-${id}`
 }
 
 const INDIA = "Asia/Kolkata"
@@ -353,7 +443,7 @@ function toStory(row: PixRow): Story {
   const at = new Date(row.published_at)
   return {
     id: row.published_id,
-    slug: storySlug(headline, row.published_id),
+    slug: storySlug(row.headline ?? "", row.published_id),
     headline,
     category: row.category_id != null ? sectionByPixCategory[row.category_id] : undefined,
     date: at.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: INDIA }),
@@ -379,4 +469,63 @@ function toBody(row: PixStoryRow): StoryBody {
     } catch {}
   }
   return { points, source }
+}
+
+/** The later of published and updated, so dateModified is never before datePublished. */
+function modifiedAt(row: { published_at: Date; updated_at: Date | null }) {
+  const published = new Date(row.published_at).getTime()
+  const updated = row.updated_at ? new Date(row.updated_at).getTime() : 0
+  return new Date(Math.max(published, updated)).toISOString()
+}
+
+/** Pix photos and slides live in its public media bucket; no other picture is used for SEO. */
+const PIX_MEDIA_HOST = "coggfnbqqyiqfsxvtaym.supabase.co"
+
+function allowedImage(url: unknown) {
+  try {
+    const parsed = new URL(String(url))
+    return parsed.protocol === "https:" && parsed.hostname === PIX_MEDIA_HOST ? parsed.href : ""
+  } catch {
+    return ""
+  }
+}
+
+/**
+ * The same picture resized by Supabase's image renderer, as the old site did: a 2.7 MB
+ * poster comes back at share size. resize=contain keeps the proportions.
+ */
+function sized(url: string, width: number) {
+  const rendered = url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/")
+  return rendered === url ? url : `${rendered}?width=${width}&resize=contain&quality=72`
+}
+
+type PixPage = { url: string; width?: number; height?: number; sort_order?: number }
+
+/** The story's pictures and dates for its search and share tags, as the old site built them. */
+function toArticle(row: PixRow & { updated_at: Date | null; web_pages: unknown }): StoryArticle {
+  const pages = (Array.isArray(row.web_pages) ? (row.web_pages as PixPage[]) : [])
+    .filter((page) => !!allowedImage(page?.url))
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+  const artwork = allowedImage(row.main_image_url)
+  const slides = pages.map((page) => allowedImage(page.url))
+  const images = [...new Set([artwork || slides[0], ...slides].filter(Boolean))]
+
+  // The share card: the first slide when there is one (a headline baked into the picture is
+  // what a WhatsApp or X preview wants), else the artwork. Only slides have a known size.
+  let shareImage: StoryArticle["shareImage"] = null
+  const first = pages[0]
+  if (first && Number(first.width) > 0 && Number(first.height) > 0) {
+    const width = Math.min(1200, Number(first.width))
+    const height = Math.round((Number(first.height) * width) / Number(first.width))
+    shareImage = { url: sized(slides[0], width), width, height }
+  } else if (slides[0] || artwork) {
+    shareImage = { url: sized(slides[0] || artwork, 1200) }
+  }
+
+  return {
+    publishedAt: new Date(row.published_at).toISOString(),
+    modifiedAt: modifiedAt(row),
+    images,
+    shareImage,
+  }
 }

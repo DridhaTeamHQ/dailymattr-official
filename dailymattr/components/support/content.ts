@@ -38,13 +38,13 @@ export const channels = {
       icon: "/support/megaphone.svg",
       title: "Advertising and partnerships",
       body: "Planning a campaign or a brand partnership? Tell us about it on our Advertise page.",
-      link: { label: "Advertise with us", href: "/advertise" },
+      link: { label: "Advertise with us", href: "/advertise/" },
     },
     {
       icon: "/privacy/lock.svg",
       title: "Privacy and grievances",
       body: "For data requests, or complaints about the App or its content, contact our Grievance Officer.",
-      link: { label: "Grievance Officer details", href: "/privacypolicy#section-12" },
+      link: { label: "Grievance Officer details", href: "/privacypolicy/#section-12" },
     },
   ],
 }

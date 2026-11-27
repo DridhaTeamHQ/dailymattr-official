@@ -20,6 +20,8 @@ export const priorities = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0] as
 export type PageDefaults = {
   path: string
   title: string
+  /** The title is used as it is, without the site's title template (e.g. the home page). */
+  absoluteTitle?: boolean
   description: string
   image?: string
   noindex?: boolean
@@ -122,8 +124,9 @@ export function effectivePage(
   const title = overrides.title ?? defaults?.title ?? site.name
   const description = overrides.description ?? defaults?.description ?? site.description
   const isHome = path === "/"
-  // The home page uses its title as-is; other pages go through the title template.
-  const fullTitle = isHome ? title : site.titleTemplate.replace("%s", title)
+  // The home page and pages marked absoluteTitle use their title as-is; other pages go
+  // through the title template.
+  const fullTitle = isHome || defaults?.absoluteTitle ? title : site.titleTemplate.replace("%s", title)
   return {
     path,
     title,
@@ -154,12 +157,12 @@ export function seoChecks(page: Pick<EffectivePage, "fullTitle" | "description" 
     {
       label: "Title length",
       passed: titleLength >= 30 && titleLength <= 60,
-      hint: `${titleLength} characters. Aim for 30–60 so Google shows it in full.`,
+      hint: `${titleLength} characters. Aim for 30-60 so Google shows it in full.`,
     },
     {
       label: "Description length",
       passed: descriptionLength >= 70 && descriptionLength <= 160,
-      hint: `${descriptionLength} characters. Aim for 70–160.`,
+      hint: `${descriptionLength} characters. Aim for 70-160.`,
     },
     {
       label: "Focus keyword set",

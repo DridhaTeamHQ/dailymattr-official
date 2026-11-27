@@ -21,7 +21,9 @@ export function DateFilter() {
 
   function choose(value: string) {
     const valid = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    startTransition(() => router.push(valid ? `${pathname}?date=${value}` : pathname))
+    // Back to the first page of the list (/news/india/page/3/ -> /news/india/).
+    const base = pathname.replace(/page\/\d+\/?$/, "")
+    startTransition(() => router.push(valid ? `${base}?date=${value}` : base))
   }
 
   return (

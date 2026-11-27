@@ -202,7 +202,7 @@ export function ApplyForm() {
         <input type="checkbox" name="consent" required className="mt-0.5 size-4 shrink-0 cursor-pointer accent-[#3979ff]" />
         <span>
           {apply.consent}{" "}
-          <Link href="/privacypolicy" className="font-medium text-[#3979ff] underline-offset-2 hover:underline">
+          <Link href="/privacypolicy/" className="font-medium text-[#3979ff] underline-offset-2 hover:underline">
             Privacy Policy
           </Link>
           .

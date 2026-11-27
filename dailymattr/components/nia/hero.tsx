@@ -37,7 +37,7 @@ export function NiaHero() {
           </p>
 
           <Link
-            href="/nia/ask"
+            href="/nia/ask/"
             className="relative flex h-10 w-fit items-center gap-2.5 overflow-hidden rounded-[13px] py-2 pr-2 pl-4 shadow-[0px_3px_3px_0px_rgba(39,39,42,0.3),inset_0px_0px_3px_0px_rgba(255,255,255,0.25)] transition-transform hover:-translate-y-px"
           >
             <span

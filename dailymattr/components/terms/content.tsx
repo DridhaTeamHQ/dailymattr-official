@@ -16,7 +16,7 @@ export const hero = {
 
 export const cta = {
   title: "See how we protect your data",
-  button: { label: "Read the Privacy Policy", href: "/privacypolicy" },
+  button: { label: "Read the Privacy Policy", href: "/privacypolicy/" },
 }
 
 export type TermsSection = {
@@ -38,7 +38,7 @@ function Sub({ children }: { children: React.ReactNode }) {
 /** Blue semibold link to the Privacy Policy page. */
 function PolicyLink() {
   return (
-    <Link href="/privacypolicy" className="font-semibold text-[#3979ff] underline-offset-2 hover:underline">
+    <Link href="/privacypolicy/" className="font-semibold text-[#3979ff] underline-offset-2 hover:underline">
       Privacy Policy
     </Link>
   )

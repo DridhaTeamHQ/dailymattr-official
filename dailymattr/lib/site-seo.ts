@@ -12,11 +12,12 @@ import { site } from "./site"
 export const siteSeoDefaults = {
   url: site.url,
   name: site.name,
-  titleTemplate: `%s · ${site.name}`,
+  // The old site's titles: "About Us - dailymattr" (story pages use "<headline> | dailymattr").
+  titleTemplate: `%s - ${site.name}`,
   description: site.description,
   keywords: [...site.keywords],
-  // app/opengraph-image.tsx, the generated 1200 × 630 share card.
-  image: "/opengraph-image",
+  // The old site's share card, 1200 x 630.
+  image: site.shareImage.url,
   twitterHandle: null as string | null,
   googleVerification: site.googleSiteVerification ?? null,
   bingVerification: null as string | null,
@@ -28,11 +29,11 @@ export async function getSiteSeo() {
   const name = settings.name ?? siteSeoDefaults.name
   return {
     name,
-    // A renamed site keeps the default " · name" pattern unless the CMS sets its own.
-    titleTemplate: settings.titleTemplate ?? `%s · ${name}`,
+    // A renamed site keeps the default " - name" pattern unless the CMS sets its own.
+    titleTemplate: settings.titleTemplate ?? `%s - ${name}`,
     description: settings.description ?? siteSeoDefaults.description,
     keywords: settings.keywords ?? siteSeoDefaults.keywords,
-    /** null = the generated card in app/opengraph-image.tsx. */
+    /** null = the default share card (site.shareImage). */
     image: settings.image ?? null,
     twitterHandle: settings.twitterHandle ?? siteSeoDefaults.twitterHandle,
     googleVerification: settings.googleVerification ?? siteSeoDefaults.googleVerification,

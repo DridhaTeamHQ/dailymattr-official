@@ -53,7 +53,7 @@ export function MobileMenu() {
                 <span className="px-2 py-2 text-sm text-muted-foreground">{l.label}</span>
                 {/* NIA leads the list, as it does in the desktop Features dropdown */}
                 <Link
-                  href="/nia"
+                  href="/nia/"
                   onClick={close}
                   className="flex items-center gap-2 rounded-md py-2 pr-2 pl-5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
                 >
@@ -89,7 +89,7 @@ export function MobileMenu() {
           <Separator className="my-3" />
           <div className="flex items-center justify-between px-2">
             <LanguageSwitcher />
-            <Link href="/login" onClick={close} className="text-sm font-medium text-foreground">
+            <Link href="/login/" onClick={close} className="text-sm font-medium text-foreground">
               Log in
             </Link>
           </div>

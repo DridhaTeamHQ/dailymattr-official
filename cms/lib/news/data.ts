@@ -205,7 +205,7 @@ export async function loadNews(filters: NewsFilters): Promise<NewsOverview> {
         approvedBy: row.approved_by_name,
         show,
         changed: change ? { by: change.updatedBy, at: `${formatDay(change.updatedAt)}, ${formatTime(change.updatedAt)}` } : null,
-        websiteHref: websiteUrl ? `${websiteUrl}/news/${storySlug(headline, row.published_id)}` : null,
+        websiteHref: websiteUrl ? `${websiteUrl}/news/${storySlug(row.headline ?? "", row.published_id)}` : null,
       }
     }),
   }

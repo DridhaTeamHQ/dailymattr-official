@@ -37,7 +37,7 @@ export function Navbar() {
               <LanguageSwitcher />
               <Separator orientation="vertical" className="h-4" />
               <Link
-                href="/login"
+                href="/login/"
                 className="px-2 text-sm font-medium whitespace-nowrap text-foreground hover:text-muted-foreground"
               >
                 Log in

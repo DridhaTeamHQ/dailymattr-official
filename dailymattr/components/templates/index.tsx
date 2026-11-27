@@ -70,7 +70,7 @@ export async function TemplatesSection() {
           Explore the latest updates, then follow the stories that catch your attention.
         </p>
         <Link
-          href="/news"
+          href="/news/"
           className="flex h-10 items-center gap-2 rounded-[0.8125rem] bg-[#3979ff] pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem] text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.12)] hover:bg-[#3979ff]/90"
         >
           See all latest stories

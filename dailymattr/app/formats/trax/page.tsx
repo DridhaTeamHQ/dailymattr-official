@@ -1,5 +1,6 @@
 import { getTraxContent } from "@/lib/formats"
 import { seoMetadata } from "@/lib/seo"
+import { SeoJsonLd } from "@/components/shared/seo-json-ld"
 
 import {
   TraxExperiences,
@@ -16,6 +17,7 @@ export default async function TraxPage() {
   const trax = await getTraxContent()
   return (
     <main className="flex-1 bg-white">
+      <SeoJsonLd path="/formats/trax" />
       <TraxHero content={trax} />
       <TraxExperiences />
       <TraxWhyAudio />

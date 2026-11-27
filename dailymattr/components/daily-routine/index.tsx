@@ -31,7 +31,7 @@ export function DailyRoutineSection() {
           <Button
             variant="secondary"
             nativeButton={false}
-            render={<Link href="/news" />}
+            render={<Link href="/news/" />}
             className="h-10 gap-1.5 rounded-lg pr-3 pl-4 text-base leading-6 font-medium tracking-[-0.01rem]"
           >
             Read today&rsquo;s stories

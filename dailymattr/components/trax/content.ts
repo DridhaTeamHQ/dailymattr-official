@@ -7,7 +7,7 @@ export const hero = {
   titleLines: ["Stay in the know.", "Hands-free."],
   description:
     "Listen to the stories that matter, explore ideas in greater depth, and catch up on your day without staring at another screen.",
-  cta: { label: "Listen with Trax", href: "/formats/trax#featured" },
+  cta: { label: "Listen with Trax", href: "/formats/trax/#featured" },
 }
 
 export type TraxHeroEpisode = {
@@ -165,7 +165,7 @@ export const featured = {
 
 export const getStarted = {
   title: "Your next story is one play away.",
-  cta: { label: "Discover Trax", href: "/formats/trax#featured" },
+  cta: { label: "Discover Trax", href: "/formats/trax/#featured" },
   /**
    * Full-bleed photo behind the copy (Figma 9344:7320), exported at the frame's 1920×747.
    * Imported rather than a /public path, so its URL carries a content hash: replace the file

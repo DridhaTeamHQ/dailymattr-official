@@ -8,7 +8,7 @@ export const hero = {
   titleLines: ["See the bigger picture."],
   description:
     "From today's biggest developments to the ideas that shaped our world, Qix makes learning visual, engaging, and easy to follow.",
-  cta: { label: "Watch Qix", href: "/formats/qix#gallery" },
+  cta: { label: "Watch Qix", href: "/formats/qix/#gallery" },
 }
 
 export const experience = {
@@ -57,7 +57,7 @@ export const gallery = {
 
 export const getStarted = {
   title: "Less scrolling. More seeing.",
-  cta: { label: "Explore Qix", href: "/formats/qix#gallery" },
+  cta: { label: "Explore Qix", href: "/formats/qix/#gallery" },
   /**
    * Full-bleed photo behind the copy (Figma 9344:7440), exported at the frame's 1920×747.
    * Imported so its URL carries a content hash (see the Trax one).

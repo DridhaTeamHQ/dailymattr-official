@@ -11,16 +11,19 @@ import {
 } from "@/components/ui/pagination"
 import { getNewsPage, NEWS_PAGE_SIZE } from "@/lib/news"
 import { cn } from "@/lib/utils"
-import { newsCategories, newsPath } from "./content"
+import { JsonLd } from "@/components/shared/seo-json-ld"
+import { newsCategories, newsPath, newsSectionHref } from "./content"
+import { newsListHref, newsListJsonLd } from "./seo"
 import { NewsCard } from "./story-card"
 
 // The news list on /news and /news/<section>: section pills and a date filter, then a page of
-// story cards with numbered pages under them. The page and day live in the URL
-// (?page=2&date=2026-11-21), and the server reads only that page of stories (lib/news.ts).
+// story cards with numbered pages under them. The page and day live in the URL, in the old
+// site's form (/news/india/page/2/?date=2026-11-21; proxy.ts hands the page number to the
+// page as ?page=), and the server reads only that page of stories (lib/news.ts).
 
 const tabs = [
-  { slug: undefined, label: "Latest", href: "/news" },
-  ...newsCategories.map((c) => ({ slug: c.slug, label: c.label, href: newsPath(c.slug) })),
+  { slug: undefined, label: "Latest", href: "/news/" },
+  ...newsCategories.map((c) => ({ slug: c.slug, label: c.label, href: newsSectionHref(c.slug) })),
 ]
 
 const pill = "flex h-[2.0625rem] items-center rounded-full px-3.5 text-[0.84375rem] leading-none font-semibold whitespace-nowrap transition-colors"
@@ -40,14 +43,8 @@ export function parseNewsQuery(params: Record<string, string | string[] | undefi
   return { page: Number.isFinite(page) && page > 0 ? Math.min(page, 100_000) : 1, date }
 }
 
-/** A list page's address: /news/india?page=3&date=…, leaving out page 1 and an empty date. */
-export function newsHref(basePath: string, { page, date }: NewsQuery) {
-  const params = new URLSearchParams()
-  if (page > 1) params.set("page", String(page))
-  if (date) params.set("date", date)
-  const qs = params.toString()
-  return qs ? `${basePath}?${qs}` : basePath
-}
+/** A list page's address: /news/india/page/3/?date=..., leaving out page 1 and an empty date. */
+export const newsHref = newsListHref
 
 const formatDay = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
@@ -111,11 +108,11 @@ export async function NewsResults({
             Go to the first page
           </Link>
         ) : query.date ? (
-          <Link href={basePath} className={pagerButton}>
+          <Link href={newsListHref(basePath, { page: 1, date: "" })} className={pagerButton}>
             Show all dates
           </Link>
         ) : (
-          <Link href="/news" className={pagerButton}>
+          <Link href="/news/" className={pagerButton}>
             See the latest news
           </Link>
         )}
@@ -125,6 +122,8 @@ export async function NewsResults({
 
   return (
     <>
+      {/* CollectionPage of this page's stories, as on the old site */}
+      <JsonLd data={await newsListJsonLd(basePath, query, stories, NEWS_PAGE_SIZE)} />
       <ul className={NEWS_GRID}>
         {stories.map((story, i) => (
           <li key={story.id}>
@@ -158,7 +157,7 @@ function pageItems(current: number, last: number): (number | "gap")[] {
   return items
 }
 
-/** shadcn Pagination: Previous, numbered pages and Next, each a link to its ?page=. */
+/** shadcn Pagination: Previous, numbered pages and Next, each a link to its /page/N/. */
 function NewsPagination({ basePath, query, pages }: { basePath: string; query: NewsQuery; pages: number }) {
   const current = Math.min(query.page, pages)
   const href = (page: number) => newsHref(basePath, { page, date: query.date })

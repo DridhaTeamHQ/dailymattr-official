@@ -2,13 +2,13 @@ export type NavItem = { label: string; href?: string; menu?: "features" }
 
 export const leftLinks: NavItem[] = [
   { label: "Features", menu: "features" },
-  { label: "Latest Stories", href: "/news" },
-  { label: "Newsletter", href: "/newsletter" },
+  { label: "Latest Stories", href: "/news/" },
+  { label: "Newsletter", href: "/newsletter/" },
 ]
 
 export const rightLinks: NavItem[] = [
-  { label: "Benchmark", href: "/benchmark" },
-  { label: "About", href: "/about" },
+  { label: "Benchmark", href: "/benchmark/" },
+  { label: "About", href: "/about/" },
 ]
 
 /**
@@ -48,21 +48,21 @@ export const formatItems: FormatItem[] = [
     name: "Pix",
     tag: "READ",
     description: "Read visual stories",
-    href: "/formats/pix",
+    href: "/formats/pix/",
     icon: "/nav-menu/pix.svg",
   },
   {
     name: "Qix",
     tag: "WATCH",
     description: "Watch short explainers",
-    href: "/formats/qix",
+    href: "/formats/qix/",
     icon: "/nav-menu/qix.svg",
   },
   {
     name: "Trax",
     tag: "LISTEN",
     description: "Listen to stories",
-    href: "/formats/trax",
+    href: "/formats/trax/",
     icon: "/nav-menu/trax.svg",
   },
 ]

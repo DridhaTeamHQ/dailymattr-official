@@ -1,4 +1,5 @@
 import { seoMetadata } from "@/lib/seo"
+import { SeoJsonLd } from "@/components/shared/seo-json-ld"
 
 import {
   AdvertiseEnquiry,
@@ -13,6 +14,7 @@ export const generateMetadata = () => seoMetadata("/advertise")
 export default function AdvertisePage() {
   return (
     <main className="flex-1 bg-white">
+      <SeoJsonLd path="/advertise" />
       <AdvertiseHero />
       <AdvertiseEnvironment />
       <AdvertisePartnerships />

@@ -1,10 +1,13 @@
-import { notFound } from "next/navigation"
+import { notFound, permanentRedirect } from "next/navigation"
 
 import { getStories, getStory } from "@/lib/news"
 import { seoMetadata } from "@/lib/seo"
 
 import { getNewsCategory, newsCategories, newsPath } from "@/components/news/content"
+import { parseNewsQuery } from "@/components/news/news-list"
+import { newsListMetadata, storyJsonLd, storySeo } from "@/components/news/seo"
 import { NewsPageView } from "@/components/news/sections"
+import { JsonLd } from "@/components/shared/seo-json-ld"
 import { StoryPageView } from "@/components/news/story-page"
 import { storyIdFromSlug } from "@/components/news/stories"
 
@@ -28,21 +31,15 @@ export async function generateStaticParams() {
   ]
 }
 
-export async function generateMetadata({ params }: PageProps<"/news/[slug]">) {
+export async function generateMetadata({ params, searchParams }: PageProps<"/news/[slug]">) {
   const { slug } = await params
-  if (getNewsCategory(slug)) return seoMetadata(newsPath(slug))
+  if (getNewsCategory(slug)) return newsListMetadata(newsPath(slug), parseNewsQuery(await searchParams))
   const id = storyIdFromSlug(slug)
   const found = id ? await getStory(id) : null
   if (!found) return seoMetadata(newsPath(slug))
-  // A story's own SEO: its headline, first key point and photo, unless the CMS sets others.
-  // Kept out of search like the rest of /news until the news section is opened to search.
-  const { story, body } = found
-  return seoMetadata(newsPath(story.slug), {
-    title: story.headline,
-    description: body.points[0] ?? story.headline,
-    ...(story.image && { image: story.image }),
-    noindex: true,
-  })
+  // A story's own SEO, built like the old site's story pages (components/news/seo.ts),
+  // unless the CMS sets others.
+  return seoMetadata(newsPath(found.story.slug), await storySeo(found))
 }
 
 /**
@@ -59,5 +56,12 @@ export default async function NewsSlugPage({ params, searchParams }: PageProps<"
   const id = storyIdFromSlug(slug)
   const [found, stories] = await Promise.all([id ? getStory(id) : null, getStories()])
   if (!found) notFound()
-  return <StoryPageView story={found.story} body={found.body} stories={stories} />
+  // One URL per story, as on the old site: an old or mistyped headline part redirects to it.
+  if (slug !== found.story.slug) permanentRedirect(`/news/${found.story.slug}`)
+  return (
+    <>
+      <JsonLd data={storyJsonLd(found)} />
+      <StoryPageView story={found.story} body={found.body} stories={stories} />
+    </>
+  )
 }

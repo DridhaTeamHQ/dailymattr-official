@@ -42,7 +42,7 @@ export function NewsPageView({
               {category ? (
                 <>
                   <li>
-                    <Link href="/news" className="hover:text-[#141417]">
+                    <Link href="/news/" className="hover:text-[#141417]">
                       News
                     </Link>
                   </li>

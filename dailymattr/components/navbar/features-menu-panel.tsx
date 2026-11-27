@@ -55,7 +55,7 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
     >
       {/* NIA promo panel - the whole card links to the NIA page */}
       <Link
-        href="/nia"
+        href="/nia/"
         aria-label="NIA, your AI assistant"
         className="relative isolate flex flex-col items-start self-stretch overflow-clip rounded-[1rem] bg-[#0b0b0d] p-[1.375rem] transition-[filter] hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3979ff]"
         data-node-id="8856:12357"

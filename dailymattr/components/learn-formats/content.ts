@@ -54,7 +54,7 @@ export const learnFormats: LearnFormat[] = [
     tag: "Pix · Read",
     title: ["Small read.", "Bigger picture."],
     description: "Swipe through visual news cards that bring the key facts into focus.",
-    cta: { label: "Explore Pix", href: "/formats/pix" },
+    cta: { label: "Explore Pix", href: "/formats/pix/" },
     mediaClassName: "bg-placeholder",
     features: [
       {
@@ -87,7 +87,7 @@ export const learnFormats: LearnFormat[] = [
     title: ["Press play.", "Make sense of something big."],
     description:
       "Explore short video explainers that unpack ideas, events and questions worth your attention.",
-    cta: { label: "Discover Qix", href: "/formats/qix" },
+    cta: { label: "Discover Qix", href: "/formats/qix/" },
     mediaClassName: "bg-placeholder",
     features: [
       {
@@ -120,7 +120,7 @@ export const learnFormats: LearnFormat[] = [
     title: ["Your eyes can take a break.", "Your curiosity doesn’t have to."],
     description:
       "Make room for an audio explainer on your commute, your walk or while you get things done.",
-    cta: { label: "Listen to Trax", href: "/formats/trax" },
+    cta: { label: "Listen to Trax", href: "/formats/trax/" },
     mediaClassName: "bg-placeholder",
     features: [
       {
@@ -153,7 +153,7 @@ export const learnFormats: LearnFormat[] = [
     title: ["The headline started it.", "Here’s the rest of the story."],
     description:
       "Explore the background, connections and questions that help a topic make sense.",
-    cta: { label: "Explore Xplaind", href: "/formats/xplaind" },
+    cta: { label: "Explore Xplaind", href: "/formats/xplaind/" },
     mediaClassName: "bg-placeholder",
     features: [
       {

@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { appStoreLinks } from "@/components/footer/footer-links"
 import { cn } from "@/lib/utils"
 import logoMark from "@/public/Figma_logos/LOGO with blue background (2).svg"
-import { getNewsCategory, newsPath } from "./content"
+import { getNewsCategory, newsSectionHref } from "./content"
 import { NEWS_GUTTER } from "./sections"
 import { NewsCard } from "./story-card"
 import { isMediaImage, storiesFor, storyHref, type Story, type StoryBody } from "./stories"
@@ -116,7 +116,7 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
             </li>
             <li aria-hidden>›</li>
             <li className="shrink-0">
-              <Link href="/news" className="hover:text-[#141417]">
+              <Link href="/news/" className="hover:text-[#141417]">
                 News
               </Link>
             </li>
@@ -124,7 +124,7 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
               <>
                 <li aria-hidden>›</li>
                 <li className="shrink-0">
-                  <Link href={newsPath(category.slug)} className="hover:text-[#141417]">
+                  <Link href={newsSectionHref(category.slug)} className="hover:text-[#141417]">
                     {category.label}
                   </Link>
                 </li>
@@ -156,7 +156,7 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
               </span>
               <time dateTime={story.published}>{story.date}</time>
               {category && (
-                <Link href={newsPath(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
+                <Link href={newsSectionHref(category.slug)} className="font-semibold text-brand-blue-deep hover:underline">
                   {category.label}
                 </Link>
               )}
@@ -237,7 +237,7 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
             <h2 id="more-stories" className="text-xl leading-7 font-bold tracking-[-0.02em] text-[#141417] sm:text-2xl">
               More stories
             </h2>
-            <Link href="/news" className="text-sm leading-5 font-semibold text-brand-blue-deep hover:underline">
+            <Link href="/news/" className="text-sm leading-5 font-semibold text-brand-blue-deep hover:underline">
               See all news →
             </Link>
           </div>

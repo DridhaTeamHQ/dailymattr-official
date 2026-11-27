@@ -139,7 +139,7 @@ export async function saveSiteSettings(form: SiteForm): Promise<SaveResult> {
 
   const titleTemplate = text(form.titleTemplate, 120, "titleTemplate", errors)
   if (titleTemplate && !titleTemplate.includes("%s")) {
-    errors.titleTemplate = "Include %s where the page title goes, e.g. %s · dailyMattr."
+    errors.titleTemplate = "Include %s where the page title goes, e.g. %s - dailymattr."
   }
 
   let twitterHandle = form.twitterHandle.trim() || null

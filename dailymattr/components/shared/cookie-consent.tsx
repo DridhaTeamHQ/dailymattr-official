@@ -81,7 +81,7 @@ export function CookieConsentPopup() {
       <p id="cookie-consent-body" className="mt-2 text-sm leading-5 text-muted-foreground">
         Necessary cookies keep dailymattr working. With your OK, we&apos;d also use optional ones to
         understand how the site is used. Read our{" "}
-        <Link href="/privacypolicy" className="text-foreground underline underline-offset-2">
+        <Link href="/privacypolicy/" className="text-foreground underline underline-offset-2">
           privacy policy
         </Link>
         .

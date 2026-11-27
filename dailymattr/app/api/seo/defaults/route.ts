@@ -12,6 +12,7 @@ export async function GET() {
     pages: Object.entries(defaultSeo).map(([path, seo]) => ({
       path,
       title: seo.title,
+      absoluteTitle: seo.absoluteTitle,
       description: seo.description,
       image: seo.image,
       noindex: seo.noindex,

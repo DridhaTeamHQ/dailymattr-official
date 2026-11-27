@@ -67,7 +67,7 @@ function NiaCard() {
     ["Give me the 5 W's", "Show me opposite sides"],
   ]
   return (
-    <Card href="/nia" label="Ask NIA">
+    <Card href="/nia/" label="Ask NIA">
       <CardTitle>
         <span>Ask</span>
         <span className="bg-[linear-gradient(246.64deg,#af75ff_3.11%,#4d90fd_93.93%)] bg-clip-text text-transparent">
@@ -171,7 +171,7 @@ function NiaCard() {
 /** Read: Pix phones photo. Figma 9112:6288. */
 function ReadCard() {
   return (
-    <Card href="/formats/pix" label="Read">
+    <Card href="/formats/pix/" label="Read">
       <CardTitle>Read</CardTitle>
       <CardLine>
         Understand the world
@@ -263,7 +263,7 @@ function Scrubber({
 /** Listen: white Trax player. Figma 9112:6342. */
 function ListenCard() {
   return (
-    <Card href="/formats/trax" label="Listen">
+    <Card href="/formats/trax/" label="Listen">
       <CardTitle>Listen</CardTitle>
       <CardLine>
         The world, <span className={dark}>in your ears.</span>

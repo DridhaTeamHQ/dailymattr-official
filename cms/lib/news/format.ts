@@ -38,27 +38,34 @@ export function plainText(text: string) {
     .trim()
 }
 
-/** Longest headline part of a story slug, before "-<Pix ID>" (as on the website). */
-const MAX_SLUG = 79
+/** Pix wraps highlighted words in [brackets], (parens) or {braces}; slugs drop the markers. */
+const MARKERS = /[[\](){}]/g
 
-/** The story's URL slug on the website: "<headline, shortened>-<Pix ID>". */
+/**
+ * The story's URL slug on the website, "<headline, shortened>-<Pix ID>", from the raw Pix
+ * headline. The same function as the website's (dailymattr/lib/news.ts), which keeps the old
+ * site's slugs so every story keeps its URL.
+ */
 export function storySlug(headline: string, pixId: string) {
-  const words = headline
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/%/g, " percent ")
+  let slug = headline
+    .replace(MARKERS, "")
+    .replace(/\s+/g, " ")
+    .trim()
     .replace(/₹/g, " rs ")
     .replace(/&/g, " and ")
-    .replace(/['’‘`]/g, "")
+    .replace(/%/g, " percent ")
+    .replace(/[‘’“”'"`]/g, "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-  let short = words
-  if (words.length > MAX_SLUG) {
-    const cut = words.slice(0, MAX_SLUG + 1).lastIndexOf("-")
-    short = cut > 0 ? words.slice(0, cut) : words.slice(0, MAX_SLUG)
+  if (slug.length > 80) {
+    slug = slug.slice(0, 80)
+    const cut = slug.lastIndexOf("-")
+    if (cut > 40) slug = slug.slice(0, cut)
   }
-  return short ? `${short}-${pixId}` : pixId
+  return `${slug || "story"}-${pixId}`
 }
 
 /** Pix writes the key points as "• point" paragraphs. */

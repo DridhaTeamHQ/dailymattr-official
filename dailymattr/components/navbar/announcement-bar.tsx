@@ -8,7 +8,7 @@ export function AnnouncementBar() {
       <Sparkles className="mr-1.5 size-3.5 shrink-0" />
       <span className="truncate">Read, watch and listen to what matters today.</span>
       <Link
-        href="/news"
+        href="/news/"
         className="ml-1.5 inline-flex shrink-0 items-center gap-1 font-normal text-primary-foreground/85 hover:text-primary-foreground"
       >
         Read more

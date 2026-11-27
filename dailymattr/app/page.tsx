@@ -1,4 +1,5 @@
 import { seoMetadata } from "@/lib/seo";
+import { SeoJsonLd } from "@/components/shared/seo-json-ld";
 import { AppPreviewSection } from "@/components/app-preview";
 import { BriefingBentoSection } from "@/components/briefing-bento";
 import { DailyRoutineSection } from "@/components/daily-routine";
@@ -18,6 +19,7 @@ export const generateMetadata = () => seoMetadata("/")
 export default function Home() {
   return (
     <main className="flex-1">
+      <SeoJsonLd path="/" />
       {/* The home page keeps its original soft reveal; every other page uses the fade-up. */}
       <SoftReveal>
         <Hero />

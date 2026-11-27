@@ -17,7 +17,7 @@ function TemplateDetails({ title }: { title: string }) {
       </p>
       <Button
         nativeButton={false}
-        render={<Link href="/templates" />}
+        render={<Link href="/templates/" />}
         className="mt-6 h-10 w-full gap-2 rounded-lg bg-foreground text-sm font-medium text-background hover:bg-foreground/85 sm:mt-auto"
       >
         Use Template

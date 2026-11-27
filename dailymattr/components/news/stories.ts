@@ -34,8 +34,8 @@ export const isMediaImage = (url: string) => url.startsWith(MEDIA)
 /** A story's page on this site: /news/<slug>, the same URL as on the old site. */
 export const storyHref = (story: Story) => `/news/${story.slug}`
 
-/** The Pix ID at the end of a story slug ("…-20245" → "20245"), or null. */
-export const storyIdFromSlug = (slug: string) => /-(\d+)$/.exec(slug)?.[1] ?? null
+/** The Pix ID at the end of a story slug ("...-20245" or a bare "20245" -> "20245"), or null. */
+export const storyIdFromSlug = (slug: string) => /(?:^|-)(\d{1,12})$/.exec(slug)?.[1] ?? null
 
 /** Stories for one section (by newsCategories slug), or every story for the Latest page. */
 export const storiesFor = (stories: Story[], category?: string) =>

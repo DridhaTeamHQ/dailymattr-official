@@ -1,4 +1,5 @@
 import { seoMetadata } from "@/lib/seo"
+import { SeoJsonLd } from "@/components/shared/seo-json-ld"
 
 import {
   NiaCapabilities,
@@ -14,6 +15,7 @@ export default function NiaPage() {
   return (
     // On desktop the content zooms to keep the 1920px Figma frame's proportions.
     <NiaScaledMain>
+      <SeoJsonLd path="/nia" />
       <NiaHero />
       <NiaHowItWorks />
       <NiaCapabilities />
