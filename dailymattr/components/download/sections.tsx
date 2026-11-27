@@ -104,12 +104,12 @@ export function DownloadHero() {
                       ·
                     </span>
                   )}
-                  <span>
-                    <strong className="inline-flex items-center gap-1 font-semibold text-[#1c1c1e]">
-                      {p.star && <Star className="size-4 fill-[#ffb800] text-[#ffb800]" aria-hidden />}
-                      {p.value}
-                    </strong>{" "}
-                    {p.label}
+                  {/* Star, value and label side by side, centred together, so "4.9" and
+                      "overall rating" share one line with "2k+ app downloads" */}
+                  <span className="flex items-center gap-1">
+                    {p.star && <Star className="size-4 shrink-0 fill-[#ffb800] text-[#ffb800]" aria-hidden />}
+                    <strong className="font-semibold text-[#1c1c1e]">{p.value}</strong>
+                    <span>{p.label}</span>
                   </span>
                 </span>
               ))}
