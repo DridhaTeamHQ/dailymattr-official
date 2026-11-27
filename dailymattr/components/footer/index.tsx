@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { PANEL_WIDTH } from "@/components/shared/layout"
-import { appStoreLinks, footerGroups } from "./footer-links"
+import { appStoreLinks, footerGroups, type FooterGroup } from "./footer-links"
 import { FooterSocialLinks } from "./social-links"
 
 /**
@@ -20,6 +20,14 @@ import { FooterSocialLinks } from "./social-links"
  * (React Activity: inline `display: none !important`) between the live page and the footer,
  * so the rule looks at any earlier <main> that isn't hidden, not just the adjacent one.
  */
+/**
+ * On desktop, "Get the app" sits on the same line as the second-last link of the longest link
+ * column ("Entertainment" in Latest Stories). A column is its title (leading-7, 1.75rem), a
+ * 0.75rem gap (gap-3), then links of 1.5rem (leading-6) with 0.25rem between (gap-1).
+ */
+const appLabelRow = Math.max(...footerGroups.map((g) => g.links.length)) - 2
+const appLabelTop = `${1.75 + 0.75 + appLabelRow * (1.5 + 0.25)}rem`
+
 export function Footer() {
   return (
     <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 sm:px-6 lg:px-16 lg:border-t-0 lg:pt-12 [main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:border-t-0 lg:[main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
@@ -36,7 +44,6 @@ export function Footer() {
                 &quot;dailymattr&quot; brings you the story behind the headline with context, clarity, and
                 perspective that help you understand what really matters.
               </p>
-              <FooterSocialLinks />
             </div>
 
             <div className="flex flex-col items-start">
@@ -60,29 +67,35 @@ export function Footer() {
           {/* Link columns, with the app-store badges underneath */}
           <div className="relative flex flex-col gap-10 lg:shrink-0">
           <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 md:grid-cols-5 md:gap-x-8 lg:flex lg:shrink-0 lg:gap-10 xl:gap-20">
-            {footerGroups.map((group) => (
-              <div key={group.title} className="flex flex-col gap-3 whitespace-nowrap">
-                <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">{group.title}</p>
-                <ul className="flex flex-col lg:gap-1">
-                  {group.links.map((l) => (
-                    <li key={l.label}>
-                      <Link
-                        href={l.href}
-                        className="inline-flex min-h-9 items-center text-base leading-6 tracking-[-0.01rem] text-[#696969] transition-colors hover:text-foreground lg:min-h-0"
-                      >
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {footerGroups.slice(0, -2).map((group) => (
+              <FooterGroupLinks key={group.title} group={group} />
             ))}
+            {/* The last two columns (Legal, Support) with the social icons under them on desktop,
+                spread from the first column's left edge to the last one's right edge. Below lg
+                the wrappers vanish (display: contents) and the columns join the grid. */}
+            <div className="contents lg:flex lg:flex-col lg:gap-10">
+              <div className="contents lg:flex lg:gap-10 xl:gap-20">
+                {footerGroups.slice(-2).map((group) => (
+                  <FooterGroupLinks key={group.title} group={group} />
+                ))}
+              </div>
+              <FooterSocialLinks spread className="hidden lg:block" />
+            </div>
           </nav>
 
-          {/* On desktop it fills the empty space under the short Legal and Support columns,
-              its bottom edge level with the "Subscribe to newsletter" button on the left */}
-          <div className="flex flex-col gap-3 lg:absolute lg:right-0 lg:bottom-0">
-            <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">Get the app</p>
+          {/* Social icons (phones and tablets; desktop has them under Legal and Support), then
+              the app badges. On desktop the block runs from the "Entertainment" row (top, see
+              appLabelTop) to the bottom of the footer row: the label sits on that row and the
+              badges' bottom edge is level with the "Subscribe to newsletter" button on the left.
+              Below lg the block is in the flow, where top has no effect. */}
+          <div className="flex flex-col gap-6 lg:absolute lg:right-0 lg:bottom-0" style={{ top: appLabelTop }}>
+          <FooterSocialLinks className="lg:hidden" />
+          <div className="flex flex-col gap-3 lg:flex-1 lg:justify-between lg:gap-0">
+            {/* Styled like the footer links, on the same line as the longest column's
+                second-last link ("Entertainment"). On desktop it takes no height (its text
+                still shows from the top), so the badges always end level with the Subscribe
+                button however little room there is. */}
+            <p className="text-base leading-6 tracking-[-0.01rem] text-[#696969] lg:h-0">Get the app</p>
             <div className="flex flex-wrap items-center gap-3">
               <a
                 href={appStoreLinks.apple}
@@ -105,6 +118,7 @@ export function Footer() {
             </div>
           </div>
           </div>
+          </div>
         </div>
 
         {/* Bottom bar */}
@@ -117,5 +131,26 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+/** One footer column: its title and links. */
+function FooterGroupLinks({ group }: { group: FooterGroup }) {
+  return (
+    <div className="flex flex-col gap-3 whitespace-nowrap">
+      <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">{group.title}</p>
+      <ul className="flex flex-col lg:gap-1">
+        {group.links.map((l) => (
+          <li key={l.label}>
+            <Link
+              href={l.href}
+              className="inline-flex min-h-9 items-center text-base leading-6 tracking-[-0.01rem] text-[#696969] transition-colors hover:text-foreground lg:min-h-0"
+            >
+              {l.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

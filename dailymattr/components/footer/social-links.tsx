@@ -1,6 +1,8 @@
 import { site } from "@/lib/site"
+import { cn } from "@/lib/utils"
 
-// The footer's social links: dailymattr on X, LinkedIn, Instagram and YouTube. The icons are
+// The footer's social links: dailymattr on X, LinkedIn, Instagram and YouTube, shown as bare
+// icons under the Legal and Support columns (above the app badges on phones). The icons are
 // the old site's footer icons (24px viewBox), drawn in the footer link colour.
 
 const icons = {
@@ -36,10 +38,11 @@ const links = [
   { key: "youtube", label: "YouTube", href: site.social.youtube },
 ] as const
 
-export function FooterSocialLinks() {
+/** `spread`: the icons fill the row's width, first at its start and last at its end. */
+export function FooterSocialLinks({ spread, className }: { spread?: boolean; className?: string }) {
   return (
-    <nav aria-label="Social media">
-      <ul className="flex items-center gap-2">
+    <nav aria-label="Social media" className={className}>
+      <ul className={cn("flex items-center", spread ? "justify-between" : "gap-5")}>
         {links.map((l) => (
           <li key={l.key}>
             <a
@@ -48,7 +51,7 @@ export function FooterSocialLinks() {
               rel="noopener noreferrer"
               aria-label={`dailymattr on ${l.label} (opens in a new tab)`}
               title={l.label}
-              className="flex size-9 items-center justify-center rounded-full border border-border text-[#696969] transition-colors hover:border-foreground hover:text-foreground [.theme-nia_&]:border-white/15 [.theme-nia_&]:text-white/55 [.theme-nia_&]:hover:border-white/60 [.theme-nia_&]:hover:text-white"
+              className="-m-1 flex p-1 text-[#696969] transition-colors hover:text-foreground [.theme-nia_&]:text-white/55 [.theme-nia_&]:hover:text-white"
             >
               {icons[l.key]}
             </a>

@@ -20,7 +20,7 @@ import { QrCode } from "./qr-code"
 const column = "mx-auto w-full max-w-[75rem]"
 const sectionPad = "px-4 sm:px-6 lg:px-8"
 const h2 =
-  "text-4xl leading-[1.1] font-medium tracking-[-0.09375rem] text-[#1c1c1e] lg:text-5xl lg:leading-[3.25rem]"
+  "text-4xl leading-[1.1] font-bold tracking-[-0.09375rem] text-[#1c1c1e] lg:text-5xl lg:leading-[3.25rem]"
 
 /** App Store and Google Play badges, opening the listings in a new tab. */
 function StoreBadges({ className }: { className?: string }) {
@@ -56,7 +56,7 @@ function ScanCard() {
           className="block size-44 sm:size-52"
         />
       </div>
-      <p className="mt-6 text-2xl leading-8 font-medium tracking-[-0.03rem] text-[#1c1c1e]">{qr.title}</p>
+      <p className="mt-6 text-2xl leading-8 font-bold tracking-[-0.03rem] text-[#1c1c1e]">{qr.title}</p>
       <p className="mt-2 max-w-[22rem] text-base leading-6 tracking-[-0.0125rem] text-[#696969]">{qr.body}</p>
       <p className="mt-5 text-sm leading-5 text-[#9a9aa0]">{qr.hint}</p>
     </div>
@@ -82,7 +82,7 @@ export function DownloadHero() {
           </FadeIn>
           <FadeIn
             as="h1"
-            className="text-[2.5rem] leading-[1.05] font-medium text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+            className="text-[2.5rem] leading-[1.05] font-bold text-[#1c1c1e] sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
           >
             {hero.title} <span className="text-[#3979ff]">{hero.titleAccent}</span>
           </FadeIn>
@@ -152,7 +152,7 @@ function FormatCard({ format, index }: { format: DownloadFormat; index: number }
         <span className="mt-8 text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase">
           {format.verb}
         </span>
-        <span className="mt-2 text-[1.75rem] leading-8 font-semibold tracking-[-0.05rem] text-[#1c1c1e]">
+        <span className="mt-2 text-[1.75rem] leading-8 font-bold tracking-[-0.05rem] text-[#1c1c1e]">
           {format.name}
         </span>
         <span className="mt-3 flex-1 text-base leading-6 tracking-[-0.0125rem] text-[#696969]">{format.body}</span>
