@@ -21,9 +21,9 @@ export function Navbar() {
             zoom (--nav-zoom, pinned-header.tsx) and, on the left, less the first link's own
             12px (px-3) padding, so the "Features" text and the "Get the app" button both sit
             64px from the edges.
-            gap-x-6 keeps the logo off the links: from lg to about 1100px the right group (three
+            gap-x-6 keeps the logo off the links: from lg to about 1100px the right group (two
             links, region, Log in, Get the app) is wider than half the row, so its column grows
-            and the logo shifts a little left of centre rather than touching "Inside dailymattr". */}
+            and the logo shifts a little left of centre rather than touching "Benchmark". */}
         <div className="grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center gap-x-6 px-4 sm:px-6 lg:pr-[calc(64px/var(--nav-zoom,1))] lg:pl-[calc(64px/var(--nav-zoom,1)_-_0.75rem)]">
           <NavLinks links={leftLinks} className="hidden justify-self-start md:flex" />
           <div className="md:hidden" />
