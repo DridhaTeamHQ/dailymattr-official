@@ -222,7 +222,7 @@ function WidenOnScroll({ ratio, video }: { ratio: number; video: RenderVideo }) 
 }
 
 /**
- * Desktop: grow to full screen, a brief hold, then scroll on — pinned while it plays.
+ * Desktop: grow to full screen, a brief hold, then scroll on - pinned while it plays.
  * "Full screen" is the part of the screen below the pinned navbar: the stage pins just under
  * it, and every distance here is measured in that space.
  */

@@ -1,4 +1,4 @@
-// DUMMY MEDIA — random stock photos and short clips for checking layouts. Delete this file
+// DUMMY MEDIA - random stock photos and short clips for checking layouts. Delete this file
 // and its usages when the real visuals are ready (grep for "dummy-media").
 
 /** A seeded Picsum photo, so the same box always shows the same picture. */

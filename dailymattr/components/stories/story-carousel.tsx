@@ -16,7 +16,7 @@ const MIN_CARDS = 10
 
 // The row has to be wider than the viewport, or the slides bunch up against the left edge with
 // dead space to their right (and Embla gives up on looping). Repeat the covers until they
-// overflow, so the strip reads as centred — edge to edge — at any window width.
+// overflow, so the strip reads as centred - edge to edge - at any window width.
 function useCardCount(ref: React.RefObject<HTMLDivElement | null>, cycle: number) {
   const [count, setCount] = React.useState(MIN_CARDS)
 
@@ -91,7 +91,7 @@ export function StoryCarousel({ covers }: { covers: StoryCover[] }) {
   return (
     <div ref={containerRef} className="w-full">
       {/* Embla measures its slides on init, so a changed count remounts it via the key rather
-          than calling reInit() — one clean init, and AutoScroll starts itself. */}
+          than calling reInit() - one clean init, and AutoScroll starts itself. */}
       <Carousel
         key={cardCount}
         setApi={setApi}

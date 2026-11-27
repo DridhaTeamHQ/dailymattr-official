@@ -83,7 +83,7 @@ export function NewsletterSection() {
             action="/newsletter"
             className="relative mt-[1.4375rem] flex flex-col gap-2.5 border-t border-white/10 pt-[1.3125rem]"
           >
-            <input name="firstName" autoComplete="given-name" placeholder="First name — optional" aria-label="First name (optional)" className={fieldClass} />
+            <input name="firstName" autoComplete="given-name" placeholder="First name - optional" aria-label="First name (optional)" className={fieldClass} />
             <input name="email" type="email" required autoComplete="email" placeholder="Your email address" aria-label="Email address" className={fieldClass} />
             <button
               type="submit"

@@ -1,4 +1,4 @@
-# Page slugs — new dailymattr site
+# Page slugs - new dailymattr site
 
 The new design keeps the **same URLs and slugs as the old site** (see `README-OLD-SITE.md`).
 This file is the plan only: one entry per page with its slug, title and description text.

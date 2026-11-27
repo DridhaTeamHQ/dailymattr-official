@@ -7,7 +7,7 @@ import { Carousel } from "@/components/ui/apple-cards-carousel"
 import { FadeIn } from "@/components/shared/fade-in"
 import { getLatestPix } from "@/lib/news"
 
-// Figma 8859:13168 "Happening now" — header block (24px gaps) 80px above a full-width row of
+// Figma 8859:13168 "Happening now" - header block (24px gaps) 80px above a full-width row of
 // 300 × 478 story cards with 20px gaps. Each story image already carries its headline and date.
 type Story = { tag: string; src?: string; href: string }
 

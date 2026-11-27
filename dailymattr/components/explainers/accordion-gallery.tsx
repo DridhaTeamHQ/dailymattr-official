@@ -49,7 +49,7 @@ function GalleryVideo({
   )
 }
 
-// power3.out — the easing React Bits' Accordion Gallery uses.
+// power3.out - the easing React Bits' Accordion Gallery uses.
 const EASE = [0.215, 0.61, 0.355, 1] as const
 // Width ÷ height of the active panel: 1920 × 1080 (16:9).
 const ACTIVE_RATIO = 1920 / 1080
@@ -122,8 +122,8 @@ export function AccordionGallery({
 
   // From md up, every panel shares one height H. The active panel is 16:9 (H × ACTIVE_RATIO
   // wide) and each inactive one INACTIVE_SCALE of that, so the row fills the available width.
-  // If that makes H taller than MAX_HEIGHT_VH of the window, H is capped and every panel —
-  // active and inactive — shrinks with it; the row then narrows and stays centred.
+  // If that makes H taller than MAX_HEIGHT_VH of the window, H is capped and every panel -
+  // active and inactive - shrinks with it; the row then narrows and stays centred.
   // Widths go through flex-grow (active INACTIVE_SCALE⁻¹, others 1) so open/close animates.
   const listRef = React.useRef<HTMLDivElement>(null)
   const [layout, setLayout] = React.useState<{ height: number; maxWidth: number } | null>(null)

@@ -121,7 +121,7 @@ function UsersTable({ users, status, empty }: { users: User[]; status: UserStatu
                   <ReviewCell user={user} status={status} />
                 </TableCell>
                 <TableCell className="hidden text-muted-foreground lg:table-cell">
-                  {user.lastLoginAt ? formatDate(user.lastLoginAt) : "—"}
+                  {user.lastLoginAt ? formatDate(user.lastLoginAt) : "-"}
                 </TableCell>
                 <TableCell className="pr-4 text-right">
                   {user.role === "admin" ? (
@@ -142,7 +142,7 @@ function UsersTable({ users, status, empty }: { users: User[]; status: UserStatu
 
 function ReviewCell({ user, status }: { user: User; status: UserStatus }) {
   if (status === "pending") return formatDate(user.createdAt)
-  if (!user.reviewedAt) return "—"
+  if (!user.reviewedAt) return "-"
   return (
     <div className="leading-tight">
       <p>{formatDate(user.reviewedAt)}</p>

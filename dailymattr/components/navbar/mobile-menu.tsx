@@ -48,7 +48,7 @@ export function MobileMenu() {
         <nav className="flex flex-col gap-1 px-4">
           {[...leftLinks, ...rightLinks].map((l) =>
             l.menu === "features" ? (
-              // No dropdown on mobile — the formats are listed inline instead.
+              // No dropdown on mobile - the formats are listed inline instead.
               <div key={l.label} className="flex flex-col">
                 <span className="px-2 py-2 text-sm text-muted-foreground">{l.label}</span>
                 {/* NIA leads the list, as it does in the desktop Features dropdown */}

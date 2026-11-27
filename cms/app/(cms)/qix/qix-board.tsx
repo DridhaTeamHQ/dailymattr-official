@@ -183,7 +183,7 @@ function PlaceToggle({
       onClick={onClick}
       disabled={disabled}
       aria-pressed={on}
-      title={on ? `In the ${label.toLowerCase()} — click to take it out` : `Not in the ${label.toLowerCase()} — click to add it`}
+      title={on ? `In the ${label.toLowerCase()} - click to take it out` : `Not in the ${label.toLowerCase()} - click to add it`}
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 transition-colors disabled:opacity-50",
         on ? "bg-brand-blue-soft text-primary ring-primary/20" : "text-muted-foreground ring-border line-through decoration-1 hover:bg-muted"

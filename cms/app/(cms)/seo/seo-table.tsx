@@ -301,7 +301,7 @@ function PageRow({ item, inside }: { item: SeoListItem; inside: number }) {
             {item.edited.by && <p className="text-xs">by {item.edited.by}</p>}
           </div>
         ) : (
-          "—"
+          "-"
         )}
       </TableCell>
       <TableCell className="pr-4">

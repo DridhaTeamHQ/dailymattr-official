@@ -1,4 +1,4 @@
-# Old dailymattr site — reference
+# Old dailymattr site - reference
 
 > **Note for this project:** This is the content and URL map of the **old** dailymattr website.
 > The new design reuses the **same URL paths and slugs** (e.g. `/about/`, `/news/india/`,

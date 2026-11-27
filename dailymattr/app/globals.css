@@ -65,7 +65,7 @@
   --text-6xl: 4rem; /* 64px */
   --text-9xl: 7.5rem; /* 120px */
   /* Bento wide-tile headlines, relative to the tile (an @container): Figma draws 72px and
-     120px on a 607px tile, so they keep that proportion — and stay on one line — at any width. */
+     120px on a 607px tile, so they keep that proportion - and stay on one line - at any width. */
   --text-tile: 11.86cqw;
   --text-tile--line-height: 1.05;
   --text-tile-xl: 19.77cqw;

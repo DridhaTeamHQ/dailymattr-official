@@ -219,7 +219,7 @@ function WatchCard() {
         </span>
         <div className="absolute top-[14.5rem] left-6 flex w-[20.5rem] flex-col">
           <p className="text-base leading-6 font-semibold tracking-[-0.0125rem] text-white">
-            Cricket — The Game Built on a Bet
+            Cricket - The Game Built on a Bet
           </p>
           <p className="pt-1 text-sm leading-5 text-white/64">Episode 4 · The Origin of Sports</p>
           <Scrubber elapsed="0:42" total="1:54" played="38%" tone="light" />

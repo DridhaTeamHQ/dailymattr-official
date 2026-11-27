@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <>
     <section className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 pt-16 text-center sm:px-6 sm:pt-20 lg:px-8">
-      {/* Figma 8585:10494 — eyebrow Medium 18/18 −0.16px #3979ff; title Medium 64/64 −3px #1c1c1e */}
+      {/* Figma 8585:10494 - eyebrow Medium 18/18 −0.16px #3979ff; title Medium 64/64 −3px #1c1c1e */}
       <WordsReveal
         as="p"
         className="text-sm leading-none font-medium tracking-[-0.01rem] text-[#3979ff] uppercase lg:text-lg"

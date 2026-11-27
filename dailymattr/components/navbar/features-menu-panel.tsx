@@ -38,7 +38,7 @@ const panelShadow =
   "0px 0px 0px 1px rgba(16,24,40,0.06), 0px 24px 64px 0px rgba(16,24,40,0.14), 0px 6px 16px 0px rgba(16,24,40,0.06)";
 
 /**
- * The Features mega-menu card. Figma: "Container" — node 8856:12356.
+ * The Features mega-menu card. Figma: "Container" - node 8856:12356.
  * A 340px NIA promo panel beside a 404px format list; the card is as tall as the list.
  * Never wider than the screen: its width is the design's 48.75rem (340 + 404 + gap and
  * padding) or the screen less 3rem, whichever is smaller. On tablets (md, before the laptop
@@ -53,7 +53,7 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
       style={{ boxShadow: panelShadow }}
       data-node-id="8856:12356"
     >
-      {/* NIA promo panel — the whole card links to the NIA page */}
+      {/* NIA promo panel - the whole card links to the NIA page */}
       <Link
         href="/nia"
         aria-label="NIA, your AI assistant"
@@ -181,7 +181,7 @@ export function FeaturesMenuPanel({ open = true }: { open?: boolean }) {
         </div>
       </div>
 
-      {/* Pointer notch — clipped by the card, matching the Figma render */}
+      {/* Pointer notch - clipped by the card, matching the Figma render */}
       <div
         className="absolute top-[-0.6188rem] left-[11.5062rem] flex size-[1.2374rem] items-center justify-center"
         aria-hidden="true"

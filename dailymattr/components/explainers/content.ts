@@ -1,7 +1,7 @@
 import type { GalleryItem } from "./accordion-gallery"
 import { videos } from "@/lib/videos"
 
-// Placeholder titles — swap in real explainers when ready.
+// Placeholder titles - swap in real explainers when ready.
 // The panels alternate the two 16:9 clips (the open panel's shape) until each explainer has
 // its own: encode it with `npm run videos`, add it to lib/videos.ts and point `video` at it.
 const a = videos.customerStory2V2

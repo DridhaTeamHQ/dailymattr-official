@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import type { Feature } from "./content"
 
-// Body of a feature tab — the active background comes from the TabsTrigger around it.
+// Body of a feature tab - the active background comes from the TabsTrigger around it.
 export function FeatureItem({ feature, className }: { feature: Feature; className?: string }) {
   const Icon = feature.icon
   return (

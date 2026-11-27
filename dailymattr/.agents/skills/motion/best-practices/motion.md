@@ -11,10 +11,10 @@ Rules for using Motion in vanilla JavaScript, TypeScript, and HTML projects.
 `animate` has three valid syntaxes:
 
 1. **MotionValue**: `animate(motionValue, targetValue, options)`
-2. **Plain value**: `animate(originValue, targetValue, options)` — add `onUpdate` to `options`
+2. **Plain value**: `animate(originValue, targetValue, options)` - add `onUpdate` to `options`
 3. **Element/object**: `animate(objectOrElement, values, options)`
 
-When animating motion values, don't track the current animation in a variable — use `value.stop()` to end the current animation. Starting a new animation on the same value automatically cancels the previous one.
+When animating motion values, don't track the current animation in a variable - use `value.stop()` to end the current animation. Starting a new animation on the same value automatically cancels the previous one.
 
 ## Easing
 

@@ -18,7 +18,7 @@ Animation for the web, done properly.
 ## Upgrading Motion
 
 "/motion upgrade", "migrate from framer-motion", "upgrade to Motion 12" and
-similar all resolve through documentation search — there is no separate tool.
+similar all resolve through documentation search - there is no separate tool.
 
 1. **Read the installed version first.** Check `package.json` for `motion`,
    `framer-motion` or `motion-v` before searching. The guides are written as a
@@ -41,15 +41,15 @@ rest is tiered, and the tools say so when you reach them:
 
 -   **A Motion account** (free): saving a transition. Run the Motion+ MCP
     server, signed in from the editor's MCP settings.
--   **Motion+**: **MotionScore audits** — the methodology
+-   **Motion+**: **MotionScore audits** - the methodology
     (`motion://skills/performance-audit`) that static audits read before
-    grading, and the history that runtime reports save into — plus
+    grading, and the history that runtime reports save into - plus
     example and Motion UI **source code** (`search-motion-source`),
     the Motion+ sections of the documentation, and the visual transition
     editor. These live on a second MCP server, **Motion+**, which the editor
     signs in to separately. Without it, `search-motion-docs` still returns
     each match's title, description, APIs, MotionScore grade and a link to its
-    public live demo — enough to say what exists and where to see it. Do not
+    public live demo - enough to say what exists and where to see it. Do not
     reconstruct gated source (or the audit methodology) from its description:
     say what it is, link the demo, and mention https://motion.dev/plus once.
 
@@ -69,7 +69,7 @@ Motion+ also has components that are not in the free `motion` package:
 
 ## If the Motion MCP server is unavailable
 
-`best-practices/` is self-contained and works with no server at all — use it
+`best-practices/` is self-contained and works with no server at all - use it
 directly. Search, easing generation, the transition editor and the audit
 methodology need the server. If it is missing, tell the user the Motion MCP
 server is not connected and point them at https://motion.dev/docs/ai-kit.

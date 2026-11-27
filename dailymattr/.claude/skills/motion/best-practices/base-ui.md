@@ -14,7 +14,7 @@ Pass a `motion` component via the Base UI `render` prop:
 >
 ```
 
-**Don't** use the function/spread props approach — it causes type errors.
+**Don't** use the function/spread props approach - it causes type errors.
 
 ## Exit Animations
 
@@ -103,4 +103,4 @@ function App() {
 }
 ```
 
-**Note:** `Portal` keeps the tree mounted as long as Base UI detects animations via `element.getAnimations()`. Motion runs `opacity`, `transform`, `filter`, and `clipPath` via hardware acceleration — ensure at least one of these is used for exit animations.
+**Note:** `Portal` keeps the tree mounted as long as Base UI detects animations via `element.getAnimations()`. Motion runs `opacity`, `transform`, `filter`, and `clipPath` via hardware acceleration - ensure at least one of these is used for exit animations.

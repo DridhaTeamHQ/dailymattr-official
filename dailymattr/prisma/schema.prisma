@@ -89,7 +89,7 @@ model NewsVisibility {
 /// Qix page (inHero), the story row on the Qix page (inGallery) and the one on the home page (inHome).
 model QixStory {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  /// What the story is, e.g. "MRF — Made in India". Also the cover's alt text.
+  /// What the story is, e.g. "MRF - Made in India". Also the cover's alt text.
   title        String
   coverUrl     String   @map("cover_url")
   /// Required (the CMS won't save a story without one).

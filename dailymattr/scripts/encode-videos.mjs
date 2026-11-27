@@ -3,8 +3,8 @@
 // Originals live in media-src/ (git-ignored, so large masters never reach GitHub or Vercel).
 // Each entry below becomes three files in public/videos/ (or public/<dir>/), matching localVideo() in
 // lib/videos.ts:
-//   <name>.webm         VP9  — smallest, preferred by Chrome, Firefox, Edge, Safari 17+
-//   <name>.mp4          H.264 — fallback that plays everywhere, moov atom up front
+//   <name>.webm         VP9  - smallest, preferred by Chrome, Firefox, Edge, Safari 17+
+//   <name>.mp4          H.264 - fallback that plays everywhere, moov atom up front
 //   <name>-poster.webp  first frame, so the box is never blank while the video loads
 // Set posterAt (seconds) when the first frame is blank. Set scrub: true for videos driven by
 // scroll position (dense keyframes, so any frame can be shown at once). Set length (seconds)

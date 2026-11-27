@@ -9,11 +9,11 @@ sampling the curve into a `linear()` easing function. One tool covers both.
 generate-css-easing({ kind, duration, bounce })
 ```
 
--   **kind** — `"spring"` (default) for the usual springy settle, or `"bounce"`
+-   **kind** - `"spring"` (default) for the usual springy settle, or `"bounce"`
     for a ball landing on a hard surface.
--   **duration** (seconds) — the **perceptual** duration: how long the motion
+-   **duration** (seconds) - the **perceptual** duration: how long the motion
     appears to take. Defaults to `0.4` for a spring and `1` for a bounce.
--   **bounce** (0 to 1) — how much the spring overshoots. `0` is a firm settle
+-   **bounce** (0 to 1) - how much the spring overshoots. `0` is a firm settle
     with no overshoot, `1` is maximum wobble. Defaults to `0.2`.
 
 ### The one thing that is easy to get wrong
@@ -23,7 +23,7 @@ generate-css-easing({ kind, duration, bounce })
 -   As a **kind**, `"bounce"` is the gravity-like bouncing-ball easing.
 -   As a **parameter**, `bounce` is the springiness of a spring.
 
-When `kind` is `"bounce"`, the `bounce` parameter is ignored — the feel of a
+When `kind` is `"bounce"`, the `bounce` parameter is ignored - the feel of a
 bounce is controlled by duration alone.
 
 ### Reading the result
@@ -64,7 +64,7 @@ transition:
 
 ## Only for CSS
 
-This is for hand-written CSS. Inside Motion, use a spring transition directly —
-`{ type: "spring", visualDuration: 0.4, bounce: 0.2 }` — rather than pasting a
+This is for hand-written CSS. Inside Motion, use a spring transition directly -
+`{ type: "spring", visualDuration: 0.4, bounce: 0.2 }` - rather than pasting a
 sampled curve. The real spring can be interrupted mid-flight and pick up the
 current velocity; a `linear()` approximation cannot.

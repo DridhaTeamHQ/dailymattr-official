@@ -283,7 +283,7 @@ function AskNiaTile() {
   )
 }
 
-/** "Add your vote" (9212:9298): a mini poll — vote button, result bars, results button. */
+/** "Add your vote" (9212:9298): a mini poll - vote button, result bars, results button. */
 function VoteTile() {
   return (
     <Tile w={436.406} h={153.125} at={[0, 421.09]} revealAt={0.44} wide className="bg-transparent bg-linear-to-r from-[#2b1f5c] to-[#1a2f6b]">
@@ -329,7 +329,7 @@ function WatchTile() {
       </div>
 
       <div className="absolute top-292.75 left-40.25 flex w-366.5 flex-col">
-        <p className={cn(fs[15], "leading-23 font-semibold whitespace-nowrap text-white")}>Cricket — The Game Built on a Bet</p>
+        <p className={cn(fs[15], "leading-23 font-semibold whitespace-nowrap text-white")}>Cricket - The Game Built on a Bet</p>
         <p className={cn(fs[13], "pt-3.75 leading-19.25 whitespace-nowrap text-white/64")}>Episode 4 · The Origin of Sports</p>
         <div aria-hidden className={cn(fs[11], "flex h-30.5 items-center gap-11.5 pt-15.25 leading-15.25 font-medium text-white")}>
           <span>0:42</span>

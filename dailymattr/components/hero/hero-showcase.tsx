@@ -1,6 +1,6 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 
-// Placeholder area — swap the inner div for an <Image fill /> when the visuals are ready.
+// Placeholder area - swap the inner div for an <Image fill /> when the visuals are ready.
 export function HeroShowcase({ children }: { children?: React.ReactNode }) {
   return (
     <div className="relative w-full">

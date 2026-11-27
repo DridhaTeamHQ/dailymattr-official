@@ -72,5 +72,5 @@ export const getNewsCategory = (slug: string) => newsCategories.find((c) => c.sl
 export const latestNews = {
   title: "Latest news",
   description:
-    "The latest news in short from dailymattr — 100 fact-checked, human-picked stories a day across India, world, business, technology, sports and entertainment.",
+    "The latest news in short from dailymattr - 100 fact-checked, human-picked stories a day across India, world, business, technology, sports and entertainment.",
 }

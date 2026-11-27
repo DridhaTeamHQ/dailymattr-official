@@ -176,7 +176,7 @@ export function FormatTabs() {
 
         {formats.map((f) => (
           <TabsContent key={f.value} value={f.value} className="sr-only">
-            {f.title} — {f.subtitle}
+            {f.title} - {f.subtitle}
           </TabsContent>
         ))}
 

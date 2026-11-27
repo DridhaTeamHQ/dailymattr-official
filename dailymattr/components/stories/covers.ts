@@ -29,12 +29,12 @@ export type StoryCover = {
 // These are the built-in defaults: the live list is edited on the CMS's Qix page and read by
 // lib/formats.ts, which falls back to this one when the CMS database can't be reached.
 export const storyCovers: StoryCover[] = [
-  { id: "investing-decoded", src: investingDecoded, alt: "Investing Decoded — Finance Xplaind", video: v.asianPaints },
-  { id: "new-age-investing", src: newAgeInvesting, alt: "New Age Investing — Finance Xplaind", video: v.havells },
-  { id: "amaron", src: amaron, alt: "Amaron — Made in India", video: v.amaron },
-  { id: "jet-airways", src: jetAirways, alt: "Jet Airways — Made in India", video: v.videocon },
-  { id: "jockey", src: jockey, alt: "Jockey — Made in India", video: v.jockey },
-  { id: "mrf", src: mrf, alt: "MRF — Made in India", video: v.mrf },
-  { id: "nilkamal", src: nilkamal, alt: "Nilkamal — Made in India", video: v.nilkamal },
-  { id: "fevicol", src: fevicol, alt: "Fevicol — Made in India", video: v.fevicol },
+  { id: "investing-decoded", src: investingDecoded, alt: "Investing Decoded - Finance Xplaind", video: v.asianPaints },
+  { id: "new-age-investing", src: newAgeInvesting, alt: "New Age Investing - Finance Xplaind", video: v.havells },
+  { id: "amaron", src: amaron, alt: "Amaron - Made in India", video: v.amaron },
+  { id: "jet-airways", src: jetAirways, alt: "Jet Airways - Made in India", video: v.videocon },
+  { id: "jockey", src: jockey, alt: "Jockey - Made in India", video: v.jockey },
+  { id: "mrf", src: mrf, alt: "MRF - Made in India", video: v.mrf },
+  { id: "nilkamal", src: nilkamal, alt: "Nilkamal - Made in India", video: v.nilkamal },
+  { id: "fevicol", src: fevicol, alt: "Fevicol - Made in India", video: v.fevicol },
 ]

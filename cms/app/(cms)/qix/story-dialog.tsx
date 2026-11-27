@@ -146,7 +146,7 @@ export function StoryDialog({
           id="story-title"
           value={form.title}
           onChange={(e) => set({ title: e.target.value })}
-          placeholder="e.g. MRF — Made in India"
+          placeholder="e.g. MRF - Made in India"
           aria-invalid={!!errors.title}
           maxLength={120}
         />

@@ -1,6 +1,6 @@
 # Motion for React
 
-Rules for using Motion in React and TypeScript projects. Framer Motion is now called Motion for React — all Framer Motion knowledge applies.
+Rules for using Motion in React and TypeScript projects. Framer Motion is now called Motion for React - all Framer Motion knowledge applies.
 
 ## Importing
 
@@ -30,8 +30,8 @@ Rules for using Motion in React and TypeScript projects. Framer Motion is now ca
 
 Two current syntaxes:
 
-1. `useTransform(value, inputRange, outputRange, options)` — prefer this
-2. `useTransform(() => otherMotionValue.get() * 2)` — function syntax
+1. `useTransform(value, inputRange, outputRange, options)` - prefer this
+2. `useTransform(() => otherMotionValue.get() * 2)` - function syntax
 
 **Deprecated** (never use): `useTransform(value, (latestValue) => newValue)`
 

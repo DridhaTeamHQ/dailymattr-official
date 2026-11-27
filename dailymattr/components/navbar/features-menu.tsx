@@ -13,7 +13,7 @@ const OPEN_DELAY = 180
 
 /**
  * "Features" nav entry. It opens the formats mega-menu on hover or focus and
- * never navigates on its own — the panel holds the real destinations.
+ * never navigates on its own - the panel holds the real destinations.
  */
 export function FeaturesMenu({
   item,

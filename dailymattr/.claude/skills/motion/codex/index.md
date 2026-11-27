@@ -25,8 +25,8 @@ paraphrasing a component you cannot see. See "When source is unavailable".
 search-motion-docs({ platform, searchTerm })
 ```
 
--   **platform** (required) — exactly one of `"js"`, `"react"`, `"vue"`. There is no `ts`, `html`, `svelte`, etc.
--   **searchTerm** (required) — the component or concept to find, e.g. `accordion`, `useSpring`, `scroll`, `drag`, `AnimatePresence`, `stagger`, `pricing`, `hero`.
+-   **platform** (required) - exactly one of `"js"`, `"react"`, `"vue"`. There is no `ts`, `html`, `svelte`, etc.
+-   **searchTerm** (required) - the component or concept to find, e.g. `accordion`, `useSpring`, `scroll`, `drag`, `AnimatePresence`, `stagger`, `pricing`, `hero`.
 
 ### Search by concept, not by the word "animation"
 
@@ -41,14 +41,14 @@ Matching is fuzzy and typo-tolerant, so close terms still hit. Minimum 2 charact
 
 A short set of adaptation rules, followed by MCP **resource links** and, where content is gated, a metadata block instead.
 
--   Up to **3 docs** first, for API and option lookups — `motion://docs/{platform}/{id}`. Available to everyone.
--   Up to **5 examples** — `motion://examples/{platform}/{id}`.
--   **Motion UI** (`platform: "react"` only): components and sections — `motion://ui/react/{id}`. Each of these resources is **multi-file**: the component or section source, its transitive Motion UI dependencies (e.g. `ui-theme`), and `motion.theme.ts`. Reading one returns the complete paste-ready files.
+-   Up to **3 docs** first, for API and option lookups - `motion://docs/{platform}/{id}`. Available to everyone.
+-   Up to **5 examples** - `motion://examples/{platform}/{id}`.
+-   **Motion UI** (`platform: "react"` only): components and sections - `motion://ui/react/{id}`. Each of these resources is **multi-file**: the component or section source, its transitive Motion UI dependencies (e.g. `ui-theme`), and `motion.theme.ts`. Reading one returns the complete paste-ready files.
 -   The signed-in user's own saved transitions, as JSON.
 
 **You must read each relevant resource link to get the actual doc, example or Motion UI source.** Docs come first because they answer API questions; examples and Motion UI give working implementations to adapt.
 
-If nothing matches, broaden the term and search again — results are capped and fuzzy, not exhaustive.
+If nothing matches, broaden the term and search again - results are capped and fuzzy, not exhaustive.
 
 ## 2a. Fetching source
 
@@ -89,7 +89,7 @@ The response embeds adaptation rules. Follow them:
 
 -   Adapt colours, fonts and styling to the host project; match its conventions (use Tailwind classes in a Tailwind project, and so on).
 -   Install any referenced packages.
--   **Never import from `framer-motion`** — only from `motion`. Migrate any existing `framer-motion` imports.
--   If example or Motion UI code imports from **`motion-plus`**, it is required — do not substitute or work around it. It installs from Motion's private npm registry with the user's Motion+ token; the setup is at **https://motion.dev/docs/react-motion-plus-installation**. Tell the user to generate a token at **https://motion.dev/dashboard/tokens**. Never ask them to paste a token into chat.
--   **Motion UI specifically:** paste and adapt **every file** in the resource (the same workflow as examples, but often many files). Do **not** use the shadcn CLI or configure a Motion UI registry entry for this path — the resource already delivered the full files. If `motion.theme.ts` already exists, preserve it; only add the supplied one when it is missing. Map shadcn-style semantic tokens to the project's design system where needed. Preserve animation structure and reduced-motion behaviour.
--   **Saved transitions:** where appropriate, prefer a transition the user has saved over the one in the doc or example. Choose sensibly — no very bouncy springs on a stock-trading dashboard.
+-   **Never import from `framer-motion`** - only from `motion`. Migrate any existing `framer-motion` imports.
+-   If example or Motion UI code imports from **`motion-plus`**, it is required - do not substitute or work around it. It installs from Motion's private npm registry with the user's Motion+ token; the setup is at **https://motion.dev/docs/react-motion-plus-installation**. Tell the user to generate a token at **https://motion.dev/dashboard/tokens**. Never ask them to paste a token into chat.
+-   **Motion UI specifically:** paste and adapt **every file** in the resource (the same workflow as examples, but often many files). Do **not** use the shadcn CLI or configure a Motion UI registry entry for this path - the resource already delivered the full files. If `motion.theme.ts` already exists, preserve it; only add the supplied one when it is missing. Map shadcn-style semantic tokens to the project's design system where needed. Preserve animation structure and reduced-motion behaviour.
+-   **Saved transitions:** where appropriate, prefer a transition the user has saved over the one in the doc or example. Choose sensibly - no very bouncy springs on a stock-trading dashboard.

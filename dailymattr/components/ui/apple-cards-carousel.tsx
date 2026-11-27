@@ -68,7 +68,7 @@ export const Carousel = ({ items, initialScroll = 0, className }: CarouselProps)
               1920px frame), so ~5 cards fit across the wide panel column at any width. */}
           <div className="flex flex-row justify-start gap-3 lg:gap-[0.78vw]">
             {items.map((item, index) => (
-              // Fade only — a vertical slide here made the row scroll up and down.
+              // Fade only - a vertical slide here made the row scroll up and down.
               <motion.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}

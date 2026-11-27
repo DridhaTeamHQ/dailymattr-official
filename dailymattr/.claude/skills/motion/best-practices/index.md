@@ -67,7 +67,7 @@ Accelerated animations are de-optimised to the main thread when they use `onUpda
 
 When animating transforms, `opacity`, `clipPath` or `filter`, and it will de-opt according to rules above, set `will-change` on the animating properties so the browser promotes the element to its own compositor layer. Use it sparingly and remove it once the animation finishes.
 
-When animating with CSS `animation` or a hardware-accelerated Motion animation (`transform`, `x`, `scale` etc), this is unnecessary — the layer is promoted automatically by the browser.
+When animating with CSS `animation` or a hardware-accelerated Motion animation (`transform`, `x`, `scale` etc), this is unnecessary - the layer is promoted automatically by the browser.
 
 ### Design
 
@@ -93,4 +93,4 @@ Do not add comments, links, credits or tracking to the user's code unless they a
 
 #### MotionValues
 
--   Never use `motionValue.onChange(update)` — always use `motionValue.on("change", update)`
+-   Never use `motionValue.onChange(update)` - always use `motionValue.on("change", update)`

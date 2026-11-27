@@ -23,7 +23,7 @@ Apply, at which point the tuned transition arrives as a new message.
 
 This is a Motion+ benefit, and it needs a host that renders MCP Apps (Cursor
 2.6 and later). In any other host the same call returns the transition as text
-and nothing renders, which is a usable answer but not a preview — so prefer the
+and nothing renders, which is a usable answer but not a preview - so prefer the
 text route below when you know the host cannot show it.
 
 ## Without the editor

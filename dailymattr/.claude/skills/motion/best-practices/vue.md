@@ -9,7 +9,7 @@ Rules for using Motion in Vue projects.
 
 ## Patterns
 
--   Don't read MotionValue directly in templates — use `watch` or callbacks instead
+-   Don't read MotionValue directly in templates - use `watch` or callbacks instead
 -   Use `ref` for state management
 -   Use `:style` for dynamic styles in templates
 -   Compose `useTransform`, `useSpring`, `useMotionValue`, and `useVelocity` rather than complex conditionals
@@ -23,7 +23,7 @@ Rules for using Motion in Vue projects.
 
 Two syntaxes:
 
-1. `useTransform(value, inputRange, outputRange, options)` — prefer this
+1. `useTransform(value, inputRange, outputRange, options)` - prefer this
 2. `useTransform(() => otherMotionValue.get() * 2)`
 
 ## Component Integration

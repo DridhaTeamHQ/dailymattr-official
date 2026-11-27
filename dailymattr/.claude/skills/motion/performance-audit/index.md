@@ -7,8 +7,8 @@ thing wherever it is produced.
 
 ## Fetch the methodology first
 
-The full procedure — discovery patterns, the tier reference, per-property
-tables, anti-pattern detection and the report format — is Motion+ content,
+The full procedure - discovery patterns, the tier reference, per-property
+tables, anti-pattern detection and the report format - is Motion+ content,
 served by the **Motion+** MCP server as a resource:
 
 ```
@@ -17,7 +17,7 @@ resources/read → motion://skills/performance-audit
 
 **Read it in full before any audit and follow it exactly.** Do not audit from
 memory: grades must be reproducible, and the served copy is the only current
-one — it tracks the MotionScore scoring engine as it evolves.
+one - it tracks the MotionScore scoring engine as it evolves.
 
 ## If the read is refused
 

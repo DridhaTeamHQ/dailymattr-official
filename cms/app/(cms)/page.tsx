@@ -140,7 +140,7 @@ async function Dashboard() {
                                 <span className="max-w-48 truncate text-muted-foreground">{edit.by}</span>
                               </div>
                             ) : (
-                              "—"
+                              "-"
                             )}
                           </TableCell>
                           <TableCell className="pr-(--card-spacing) text-right text-muted-foreground">{edit.at}</TableCell>

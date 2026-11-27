@@ -13,7 +13,7 @@ function TemplateDetails({ title }: { title: string }) {
     <>
       <p className="text-sm text-muted-foreground">
         <span className="font-semibold text-foreground">{title}.</span> Template details go
-        here — what the course covers, who it&rsquo;s for and how long it takes.
+        here - what the course covers, who it&rsquo;s for and how long it takes.
       </p>
       <Button
         nativeButton={false}
@@ -41,7 +41,7 @@ const cards = [
   { category: "Employee training", title: "Fire Safety and Prevention" },
   { category: "Compliance training", title: "Whistleblowing" },
   { category: "Staff development", title: "Upselling and Cross Selling Techniques" },
-  // Additional placeholder templates — rename or replace as needed.
+  // Additional placeholder templates - rename or replace as needed.
   { category: "Compliance training", title: "Food Allergens" },
   { category: "Onboarding", title: "Workplace Hygiene" },
   { category: "Staff development", title: "Customer Service Basics" },

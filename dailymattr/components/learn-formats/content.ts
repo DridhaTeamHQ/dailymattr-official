@@ -30,7 +30,7 @@ export type Feature = {
 export type LearnFormat = {
   id: string
   name: string
-  /** Shown in the panel index, e.g. "01 — Read". */
+  /** Shown in the panel index, e.g. "01 - Read". */
   verb: string
   icon: LucideIcon
   tag: string
