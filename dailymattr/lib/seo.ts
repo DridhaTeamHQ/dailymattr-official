@@ -166,9 +166,12 @@ export const defaultSeo: Record<string, PageSeo> = {
     description: "Log in to your dailyMattr account.",
     noindex: true,
   },
+  // Shown on the card when the link is shared (WhatsApp, Telegram, ...). Kept out of search:
+  // Google's smartphone crawler reports Android, so proxy.ts sends it on to Google Play.
   "/download": {
     title: "Get the App",
-    description: "Download the dailyMattr app for iPhone and Android.",
+    description:
+      "100 fact-checked, human-picked stories a day. Download dailyMattr free on the App Store or Google Play.",
     noindex: true,
   },
   "/termsandconditions": {
