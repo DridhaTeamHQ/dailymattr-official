@@ -69,6 +69,12 @@ export const videos = {
   customerStory2: localVideo("customer-story-2", 1024, 576),
   /** 1:11 customer story; also used for the gallery panels that used to play curiosity-1. */
   customerStory2V2: localVideo("customer-story-2-v2", 1920, 1080),
+  /**
+   * Explainers gallery, "Banking & Insurance". The original file as delivered (H.264 1080p,
+   * AAC), copied unchanged on purpose: not run through `npm run videos`, so no re-encode and no
+   * WebM copy. Only the poster (first frame) was made from it.
+   */
+  explainerBankingInsurance: localVideo("explainer-banking-insurance", 1920, 1080, { webm: false }),
   /** Pix page hero. */
   pixEntry: localVideo("pix-entry", 1920, 1080),
   /**
