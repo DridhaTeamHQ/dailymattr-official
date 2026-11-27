@@ -17,8 +17,12 @@ type ScrubVideoProps = Omit<
 // useMotionValueEvent needs a motion value even when there is no progress to follow.
 const fallback = motionValue(0)
 
-/** How quickly the shown frame catches up with the scroll position (0–1 per animation frame). */
-const FOLLOW = 0.18
+/**
+ * How quickly the shown frame catches up with the scroll position: the share of the gap closed
+ * per 60 Hz frame (scaled by the real frame time, so 120 Hz screens glide at the same pace).
+ * Lower is a softer, longer glide.
+ */
+const FOLLOW = 0.1
 
 /**
  * A video that never plays on its own: its frame follows `progress`, so it moves while the
@@ -32,16 +36,22 @@ export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: Scru
   const target = useRef(0) // seconds the scroll position asks for
   const shown = useRef(0) // seconds currently on screen (eased)
   const raf = useRef(0)
+  const last = useRef(0) // timestamp of the previous tick, 0 when idle
 
-  const tick = () => {
+  const tick = (now: number) => {
     raf.current = 0
     const el = ref.current
     if (!el || !el.duration) return
+    // Frames elapsed at 60 Hz since the last tick (capped, so a stalled tab doesn't jump).
+    const frames = last.current ? Math.min((now - last.current) / (1000 / 60), 4) : 1
+    last.current = now
     const diff = target.current - shown.current
-    shown.current = Math.abs(diff) < 0.005 ? target.current : shown.current + diff * FOLLOW
+    const step = 1 - (1 - FOLLOW) ** frames
+    shown.current = Math.abs(diff) < 0.005 ? target.current : shown.current + diff * step
     // Skip a frame while the decoder is still busy with the last seek, rather than queueing.
     if (!el.seeking) el.currentTime = shown.current
     if (shown.current !== target.current) raf.current = requestAnimationFrame(tick)
+    else last.current = 0
   }
 
   const seekTo = (p: number) => {
@@ -72,6 +82,17 @@ export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: Scru
         const el = e.currentTarget
         shown.current = target.current = Math.min(Math.max(progress.get(), 0), 1) * (el.duration - 0.05)
         el.currentTime = shown.current
+        // Phones (iOS Safari above all) may not draw a seeked frame of a video that has never
+        // played, leaving the poster up while the page scrolls. A muted play-and-pause wakes
+        // the decoder; if it's refused (e.g. Low Power Mode), seeking still works once it can.
+        if (window.matchMedia("(pointer: coarse)").matches) {
+          el.play()
+            .then(() => {
+              el.pause()
+              el.currentTime = shown.current
+            })
+            .catch(() => {})
+        }
       }}
     >
       {video.sources.map((s) => (

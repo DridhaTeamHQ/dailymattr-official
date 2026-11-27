@@ -79,12 +79,13 @@ export const videos = {
   pixEntry: localVideo("pix-entry", 1920, 1080),
   /**
    * Home hero: grows to full screen on scroll, and its frames are scrubbed by the scroll
-   * position instead of playing (see <ScrubVideo>). Encoded with scrub: true. Once
-   * `npm run videos` has written public/videos/home-hero.av1.mp4 (av1Crf in the script), set
-   * fullColor: true so large screens scrub that full-colour encode, which keeps the phone
-   * screen's coloured text as sharp as the master. Off until then: the file isn't there yet.
+   * position instead of playing (see <ScrubVideo>). Encoded with scrub: true, at the master's
+   * full 1920x1080 and all of its 60 fps frames. fullColor: large screens scrub the full-colour
+   * AV1 copy (public/videos/home-hero.av1.mp4, ~53 dB against the master: visually lossless),
+   * which keeps the phone screen's coloured text as sharp as the master; phones and Safari get
+   * the near-lossless mp4 (~46 dB).
    */
-  homeHero: localVideo("home-hero", 1920, 1080, { webm: false }),
+  homeHero: localVideo("home-hero", 1920, 1080, { webm: false, fullColor: true }),
 } satisfies Record<string, VideoAsset>
 
 /** 9:16 brand stories in public/stories/, one per card in the home "whole world of stories" row. */

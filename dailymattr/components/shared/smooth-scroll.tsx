@@ -19,8 +19,8 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     <ReactLenis
       root
       options={{
-        lerp: 0.07, // lower = smoother, longer glide
-        wheelMultiplier: 0.8, // each wheel step moves 80% of the usual distance
+        lerp: 0.055, // lower = smoother, longer glide
+        wheelMultiplier: 0.65, // each wheel step moves 65% of the usual distance
         touchMultiplier: 1,
         smoothWheel: true,
       }}

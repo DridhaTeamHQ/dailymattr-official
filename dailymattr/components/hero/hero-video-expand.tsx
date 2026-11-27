@@ -5,7 +5,6 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 
 import { useNavHeight } from "@/components/navbar/nav-height"
 import { ScrubVideo } from "@/components/shared/scrub-video"
-import { SiteVideo } from "@/components/shared/site-video"
 import type { VideoAsset } from "@/lib/videos"
 
 import { HeroShowcase } from "./hero-showcase"
@@ -38,13 +37,11 @@ function fullBox({ w, h }: Size): Box {
 }
 
 /**
- * Holds the video 2px past its clipping box on every side, so the video's own outermost pixel
- * column (which the browser blends with the empty space beyond it) is never on screen.
+ * How far (px) the video reaches past its clipping box on every side, so the video's own
+ * outermost pixel column (which the browser blends with the empty space beyond it) is never
+ * on screen.
  */
-function Bleed({ children }: { children: React.ReactNode }) {
-  return <div className="absolute -inset-[2px]">{children}</div>
-}
-const BLEED = 2 // px, as Bleed
+const BLEED = 2
 
 // The full-screen hold shows the video at exactly one video pixel per screen pixel whenever
 // that still covers the screen, cropping at most this much more than a plain cover fit would.
@@ -81,43 +78,57 @@ const mixBox = (a: Box, b: Box, t: number): Box => ({
 // Scroll distances, as fractions of the screen height.
 const GROW = 0.8 // card → full screen (before the pin: the card rises from 80% down to the top)
 // Stays full screen while the rest of the clip scrubs by, then scrolls away with the page.
-// The whole clip runs over the scroll, so this sets its pace: 6 gives the 21 s home clip about
-// 230px of scroll per second of video on a laptop, slow enough to read each app screen while
-// full screen. Retune it if the clip's length changes.
-const HOLD = 6
+// The whole clip runs over the scroll, so this sets its pace: 10 gives the 21 s home clip about
+// 375px of scroll per second of video on a laptop (6 felt rushed), slow enough to read each app
+// screen while full screen. Retune it if the clip's length changes.
+const HOLD = 10
 const TOTAL = GROW + HOLD
 const GROW_END = GROW / TOTAL
 
 /**
- * The hero video. On desktop it starts as the contained 2:1 card and, as the page scrolls,
- * grows to fill the screen edge to edge, holds there while the clip scrubs by, then scrolls away with the
- * page. On phones and portrait screens a
- * pinned full-screen stage would mostly be empty space around a short 16:9 strip, so the
- * video simply widens to the screen edges as it scrolls into view and the clip plays on its
- * own. On desktop everything tracks the scroll, so scrolling back up plays it in reverse.
+ * The screen's height with the mobile browser toolbar tucked away (100lvh). innerHeight grows
+ * and shrinks as that toolbar slides in and out on every change of scroll direction, and the
+ * stage's scroll length is many screen heights, so following it would make the page jump by
+ * hundreds of pixels mid-scroll. On desktop it is simply the window's height.
+ */
+function stableViewportHeight() {
+  const probe = document.createElement("div")
+  probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none"
+  document.body.appendChild(probe)
+  const h = probe.getBoundingClientRect().height
+  probe.remove()
+  return h || window.innerHeight
+}
+
+/**
+ * The hero video, the same on every screen: it starts as the contained 2:1 card and, as the
+ * page scrolls, grows to fill the screen edge to edge, holds there while the clip scrubs by,
+ * then scrolls away with the page. Everything tracks the scroll, so scrolling back up plays
+ * it in reverse. On portrait screens the full-screen video is cropped to its middle, which is
+ * where the hand and phone stand.
  */
 export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
   const reduceMotion = useReducedMotion()
   const [size, setSize] = useState<Size | null>(null)
-  const [ratio, setRatio] = useState(asset.width / asset.height)
 
   useLayoutEffect(() => {
-    const measure = () =>
-      setSize({
+    const measure = () => {
+      const next: Size = {
         w: document.documentElement.clientWidth,
-        h: window.innerHeight,
+        h: stableViewportHeight(),
         r: parseFloat(getComputedStyle(document.documentElement).fontSize) / 16,
         d: window.devicePixelRatio || 1,
-      })
+      }
+      // The toolbar sliding on phones fires resize without changing any of these: skip those.
+      setSize((prev) =>
+        prev && prev.w === next.w && prev.h === next.h && prev.r === next.r && prev.d === next.d ? prev : next
+      )
+    }
     measure()
     window.addEventListener("resize", measure)
     return () => window.removeEventListener("resize", measure)
   }, [])
 
-  const onLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const v = e.currentTarget
-    if (v.videoWidth && v.videoHeight) setRatio(v.videoWidth / v.videoHeight)
-  }
   // The clip never plays by itself: its frames follow the page scroll (see ScrubVideo).
   // mix-blend-multiply keeps Chrome from handing the video to a hardware overlay (overlays
   // only take plain source-over quads). On Windows at 150% an overlaid video gets a 1px dark
@@ -125,12 +136,7 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
   // box before overlaying it; it comes and goes as Chrome promotes and demotes the overlay.
   // The clip is flattened onto the page's white, and white × white is white, so it looks the same.
   const video = (progress?: MotionValue<number>, source: VideoAsset = asset) => (
-    <ScrubVideo
-      video={source}
-      progress={progress}
-      className="size-full object-cover mix-blend-multiply"
-      onLoadedMetadata={onLoadedMetadata}
-    />
+    <ScrubVideo video={source} progress={progress} className="size-full object-cover mix-blend-multiply" />
   )
 
   // No motion, or not measured yet on the server: the plain contained card.
@@ -140,19 +146,6 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
         <HeroShowcase>{video()}</HeroShowcase>
       </div>
     )
-  }
-
-  // Phones and portrait screens: the clip just plays and loops, it isn't tied to the scroll.
-  if (size.w < 768 || size.w < size.h) {
-    const playingVideo = () => (
-      <SiteVideo
-        video={asset}
-        priority
-        className="size-full object-cover"
-        onLoadedMetadata={onLoadedMetadata}
-      />
-    )
-    return <WidenOnScroll ratio={ratio} video={playingVideo} />
   }
 
   // Large screens (lg and up) scrub the full-colour encode where the browser can decode it:
@@ -172,12 +165,11 @@ export function HeroVideoExpand({ video: asset }: { video: VideoAsset }) {
 type RenderVideo = (progress?: MotionValue<number>) => React.ReactNode
 
 /**
- * 0 at the very top of the page, 1 when `ref`'s section is done: for "pin", when its bottom
- * meets the bottom of the screen (the pin releases); for "flow", when it has scrolled off the
- * top. Measured from the page top, not from when the section enters, so the clip sits on its
- * first frame on load and moves from the very first scroll.
+ * 0 at the very top of the page, 1 when the pinned section's bottom meets the bottom of the
+ * stage (the pin releases). Measured from the page top, not from when the section enters, so
+ * the clip sits on its first frame on load and moves from the very first scroll.
  */
-function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size, mode: "pin" | "flow") {
+function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size) {
   const { scrollY } = useScroll()
   const end = useRef(1)
   useLayoutEffect(() => {
@@ -185,7 +177,9 @@ function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size, m
     if (!el) return
     const measure = () => {
       const bottom = el.getBoundingClientRect().bottom + window.scrollY
-      end.current = Math.max(mode === "pin" ? bottom - window.innerHeight : bottom, 1)
+      // size.h, not innerHeight: the stage is sized from the steady height (see
+      // stableViewportHeight), and the pin releases when its bottom meets the section's.
+      end.current = Math.max(bottom - size.h, 1)
     }
     measure()
     // Re-measure whenever the section or anything above it changes height (fonts, images, the
@@ -194,31 +188,8 @@ function usePageProgress(ref: React.RefObject<HTMLElement | null>, size: Size, m
     observer.observe(el)
     observer.observe(document.body)
     return () => observer.disconnect()
-  }, [ref, size, mode])
+  }, [ref, size])
   return useTransform(scrollY, (y) => y / end.current)
-}
-
-/**
- * Phones / portrait: the video widens from the padded card to the screen edges, in flow.
- * The clip itself plays normally here (SiteVideo); only the width follows the scroll.
- */
-function WidenOnScroll({ ratio, video }: { ratio: number; video: RenderVideo }) {
-  const ref = useRef<HTMLDivElement>(null)
-  // 0 as the video enters from the bottom, 1 once it is centred on screen.
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] })
-  const inset = useTransform(scrollYProgress, (p) => 16 * (1 - ease(clamp01(p))))
-  const radius = useTransform(scrollYProgress, (p) => 12 * (1 - ease(clamp01(p))))
-
-  return (
-    <motion.div ref={ref} className="mt-10 w-full" style={{ paddingInline: inset }}>
-      <motion.div
-        className="relative w-full overflow-hidden"
-        style={{ aspectRatio: ratio, borderRadius: radius }}
-      >
-        <Bleed>{video()}</Bleed>
-      </motion.div>
-    </motion.div>
-  )
 }
 
 /**
@@ -242,13 +213,13 @@ function PinnedExpand({
   const stage = { ...size, h: size.h - top }
   const { h } = stage
   // The clip runs from the top of the page (first frame) to the pin releasing (last frame).
-  const videoProgress = usePageProgress(ref, size, "pin")
+  const videoProgress = usePageProgress(ref, size)
 
   // One scroll value drives every stage, so they can never get out of step. It runs from the
   // card sitting 80% down the space below the navbar (0) to the moment the pin releases (1).
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: [`start ${top + h * 0.8}px`, "end end"],
+    offset: [`start ${top + h * 0.8}px`, `end ${size.h}px`],
   })
 
   // No shrink: once full screen it stays full screen and, when the pin releases, scrolls up
