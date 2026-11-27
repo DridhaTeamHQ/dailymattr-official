@@ -78,10 +78,10 @@ const mixBox = (a: Box, b: Box, t: number): Box => ({
 // Scroll distances, as fractions of the screen height.
 const GROW = 0.8 // card → full screen (before the pin: the card rises from 80% down to the top)
 // Stays full screen while the rest of the clip scrubs by, then scrolls away with the page.
-// The whole clip runs over the scroll, so this sets its pace: 10 gives the 21 s home clip about
-// 375px of scroll per second of video on a laptop (6 felt rushed), slow enough to read each app
-// screen while full screen. Retune it if the clip's length changes.
-const HOLD = 10
+// The whole clip runs over the scroll, so this sets its pace: 20 gives the 21 s home clip about
+// 750px of scroll per second of video on a laptop (6 and then 10 still felt rushed), slow enough
+// to take in each app screen while full screen. Retune it if the clip's length changes.
+const HOLD = 20
 const TOTAL = GROW + HOLD
 const GROW_END = GROW / TOTAL
 
