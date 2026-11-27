@@ -43,7 +43,7 @@ function Card({
 
 function CardTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="relative flex w-full justify-center gap-2 text-center text-[2.5rem] leading-11 font-semibold tracking-[-0.075rem] whitespace-nowrap text-[#1c1c1e]">
+    <h3 className="relative flex w-full justify-center gap-2 text-center text-[2.5rem] leading-11 font-bold tracking-[-0.075rem] whitespace-nowrap text-[#1c1c1e]">
       {children}
     </h3>
   )
@@ -306,7 +306,7 @@ export function AboutFormats() {
         <div className="flex flex-col items-center gap-4 text-center">
           <FadeIn
             as="h2"
-            className="text-3xl leading-none font-semibold tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12"
+            className="text-3xl leading-none font-bold tracking-[-0.0938rem] text-[#1c1c1e] sm:text-5xl sm:leading-12"
           >
             {formats.title}
           </FadeIn>

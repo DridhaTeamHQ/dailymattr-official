@@ -7,7 +7,7 @@ import { hero, media, purpose } from "./content"
 
 // Figma sizes are px on a 1920 frame; written in rem (px ÷ 16) so laptops scale them down.
 const HEADING =
-  "text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
+  "text-xl leading-[1.15] font-bold tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]"
 
 /**
  * Hero over the office photo: "About" beside the dailymattr wordmark at the bottom left, the
@@ -35,7 +35,7 @@ export function AboutHero() {
         {/* One font size drives the whole title: the wordmark is sized in em, so it scales with
             "About" at every breakpoint. Baseline-aligned: the wordmark slot's bottom edge is the
             wordmark's baseline. */}
-        <h1 className="flex shrink-0 flex-wrap items-baseline gap-x-[0.4em] gap-y-2 text-[2rem] leading-none font-medium text-white sm:text-[2.5rem] lg:text-[2.25rem] xl:text-[2.75rem]">
+        <h1 className="flex shrink-0 flex-wrap items-baseline gap-x-[0.4em] gap-y-2 text-[2rem] leading-none font-bold text-white sm:text-[2.5rem] lg:text-[2.25rem] xl:text-[2.75rem]">
           {/* Scaled so the x-height of "bout" (Inter Tight ≈ 0.545em) equals the wordmark's
               lowercase height (41 of its 66.8-unit ascender height at 0.75em ≈ 0.46em). */}
           <span className="text-[0.845em]">{hero.title}</span>
@@ -125,7 +125,7 @@ export function AboutMedia() {
         */}
         <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
           <div className="flex flex-col gap-4 lg:w-[37.0625rem]">
-            <h2 className="text-xl leading-[1.15] font-medium tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
+            <h2 className="text-xl leading-[1.15] font-bold tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
               {media.title}
             </h2>
             <p className="max-w-[40rem] text-lg leading-[1.875rem] tracking-[-0.0188rem] text-white lg:w-[40rem] lg:text-xl">

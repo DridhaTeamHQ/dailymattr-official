@@ -13,8 +13,8 @@ import { EnquiryForm } from "./enquiry-form"
 const column = "mx-auto w-full max-w-[75rem]"
 const sectionPad = "px-4 sm:px-6 lg:px-8"
 const h2 =
-  "text-4xl leading-[1.1] font-medium tracking-[-0.09375rem] text-[#1c1c1e] lg:text-5xl lg:leading-[3.25rem]"
-const h3 = "text-3xl leading-[1.1] font-medium tracking-[-0.09375rem] lg:text-display lg:leading-11"
+  "text-4xl leading-[1.1] font-bold tracking-[-0.09375rem] text-[#1c1c1e] lg:text-5xl lg:leading-[3.25rem]"
+const h3 = "text-3xl leading-[1.1] font-bold tracking-[-0.09375rem] lg:text-display lg:leading-11"
 const body = "text-base leading-7 tracking-[-0.0125rem] lg:text-lg"
 
 /** White icon tile used on the cards (Figma 8595:13354). */
@@ -49,7 +49,7 @@ export function AdvertiseHero() {
         </FadeIn>
         <FadeIn
           as="h1"
-          className="text-[2.75rem] leading-[1.05] font-medium text-balance text-white sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
+          className="text-[2.75rem] leading-[1.05] font-bold text-balance text-white sm:text-5xl lg:text-6xl lg:leading-16 lg:tracking-[-0.1875rem]"
         >
           {hero.title}
         </FadeIn>

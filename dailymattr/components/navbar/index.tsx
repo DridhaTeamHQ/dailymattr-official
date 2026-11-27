@@ -35,7 +35,8 @@ export function Navbar() {
 
             <div className="hidden items-center gap-2 md:flex">
               <LanguageSwitcher />
-              <Separator orientation="vertical" className="h-4" />
+              {/* my-auto centres it: the Separator's self-stretch can't apply with a set height */}
+              <Separator orientation="vertical" className="my-auto h-4" />
               <Link
                 href="/login/"
                 className="px-2 text-sm font-medium whitespace-nowrap text-foreground hover:text-muted-foreground"
