@@ -35,6 +35,7 @@ export function PixSlideCard({
     if (!el) return
     const target = Math.max(0, Math.min(slides.length - 1, next))
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    setIndex(target)
     el.scrollTo({ left: target * el.clientWidth, behavior: reduce ? "auto" : "smooth" })
   }
 
@@ -46,14 +47,9 @@ export function PixSlideCard({
       <div
         ref={track}
         onScroll={(e) => setIndex(Math.round(e.currentTarget.scrollLeft / Math.max(1, e.currentTarget.clientWidth)))}
-        // A one-slide card (the home page row shows only the cover) doesn't scroll, so
-        // scrolling over it moves the page or row it sits in.
-        className={cn(
-          "absolute inset-0 flex",
-          slides.length > 1
-            ? "snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            : "overflow-hidden",
-        )}
+        // The slides change only with the arrows: the track can't be swiped or scrolled, so a
+        // swipe over the card moves the row of Pix it sits in instead (one Pix at a time).
+        className="absolute inset-0 flex overflow-hidden"
         role="group"
         aria-roledescription="carousel"
         aria-label={`Pix: ${headline}`}
@@ -61,7 +57,7 @@ export function PixSlideCard({
         {slides.map((slide, i) => (
           <div
             key={slide.url}
-            className="relative h-full w-full shrink-0 snap-center snap-always"
+            className="relative h-full w-full shrink-0"
             role="group"
             aria-roledescription="slide"
             aria-label={`${i + 1} of ${slides.length}`}

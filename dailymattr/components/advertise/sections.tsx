@@ -100,8 +100,9 @@ export function AdvertisePartnerships() {
           {partnerships.items.map((item, i) => (
             <li key={item.label}>
               <FadeIn delay={revealDelay(i, 4)} className="flex h-full flex-col gap-5 rounded-[1rem] bg-[#f7f7f7] p-8">
-                {/* Card art: an empty placeholder in Figma. */}
-                <div className="h-[9.375rem] w-full rounded-[0.75rem] bg-[#e6e7ea]" />
+                {/* Card art: an empty placeholder in Figma, hidden until art is supplied (an empty
+                    grey box looks unfinished). Put the art in it and remove `hidden` to show it. */}
+                <div className="hidden h-[9.375rem] w-full rounded-[0.75rem] bg-[#e6e7ea]" />
                 <IconTile src={item.icon} />
                 <p className="text-lg leading-6 font-medium tracking-[-0.0125rem] text-black">{item.label}</p>
               </FadeIn>

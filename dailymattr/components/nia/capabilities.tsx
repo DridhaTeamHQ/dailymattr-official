@@ -8,7 +8,7 @@ import { capabilities } from "./content"
 export function NiaCapabilities() {
   return (
     <section className="border-y border-white/5 bg-[#121214] px-4 py-16 sm:px-6 lg:px-8 lg:py-[160px]">
-      <div className="mx-auto grid max-w-[1200px] gap-4 md:grid-cols-2 lg:gap-6 lg:grid-cols-3">
+      <div className="mx-auto grid max-w-[1200px] gap-4 md:grid-cols-3 lg:gap-6">
         {capabilities.map((card, i) => (
           <FadeIn key={card.id} delay={revealDelay(i, 3)}>
             <div className="flex h-full flex-col gap-4 rounded-[16px] border border-white/8 bg-linear-to-b/srgb from-[#17171a] to-[#131315] p-6 lg:p-10 drop-shadow-[0px_30px_30px_rgba(0,0,0,0.1)]">

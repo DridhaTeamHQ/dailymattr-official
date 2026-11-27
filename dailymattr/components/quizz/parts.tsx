@@ -273,12 +273,12 @@ export function StoryPickCard({ edition, href, className }: { edition: Edition; 
           className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           style={{ objectPosition: edition.image.focus }}
         />
-        <span className="absolute top-2.5 left-2.5 rounded-full bg-white px-2.5 py-1 text-[0.6875rem] leading-[0.875rem] font-semibold tracking-[0.06em] text-ink uppercase">
+        <span className="absolute top-2.5 left-2.5 rounded-full bg-white px-2.5 py-1 text-xs leading-[0.875rem] font-semibold tracking-[0.06em] text-ink uppercase">
           {edition.category}
         </span>
       </span>
       <span className="flex flex-1 flex-col gap-3 p-3.5 sm:p-4">
-        <span className="line-clamp-4 text-md leading-5 font-bold tracking-[-0.01em] text-ink sm:text-base sm:leading-[1.375rem]">
+        <span className="line-clamp-6 text-md leading-5 sm:line-clamp-4 font-bold tracking-[-0.01em] text-ink sm:text-base sm:leading-[1.375rem]">
           {edition.headline}
         </span>
         <span className="mt-auto flex items-center justify-between gap-2 text-xs leading-4 font-semibold text-brand-blue-deep">
@@ -542,7 +542,7 @@ export function ScoreCard({
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-brand-blue-deep px-2.5 py-[0.3125rem] text-[0.6875rem] leading-[0.875rem] font-semibold tracking-[0.06em] whitespace-nowrap uppercase">
+    <span className="rounded-full bg-brand-blue-deep px-2.5 py-[0.3125rem] text-xs leading-[0.875rem] font-semibold tracking-[0.06em] whitespace-nowrap uppercase">
       {children}
     </span>
   )

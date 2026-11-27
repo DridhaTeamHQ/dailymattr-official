@@ -122,8 +122,8 @@
 /*
  * Laptop sizing, no zoom: every size in the site is in rem (Tailwind's scale, and arbitrary
  * values like py-[6.25rem]), so on 1024–1600px screens the root font size shrinks with the
- * screen: 1vw = width / 1600 × 16px, never below 12px. A 1280px laptop gets 12.8px = 80% of
- * the 1920px Figma layout's proportions, rendered at a true 100%. From 1600px up it is 16px.
+ * screen: 1vw = width / 1600 × 16px, never below 14px (12px made body text and labels too small
+ * to read on 1024–1279px laptops). From 1400px it follows the width; from 1600px up it is 16px.
  * Write new sizes in rem (px ÷ 16) so they scale too.
  *
  * --site-scale (same ratio as a number, set by the script in app/layout.tsx) is only used to
@@ -134,7 +134,7 @@ html {
 }
 @media (min-width: 64rem) {
   html {
-    font-size: clamp(12px, 1vw, 16px);
+    font-size: clamp(14px, 1vw, 16px);
   }
 }
 html:has(.nia-layout) {

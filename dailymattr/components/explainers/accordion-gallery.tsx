@@ -274,7 +274,7 @@ export function AccordionGallery({
 
             {/* Figma shows the category only; the title stays for screen readers */}
             <div className="min-w-0">
-              <p className="truncate text-md leading-5 font-medium text-black">{item.category}</p>
+              <p className="line-clamp-2 text-sm leading-5 font-medium text-black sm:text-md lg:truncate">{item.category}</p>
               <p className="sr-only">{item.title}</p>
             </div>
           </motion.div>

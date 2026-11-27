@@ -263,7 +263,7 @@ export function TraxFeatured({ playlist, cards }: { playlist: TraxEpisode[]; car
           </FadeIn>
         )}
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:mt-6 lg:grid-cols-3 lg:gap-6">
+        <div className="mt-4 grid gap-4 md:grid-cols-3 lg:mt-6 lg:gap-6">
           {cards.map((episode, i) => (
             <FadeIn key={episode.id} delay={revealDelay(i, 3)} className="h-full">
               <EpisodeCard episode={episode} />

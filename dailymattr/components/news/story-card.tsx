@@ -27,7 +27,7 @@ export function NewsCard({
     <article className="group flex flex-col gap-2.5">
       {/* The headline below is the link screen readers and keyboards use. */}
       <Link href={href} tabIndex={-1} aria-hidden className="relative block aspect-[3/4] overflow-hidden rounded-2xl bg-[#ececf0]">
-        {story.image && (
+        {story.image ? (
           <Image
             src={story.image}
             alt=""
@@ -35,17 +35,23 @@ export function NewsCard({
             preload={priority}
             // A few Pix photos sit on other sites, which next/image isn't allowed to fetch.
             unoptimized={!isMediaImage(story.image)}
-            sizes="(min-width: 1536px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+            sizes="(min-width: 1536px) 20vw, (min-width: 768px) 25vw, 50vw"
             className="object-cover object-top"
           />
+        ) : (
+          // No photo for this story: the wordmark on a soft brand wash instead of an empty box.
+          <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[linear-gradient(160deg,#eef3ff_0%,#e3e7ef_100%)] p-4 text-center">
+            <Image src="/footer/logo.svg" alt="" width={120} height={25} className="h-auto w-3/5 max-w-[7.5rem] opacity-70" />
+            {category && <span className="text-xs font-semibold tracking-[0.06em] text-[#6b6b73] uppercase">{category.label}</span>}
+          </span>
         )}
       </Link>
-      <Heading className="text-[0.96875rem] leading-[1.35] font-semibold tracking-[-0.01em] text-[#141417]">
+      <Heading className="text-sm leading-[1.35] font-semibold sm:text-[0.96875rem] tracking-[-0.01em] text-[#141417]">
         <Link href={href} className="underline-offset-2 hover:underline">
           {story.headline}
         </Link>
       </Heading>
-      <p className="flex items-center gap-2 text-xs leading-4">
+      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-4">
         <time dateTime={story.published} className="text-[#6b6b73]">
           {story.date}
         </time>

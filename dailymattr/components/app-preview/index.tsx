@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 // Figma frame: vertical auto layout, gap 48, padding 16 × 100, centered, fill #f5f5f7.
 export function AppPreviewSection() {
   return (
-    <section className={cn("flex w-full flex-col items-center gap-12 bg-[#f5f5f7] py-[6.25rem]", SITE_GUTTER)}>
+    <section className={cn("flex w-full flex-col items-center gap-8 bg-[#f5f5f7] pt-16 pb-12 sm:gap-12 lg:py-[6.25rem]", SITE_GUTTER)}>
       <SectionHeading
         eyebrow="For curious minds. Busy lives."
         lead="Open the app."

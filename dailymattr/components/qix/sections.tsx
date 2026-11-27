@@ -12,7 +12,7 @@ import { QIX_H2, QixButton, QixEyebrow } from "./primitives"
 export function QixExperience({ frames }: { frames: QixContent["frames"] }) {
   return (
     <section className="bg-white px-4 pt-8 pb-20 sm:px-6 lg:px-8 lg:pt-20 lg:pb-[10rem]">
-      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[30rem_41rem] lg:justify-between lg:gap-16">
+      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] items-center gap-10 lg:grid-cols-[minmax(0,30rem)_41rem] lg:justify-between lg:gap-10 xl:gap-16">
         <div className="flex flex-col items-start gap-4">
           <FadeIn className="flex flex-col items-start gap-4">
             <QixEyebrow>{experience.eyebrow}</QixEyebrow>

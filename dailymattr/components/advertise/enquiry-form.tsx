@@ -18,9 +18,19 @@ export const field =
   "h-12 rounded-[0.75rem] border-[#dddfe3] bg-white px-3.5 text-base text-[#1c1c1e] shadow-none placeholder:text-[#9a9aa0] md:text-base focus-visible:border-[#3979ff] focus-visible:ring-[#3979ff]/20"
 const label = "text-sm leading-5 font-medium text-[#1c1c1e]"
 
-export function Field({ id, text, children }: { id: string; text: string; children: React.ReactNode }) {
+export function Field({
+  id,
+  text,
+  children,
+  className,
+}: {
+  id: string
+  text: string
+  children: React.ReactNode
+  className?: string
+}) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className={cn("flex flex-col gap-2", className)}>
       <Label htmlFor={id} className={label}>
         {text}
       </Label>
@@ -138,7 +148,7 @@ export function EnquiryForm() {
         <Field id="advertise-objective" text="Campaign objective">
           <Select id="advertise-objective" name="objective" options={enquiry.objectives} />
         </Field>
-        <Field id="advertise-budget" text="Budget range">
+        <Field id="advertise-budget" text="Budget range" className="sm:col-span-2">
           <Select id="advertise-budget" name="budget" options={enquiry.budgets} />
         </Field>
       </div>

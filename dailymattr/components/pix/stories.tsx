@@ -53,9 +53,11 @@ export async function PixStories() {
         <PixSectionIntro eyebrow={realStories.eyebrow} title={realStories.title} />
 
         {showcase.length > 0 ? (
-          <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-16 lg:grid-cols-4 lg:gap-6">
+          // Phones and tablets: one row swiped sideways (like the home page's Pix row), so each
+          // card stays wide enough to read the text on its slides. Desktop: four columns.
+          <div className="-mx-4 mt-10 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto overscroll-x-contain px-4 [scrollbar-width:none] sm:-mx-6 sm:scroll-px-6 sm:gap-4 sm:px-6 lg:mx-0 lg:snap-none lg:mt-16 lg:grid lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:px-0 [&::-webkit-scrollbar]:hidden">
             {showcase.map(({ story, slides }, i) => (
-              <FadeIn key={story.id} delay={revealDelay(i, 4)}>
+              <FadeIn key={story.id} delay={revealDelay(i, 4)} className="w-[16rem] shrink-0 snap-start snap-always sm:w-[18rem] lg:w-auto">
                 <PixSlideCard slides={slides} headline={story.headline} href={storyHref(story)} />
               </FadeIn>
             ))}

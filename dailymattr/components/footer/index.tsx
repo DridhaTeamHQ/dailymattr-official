@@ -22,7 +22,7 @@ import { FooterSocialLinks } from "./social-links"
  */
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 sm:px-6 lg:px-16 lg:border-t-0 lg:pt-6 [main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:border-t-0 lg:[main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
+    <footer className="w-full border-t border-border bg-background px-4 pt-16 pb-10 sm:px-6 lg:px-16 lg:border-t-0 lg:pt-12 [main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:border-t-0 lg:[main:not([style*='display:_none']):has(>[data-full-bleed]:last-child)~&]:pt-[6.0625rem] [.theme-nia_&]:bg-[#0b0b0d] [.nia-layout_&]:lg:pt-[6.0625rem] [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
       {/* Lines up with the wide panels above (PANEL_WIDTH) */}
       <div className={cn(PANEL_WIDTH, "flex flex-col")}>
         <div className="flex flex-col gap-12 lg:flex-row lg:justify-between lg:gap-20">
@@ -59,16 +59,16 @@ export function Footer() {
 
           {/* Link columns, with the app-store badges underneath */}
           <div className="relative flex flex-col gap-10 lg:shrink-0">
-          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 lg:flex lg:shrink-0 lg:gap-10 xl:gap-20">
+          <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-10 sm:grid-cols-3 md:grid-cols-5 md:gap-x-8 lg:flex lg:shrink-0 lg:gap-10 xl:gap-20">
             {footerGroups.map((group) => (
               <div key={group.title} className="flex flex-col gap-3 whitespace-nowrap">
                 <p className="text-md leading-7 tracking-[-0.02rem] text-foreground">{group.title}</p>
-                <ul className="flex flex-col gap-1">
+                <ul className="flex flex-col lg:gap-1">
                   {group.links.map((l) => (
                     <li key={l.label}>
                       <Link
                         href={l.href}
-                        className="text-base leading-6 tracking-[-0.01rem] text-[#696969] transition-colors hover:text-foreground"
+                        className="inline-flex min-h-9 items-center text-base leading-6 tracking-[-0.01rem] text-[#696969] transition-colors hover:text-foreground lg:min-h-0"
                       >
                         {l.label}
                       </Link>

@@ -217,7 +217,7 @@ export function QixExperienceSequence({ frames }: { frames: Frame[] }) {
   }, [active, running, frames])
 
   return (
-    <ol ref={listRef} className="relative grid w-[41rem] grid-cols-4 gap-4">
+    <ol ref={listRef} className="relative mx-auto grid w-[41rem] grid-cols-4 gap-4">
       {/* Hairline the step numbers sit on (Figma 8646:2713), from step 1 to step 4 and no further,
           with the blue timeline over it. Each circle is centred under its 8.25rem video (4.125rem
           in), and steps are 10.5rem apart (9.5rem column + 1rem gap). */}

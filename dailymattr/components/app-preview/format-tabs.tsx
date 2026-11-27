@@ -94,7 +94,7 @@ export function FormatTabs() {
       // screen the box is capped so its 16:9 height fits between the pinned nav and the bottom
       // of the screen (1.5rem clear of each): short screens get a narrower box, never a cropped clip.
       className={cn(
-        "@container gap-0",
+        "@container relative gap-0",
         CONTENT_WIDTH,
         "max-w-[calc((100svh_-_var(--nav-height,4rem)_-_3rem)*16/9)] lg:w-[var(--expand-w,85vw)]"
       )}
@@ -180,79 +180,82 @@ export function FormatTabs() {
           </TabsContent>
         ))}
 
-        <TabsList ref={listRef} className={cn("absolute inset-x-2 bottom-2 w-auto gap-0 overflow-x-auto rounded-[0.9333rem] p-1.5group-data-horizontal/tabs:h-14 sm:inset-x-6 sm:bottom-6 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]", glassBar)}>
-          {formats.map((f) => {
-            const isActive = f.value === active
-            // NIA: grey star, and the title and star take the NIA gradient on hover.
-            const niaHover = f.sparkle
-            const starBox = "absolute -top-[0.1595rem] -right-[0.365rem] size-[0.4389rem]"
-            const starMask = { mask: `url(${niaStar.src}) center / contain no-repeat` }
-            return (
-              <TabsTrigger
-                key={f.value}
-                value={f.value}
-                // The background lives in the sliding pill below, not on the trigger itself.
-                className="group/trigger h-full min-w-20 flex-1 flex-col gap-[0.2333rem] rounded-[0.7rem] border-0 bg-transparent text-white hover:text-white dark:text-white dark:hover:text-white data-active:bg-transparent data-active:text-white group-data-[variant=default]/tabs-list:data-active:shadow-none dark:data-active:bg-transparent dark:data-active:text-white"
+      </AspectRatio>
+
+      {/* Phones: its own row under the clip, every tab sharing the width, so all seven fit
+          and none hides behind a sideways scroll. From sm: over the bottom of the clip. */}
+      <TabsList ref={listRef} className={cn("relative mt-2.5 w-full gap-0 overflow-x-auto overflow-y-hidden rounded-[0.9333rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-1 group-data-horizontal/tabs:h-12 max-sm:bg-[#1c1c1e] max-sm:backdrop-blur-none sm:absolute sm:inset-x-6 sm:bottom-6 sm:mt-0 sm:w-auto sm:p-1.5 sm:group-data-horizontal/tabs:h-[5.25rem] lg:inset-x-auto lg:bottom-[2.3125rem] lg:left-1/2 lg:w-[75.6875rem] lg:max-w-[calc(100%-3rem)] lg:-translate-x-1/2 lg:p-[0.35rem] lg:group-data-horizontal/tabs:h-[4.875rem]", glassBar)}>
+        {formats.map((f) => {
+          const isActive = f.value === active
+          // NIA: grey star, and the title and star take the NIA gradient on hover.
+          const niaHover = f.sparkle
+          const starBox = "absolute -top-[0.1595rem] -right-[0.365rem] size-[0.4389rem]"
+          const starMask = { mask: `url(${niaStar.src}) center / contain no-repeat` }
+          return (
+            <TabsTrigger
+              key={f.value}
+              value={f.value}
+              // The background lives in the sliding pill below, not on the trigger itself.
+              className="group/trigger h-full min-w-0 flex-1 max-sm:px-0.5 sm:min-w-20 flex-col gap-[0.2333rem] rounded-[0.7rem] border-0 bg-transparent text-white hover:text-white dark:text-white dark:hover:text-white data-active:bg-transparent data-active:text-white group-data-[variant=default]/tabs-list:data-active:shadow-none dark:data-active:bg-transparent dark:data-active:text-white"
+            >
+              {isActive &&
+                (reduceMotion ? (
+                  <span className={glassPill} />
+                ) : (
+                  // Shared layoutId: the pill glides from the old tab to this one.
+                  <motion.span
+                    layoutId={pillId}
+                    className={cn(glassPill, "will-change-transform")}
+                    transition={{ type: "spring", bounce: 0.15, visualDuration: 0.4 }}
+                  />
+                ))}
+              {/* Bold 16.8/17.92 over Regular 14/15.68 at 50% white; inactive labels at 50%. */}
+              {/* NIA is a step heavier (extra-bold): the gradient on hover reads thinner than white. */}
+              <span
+                className={cn(
+                  "relative text-xs sm:text-sm lg:text-[1.05rem] lg:leading-[1.12rem]",
+                  f.sparkle ? "font-extrabold" : "font-bold"
+                )}
               >
-                {isActive &&
-                  (reduceMotion ? (
-                    <span className={glassPill} />
-                  ) : (
-                    // Shared layoutId: the pill glides from the old tab to this one.
-                    <motion.span
-                      layoutId={pillId}
-                      className={cn(glassPill, "will-change-transform")}
-                      transition={{ type: "spring", bounce: 0.15, visualDuration: 0.4 }}
-                    />
-                  ))}
-                {/* Bold 16.8/17.92 over Regular 14/15.68 at 50% white; inactive labels at 50%. */}
-                {/* NIA is a step heavier (extra-bold): the gradient on hover reads thinner than white. */}
-                <span
-                  className={cn(
-                    "relative text-sm lg:text-[1.05rem] lg:leading-[1.12rem]",
-                    f.sparkle ? "font-extrabold" : "font-bold"
-                  )}
-                >
-                  <span className={cn(fade, !isActive && inactive, niaHover && "group-hover/trigger:opacity-0")}>
+                <span className={cn(fade, !isActive && inactive, niaHover && "group-hover/trigger:opacity-0")}>
+                  {f.title}
+                </span>
+                {niaHover && (
+                  // On hover NIA takes its brand gradient (as in the bento and on About): the
+                  // gradient copy fades in over the white title.
+                  <span
+                    aria-hidden
+                    className={cn("absolute inset-0 bg-clip-text text-transparent opacity-0 group-hover/trigger:opacity-100", niaGradient, fade)}
+                  >
                     {f.title}
                   </span>
-                  {niaHover && (
-                    // On hover NIA takes its brand gradient (as in the bento and on About): the
-                    // gradient copy fades in over the white title.
+                )}
+                {f.sparkle && (
+                  <>
+                    {/* Figma 9262:585: #7f7f7f star in an 8px box, 3.3px above the title and
+                        overlapping its end; full opacity, unlike the label. */}
+                    <Image src={niaStar} alt="" className={cn(starBox, "group-hover/trigger:opacity-0", fade)} />
                     <span
                       aria-hidden
-                      className={cn("absolute inset-0 bg-clip-text text-transparent opacity-0 group-hover/trigger:opacity-100", niaGradient, fade)}
-                    >
-                      {f.title}
-                    </span>
-                  )}
-                  {f.sparkle && (
-                    <>
-                      {/* Figma 9262:585: #7f7f7f star in an 8px box, 3.3px above the title and
-                          overlapping its end; full opacity, unlike the label. */}
-                      <Image src={niaStar} alt="" className={cn(starBox, "group-hover/trigger:opacity-0", fade)} />
-                      <span
-                        aria-hidden
-                        className={cn(starBox, "opacity-0 group-hover/trigger:opacity-100", niaGradient, fade)}
-                        style={starMask}
-                      />
-                    </>
-                  )}
-                </span>
-                <span
-                  className={cn(
-                    "relative hidden text-sm leading-[0.98rem] font-normal text-white/65 @min-[78rem]:block",
-                    fade,
-                    !isActive && inactive
-                  )}
-                >
-                  {f.subtitle}
-                </span>
-              </TabsTrigger>
-            )
-          })}
-        </TabsList>
-      </AspectRatio>
+                      className={cn(starBox, "opacity-0 group-hover/trigger:opacity-100", niaGradient, fade)}
+                      style={starMask}
+                    />
+                  </>
+                )}
+              </span>
+              <span
+                className={cn(
+                  "relative hidden text-sm leading-[0.98rem] font-normal text-white/65 @min-[78rem]:block",
+                  fade,
+                  !isActive && inactive
+                )}
+              >
+                {f.subtitle}
+              </span>
+            </TabsTrigger>
+          )
+        })}
+      </TabsList>
     </Tabs>
   )
 }

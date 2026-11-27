@@ -17,16 +17,31 @@ export function ContentsNav({ items }: { items: { id: string; label: string }[] 
     const targets = items
       .map((item) => document.getElementById(item.id))
       .filter((el): el is HTMLElement => !!el)
-    // A thin band near the top of the screen: the section crossing it is the one being read.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const hit = entries.find((e) => e.isIntersecting)
-        if (hit) setActive(hit.target.id)
-      },
-      { rootMargin: "-20% 0px -75% 0px" },
-    )
-    targets.forEach((t) => observer.observe(t))
-    return () => observer.disconnect()
+    // The section being read: the last one whose top has passed a line 20% down the screen, or
+    // the first while the page is above it (the hero). Worked out from the scroll position each
+    // time, so a jump or a fast scroll back to the top never leaves an old item highlighted.
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const line = window.innerHeight * 0.2
+      let current = targets[0]?.id
+      for (const t of targets) {
+        if (t.getBoundingClientRect().top <= line) current = t.id
+        else break
+      }
+      if (current) setActive(current)
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener("scroll", schedule, { passive: true })
+    window.addEventListener("resize", schedule)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", schedule)
+      window.removeEventListener("resize", schedule)
+    }
   }, [items])
 
   const go = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {

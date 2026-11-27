@@ -17,7 +17,7 @@ export function QuizMain({ children }: { children: React.ReactNode }) {
 /** Placeholder for a quiz page while it streams in: the start screen's shape in grey. */
 export function QuizSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Loading the quiz" className="mx-auto w-full max-w-[37.5rem] lg:max-w-[66rem]">
+    <div aria-busy="true" aria-label="Loading the quiz" className="mx-auto w-full max-w-[37.5rem] md:max-w-[45rem] lg:max-w-[66rem]">
       <SeriesBar date={editionDate} />
       <div className="mt-6 grid animate-pulse gap-6 sm:mt-8 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-12">
         <i className="block aspect-[4/3] rounded-[1.5rem] bg-track sm:aspect-[3/2] lg:aspect-[2/3]" />
@@ -43,7 +43,7 @@ export function QuizSkeleton() {
 /** /quizz: the headline and today's stories. Each card links to /quizz/<slug>. */
 export function QuizPicker() {
   return (
-    <div className="mx-auto w-full max-w-[37.5rem] lg:max-w-[66rem]">
+    <div className="mx-auto w-full max-w-[37.5rem] md:max-w-[45rem] lg:max-w-[66rem]">
       <FadeIn>
         <SeriesBar date={editionDate} />
       </FadeIn>

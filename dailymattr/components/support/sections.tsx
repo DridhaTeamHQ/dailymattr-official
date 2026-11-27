@@ -92,7 +92,7 @@ export function SupportChannels() {
             {channels.title}
           </h2>
         </FadeIn>
-        <ul className="grid grid-cols-1 gap-6 pt-10 md:grid-cols-3 lg:pt-12">
+        <ul className="grid grid-cols-1 gap-6 pt-10 lg:grid-cols-3 lg:pt-12">
           {channels.items.map((item, i) => {
             const external = item.link.href.startsWith("mailto:")
             const Anchor = external ? "a" : Link
@@ -110,7 +110,7 @@ export function SupportChannels() {
                       </h3>
                       <p className="text-base leading-7 tracking-[-0.0125rem] text-[#696969]">{item.body}</p>
                     </div>
-                    <span className="flex items-center gap-1.5 text-base leading-6 font-medium break-all text-[#3979ff]">
+                    <span className="flex items-center gap-1.5 text-base leading-6 font-medium [overflow-wrap:anywhere] text-[#3979ff]">
                       {item.link.label}
                       <Image
                         src="/shared/arrow-up-right-blue.svg"

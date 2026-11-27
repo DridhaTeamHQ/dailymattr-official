@@ -12,12 +12,12 @@ export function PixRow({ items }: { items: PixRowItem[] }) {
   return (
     <div className="w-full px-4 sm:px-6 lg:px-[64px]">
       <div
-        className="flex gap-3 overflow-x-auto overscroll-x-contain [scrollbar-width:none] sm:gap-4 lg:gap-6 [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain [scrollbar-width:none] sm:gap-4 lg:snap-none lg:gap-6 [&::-webkit-scrollbar]:hidden"
         role="region"
         aria-label="Latest Pix stories"
       >
         {items.map((item) => (
-          <div key={item.id} className="w-[13.75rem] shrink-0 sm:w-[16rem] lg:w-[17.625rem]">
+          <div key={item.id} className="w-[13.75rem] shrink-0 snap-start snap-always sm:w-[16rem] lg:w-[17.625rem]">
             <PixSlideCard slides={item.slides} headline={item.headline} href={item.href} />
           </div>
         ))}

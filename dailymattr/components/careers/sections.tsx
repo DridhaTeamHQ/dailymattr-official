@@ -102,7 +102,7 @@ export function CareersRoles() {
           <FadeIn as="h2" className={h2}>
             {roles.title}
           </FadeIn>
-          <FadeIn as="p" delay={0.2} className="text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
+          <FadeIn as="p" delay={0.2} className="text-pretty text-base leading-7 tracking-[-0.0125rem] text-[#696969] lg:text-lg">
             {roles.body}
           </FadeIn>
         </div>

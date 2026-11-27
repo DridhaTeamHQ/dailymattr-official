@@ -11,7 +11,7 @@ import { videos } from "@/lib/videos"
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function DailyRoutineSection() {
   return (
-    <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem] lg:gap-36">
+    <section className="flex w-full flex-col items-center gap-16 px-4 py-16 sm:px-6 lg:px-16 lg:py-[6.25rem] lg:gap-36">
       <SectionHeading
         eyebrow="A little curiosity, every day"
         lead="Make staying informed"

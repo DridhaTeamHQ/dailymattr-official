@@ -6,7 +6,7 @@ import { PixButton } from "./primitives"
 export function PixGetStarted() {
   return (
     <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-[10rem]">
-      <FadeIn className="mx-auto flex max-w-[75rem] flex-col gap-10 overflow-hidden rounded-[1.5rem] bg-[#f7f7f7] p-8 sm:p-12 lg:h-[28.75rem] lg:flex-row lg:items-center lg:justify-between lg:p-20">
+      <FadeIn className="mx-auto flex max-w-[75rem] flex-col gap-10 overflow-hidden rounded-[1.5rem] bg-[#f7f7f7] p-8 sm:p-12 lg:min-h-[20rem] lg:flex-row lg:items-center lg:justify-between lg:p-20">
         <div className="flex min-w-0 flex-1 flex-col items-start gap-4">
           <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
             {getStarted.eyebrow}
@@ -19,10 +19,11 @@ export function PixGetStarted() {
           </div>
         </div>
 
-        {/* Empty media slot in the frame (8632:2319), kept as-is until art is supplied. */}
+        {/* Media slot in the frame (8632:2319): hidden until art is supplied, since an empty white
+            box looks broken. Put the art in it and remove `hidden` to show it. */}
         <div
           aria-hidden
-          className="h-[13.75rem] w-full shrink-0 rounded-[1rem] bg-white sm:h-[18.75rem] lg:w-[22.6875rem]"
+          className="hidden h-[13.75rem] w-full shrink-0 rounded-[1rem] bg-white sm:h-[18.75rem] lg:w-[22.6875rem]"
         />
       </FadeIn>
     </section>

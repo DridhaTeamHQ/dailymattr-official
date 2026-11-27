@@ -15,25 +15,25 @@ const photoOverlay = [
  */
 export function NiaResponsible() {
   return (
-    <section className="relative isolate overflow-hidden lg:h-[747px]">
+    <section className="relative isolate overflow-hidden xl:h-[747px]">
       <Image
         src="/nia/responsible-answers.png"
         alt=""
         fill
         sizes="100vw"
-        className="-z-10 object-cover object-[60%_center] lg:object-center"
+        className="-z-10 object-cover object-[60%_center] xl:object-center"
       />
       {/* Phones get an extra dark wash so the stacked copy stays readable over the photo. */}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-black/55 lg:hidden" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-black/55 xl:hidden" />
       <div aria-hidden className="absolute inset-0 -z-10" style={{ backgroundImage: photoOverlay }} />
 
-      <div className="flex flex-col gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:gap-0 lg:px-0 lg:pt-[150px] lg:pb-0 lg:pl-[206px]">
+      <div className="flex flex-col gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:px-16 lg:py-24 xl:gap-0 xl:px-0 xl:pt-[150px] xl:pb-0 xl:pl-[206px]">
         <p className="text-sm leading-4.5 font-medium text-[#5b8cff] uppercase lg:text-lg">
           Responsible answers
         </p>
 
-        <div className="flex flex-col gap-12 lg:mt-[252px] lg:flex-row lg:gap-0">
-          <FadeIn className="lg:w-[897px] lg:shrink-0">
+        <div className="flex flex-col gap-12 xl:mt-[252px] xl:flex-row xl:gap-0">
+          <FadeIn className="xl:w-[897px] xl:shrink-0">
             <div className="flex flex-col gap-3 lg:gap-4">
               <h2 className="max-w-[554px] text-3xl leading-tight font-medium text-white sm:text-display lg:text-5xl lg:leading-12">
                 Curiosity deserves clarity.

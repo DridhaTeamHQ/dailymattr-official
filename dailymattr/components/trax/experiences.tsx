@@ -26,7 +26,7 @@ export function TraxExperiences() {
       <div className="mx-auto max-w-[75rem]">
         <TraxSectionIntro eyebrow={experiences.eyebrow} title={experiences.title} />
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-6">
+        <div className="mt-10 grid gap-4 md:grid-cols-3 lg:mt-16 lg:gap-6">
           {experiences.items.map((item, i) => (
             <FadeIn key={item.title} delay={revealDelay(i, 3)} className="h-full">
               <ExperienceCard item={item} />

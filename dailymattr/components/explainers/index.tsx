@@ -11,7 +11,7 @@ import { FadeIn } from "@/components/shared/fade-in"
 // Figma frame: max width 1540, vertical auto layout, gap 64, padding 16 × 100.
 export function ExplainersSection() {
   return (
-    <section className="flex w-full flex-col items-center gap-16 px-4 sm:px-6 lg:px-16 py-[6.25rem]">
+    <section className="flex w-full flex-col items-center gap-16 px-4 py-16 sm:px-6 lg:px-16 lg:py-[6.25rem]">
       <SectionHeading
         eyebrow="Follow your curiosity"
         lead="Something worth watching."

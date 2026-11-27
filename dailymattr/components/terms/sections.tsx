@@ -43,7 +43,7 @@ export function TermsHero() {
 export function TermsArticle() {
   return (
     <section className="bg-white px-4 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[75rem] grid-cols-[minmax(0,1fr)] pt-6 lg:grid-cols-[17.5rem_minmax(0,46.5rem)] lg:gap-24 lg:px-10 lg:pt-[6.25rem]">
+      <div className="mx-auto grid max-w-[40rem] grid-cols-[minmax(0,1fr)] pt-10 lg:max-w-[75rem] lg:grid-cols-[17.5rem_minmax(0,46.5rem)] lg:gap-24 lg:px-10 lg:pt-[6.25rem]">
         <aside className="hidden lg:block">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain">
             <ContentsNav items={sections.map((s, i) => ({ id: sectionId(i), label: s.nav }))} />

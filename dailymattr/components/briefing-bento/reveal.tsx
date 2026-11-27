@@ -23,8 +23,13 @@ import { cn } from "@/lib/utils"
  * Scrolling back plays it in reverse. Only transform and opacity change, and will-change is
  * set only while it moves, so each layer is re-rasterised sharp once it settles.
  *
- * On phones (below md), and for reduced motion, nothing is pinned or animated: the plain
- * stacked bento shows.
+ * On phones and tablets (below lg) the bento is a two-column stack with nothing pinned; each
+ * tile fades up into place as it scrolls onto the screen instead (StackEntrance), reversing on
+ * the way back. For reduced motion, nothing moves: the plain stack shows.
+ *
+ * Switching between the two (rotating a tablet, resizing a window) resets every tile to fully
+ * shown before the other mode takes over: Motion leaves the last inline values on an element
+ * whose style stops being animated, which used to leave unrevealed tiles invisible.
  */
 
 /** Tile area of the Figma bento (9212:9241 less its 19.14 inset), in Figma px. */
@@ -59,7 +64,9 @@ const TILE_PUSH = 0.18
 const START_GUTTER = 32
 const slideEase = cubicBezier(0.22, 1, 0.36, 1)
 
-const DESKTOP = "(min-width: 48rem)"
+// The bento grid and its scroll reveal start at lg: on tablets the grid is too small to read,
+// so they get the two-column stack like phones.
+const DESKTOP = "(min-width: 64rem)"
 function subscribeDesktop(onChange: () => void) {
   const media = window.matchMedia(DESKTOP)
   media.addEventListener("change", onChange)
@@ -67,7 +74,15 @@ function subscribeDesktop(onChange: () => void) {
 }
 const isDesktop = () => window.matchMedia(DESKTOP).matches
 
-type Reveal = { progress: MotionValue<number>; on: boolean }
+const noSubscribe = () => () => {}
+
+/** How the stacked (phone / tablet) tiles come in: as a tile's top moves from the bottom of
+ *  the screen to this far up it, it fades in, rises and grows into place. */
+const STACK_OFFSET = ["start end", "start 0.72"] as const
+const STACK_RISE = 48
+const STACK_FROM_SCALE = 0.94
+
+type Reveal = { progress: MotionValue<number>; on: boolean; stack: boolean }
 const RevealContext = createContext<Reveal | null>(null)
 
 /**
@@ -82,6 +97,9 @@ export function BentoReveal({ className, children }: { className: string; childr
   const desktop = useSyncExternalStore(subscribeDesktop, isDesktop, () => false)
   const reduceMotion = useReducedMotion()
   const on = desktop && !reduceMotion
+  // Only after hydration, so the server HTML (and a page whose scripts are slow) never hides tiles.
+  const mounted = useSyncExternalStore(noSubscribe, () => true, () => false)
+  const stack = mounted && !desktop && !reduceMotion
 
   // From the stage pinning below the navbar to it releasing.
   const navHeight = useNavHeight()
@@ -120,21 +138,21 @@ export function BentoReveal({ className, children }: { className: string; childr
   })
 
   return (
-    <RevealContext.Provider value={{ progress: scrollYProgress, on }}>
-      <div ref={track} className="group/bento md:motion-safe:h-[calc(270vh-var(--nav-height,4rem))]">
+    <RevealContext.Provider value={{ progress: scrollYProgress, on, stack }}>
+      <div ref={track} className="group/bento lg:motion-safe:h-[calc(270vh-var(--nav-height,4rem))]">
         {/* Full-bleed stage: -mx cancels the panel's side padding (index.tsx: 1.5rem, 3.3rem
             from lg) so the hero can fill the screen edge to edge; the bento inside puts the
             margin back. It pins just below the navbar and fills the rest of the screen, and
             the bento is sized to fit that height, so the finished bento is seen whole. */}
         <div
           ref={stage}
-          className="md:motion-safe:sticky md:motion-safe:top-[var(--nav-height,4rem)] md:motion-safe:-mx-6 md:motion-safe:flex md:motion-safe:h-[calc(100vh-var(--nav-height,4rem))] md:motion-safe:items-center md:motion-safe:overflow-hidden lg:motion-safe:-mx-[3.3rem]"
+          className="lg:motion-safe:sticky lg:motion-safe:top-[var(--nav-height,4rem)] lg:motion-safe:flex lg:motion-safe:h-[calc(100vh-var(--nav-height,4rem))] lg:motion-safe:items-center lg:motion-safe:overflow-hidden lg:motion-safe:-mx-[3.3rem]"
         >
-          <div className="@container mx-auto w-full max-w-[32rem] md:max-w-none md:motion-safe:w-[min(100%_-_3rem,(100vh_-_var(--nav-height,4rem)_-_5rem)*1.80771)] lg:motion-safe:w-[min(100%_-_6.6rem,(100vh_-_var(--nav-height,4rem)_-_5rem)*1.80771)]">
+          <div className="@container mx-auto w-full max-w-[32rem] sm:max-w-[42rem] lg:max-w-none lg:motion-safe:w-[min(100%_-_6.6rem,(100vh_-_var(--nav-height,4rem)_-_5rem)*1.80771)]">
             <motion.div
               ref={grid}
               className={cn(className, "group-data-[animating]/bento:will-change-transform")}
-              style={on ? { scale } : undefined}
+              style={{ scale: on ? scale : 1 }}
             >
               {children}
             </motion.div>
@@ -177,10 +195,56 @@ export function RevealTile({
   const tx = useTransform(reveal.progress, range, [fromX, "0%"], { ease: slideEase })
   const ty = useTransform(reveal.progress, range, [fromY, "0%"], { ease: slideEase })
 
+  const ref = useRef<HTMLDivElement>(null)
+  const entrance = useStackEntrance(ref)
+
   return (
     <motion.div
+      ref={ref}
       className={cn(className, "group-data-[animating]/bento:will-change-[transform,opacity]")}
-      style={reveal.on ? { ...style, opacity, x: tx, y: ty } : style}
+      style={
+        reveal.on
+          ? { ...style, opacity, x: tx, y: ty, scale: 1 }
+          : reveal.stack
+            ? { ...style, ...entrance, x: 0 }
+            : { ...style, opacity: 1, x: 0, y: 0, scale: 1 }
+      }
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/** A stacked tile's fade-up as it scrolls onto the screen (phones and tablets). */
+function useStackEntrance(ref: React.RefObject<HTMLElement | null>) {
+  const { scrollYProgress } = useScroll({ target: ref, offset: [...STACK_OFFSET] })
+  const opacity = useTransform(scrollYProgress, [0, 0.85], [0, 1])
+  const y = useTransform(scrollYProgress, [0, 1], [STACK_RISE, 0], { ease: slideEase })
+  const scale = useTransform(scrollYProgress, [0, 1], [STACK_FROM_SCALE, 1], { ease: slideEase })
+  return { opacity, y, scale }
+}
+
+/**
+ * The hero ("100") tile's wrapper. On desktop the whole grid zooms around it, so it stays put;
+ * in the phone / tablet stack it fades up like the other tiles.
+ */
+export function StackEntrance({
+  className,
+  style,
+  children,
+}: {
+  className?: string
+  style?: React.CSSProperties
+  children: React.ReactNode
+}) {
+  const reveal = useContext(RevealContext)
+  const ref = useRef<HTMLDivElement>(null)
+  const entrance = useStackEntrance(ref)
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={reveal?.stack ? { ...style, ...entrance } : { ...style, opacity: 1, y: 0, scale: 1 }}
     >
       {children}
     </motion.div>

@@ -32,7 +32,7 @@ const pagerButton =
 
 /** The same grid on every news page, and in the loading state. */
 export const NEWS_GRID =
-  "grid grid-cols-1 gap-x-[1.375rem] gap-y-[1.625rem] pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
+  "grid grid-cols-2 gap-x-3 gap-y-6 pt-6 sm:gap-x-[1.375rem] sm:gap-y-[1.625rem] md:grid-cols-4 2xl:grid-cols-5"
 
 export type NewsQuery = { page: number; date: string }
 

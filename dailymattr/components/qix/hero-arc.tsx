@@ -88,7 +88,22 @@ const SETTLE_MS = 350
 /** Covers are cropped from 9:16 to the 173×250 card; keep their brand titles in view. */
 const FOCUS = "50% 30%"
 
-type Drag = { id: number; x0: number; from: number; perCard: number; x: number; t: number; v: number; active: boolean }
+type Drag = {
+  id: number
+  x0: number
+  y0: number
+  from: number
+  perCard: number
+  x: number
+  t: number
+  v: number
+  active: boolean
+  /** A finger, not a mouse or pen: one swipe moves exactly one card (see onPointerEnd). */
+  touch: boolean
+}
+
+/** On touch, how far (px) a swipe must travel to move to the next or previous card. */
+const SWIPE_MIN = 24
 
 /**
  * Figma 9278:964: a 1920×760 stage with an 803px perspective, 240px down the hero, under a
@@ -175,11 +190,34 @@ export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
 
   useEffect(() => () => anim.current?.stop(), [])
 
+  // While a finger is dragging the cards sideways, keep the browser from also scrolling or
+  // claiming the gesture (React's touch listeners are passive, so this one is added by hand).
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const onTouchMove = (e: TouchEvent) => {
+      if (drag.current?.active && e.cancelable) e.preventDefault()
+    }
+    el.addEventListener("touchmove", onTouchMove, { passive: false })
+    return () => el.removeEventListener("touchmove", onTouchMove)
+  }, [])
+
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!e.isPrimary || e.button !== 0 || !stageRef.current) return
     // One card's spacing at the centre (175 design px), so the centre card tracks the pointer
     const unit = parseFloat(getComputedStyle(stageRef.current).fontSize)
-    drag.current = { id: e.pointerId, x0: e.clientX, from: 0, perCard: (175 * unit) / 16, x: e.clientX, t: e.timeStamp, v: 0, active: false }
+    drag.current = {
+      id: e.pointerId,
+      x0: e.clientX,
+      y0: e.clientY,
+      from: 0,
+      perCard: (175 * unit) / 16,
+      x: e.clientX,
+      t: e.timeStamp,
+      v: 0,
+      active: false,
+      touch: e.pointerType === "touch",
+    }
     dragged.current = false
   }
 
@@ -189,6 +227,11 @@ export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
     if (!d.active) {
       // A few px of slack, so a click on a card still counts as a click
       if (Math.abs(e.clientX - d.x0) < 6) return
+      // A finger moving more up / down than sideways is scrolling the page: leave it be.
+      if (d.touch && Math.abs(e.clientY - d.y0) > Math.abs(e.clientX - d.x0)) {
+        drag.current = null
+        return
+      }
       d.active = true
       dragged.current = true
       hold.current.drag = true
@@ -201,7 +244,9 @@ export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
     if (dt > 0) d.v = 0.7 * ((e.clientX - d.x) / dt) + 0.3 * d.v
     d.x = e.clientX
     d.t = e.timeStamp
-    offset.set(d.from - (e.clientX - d.x0) / d.perCard)
+    const next = d.from - (e.clientX - d.x0) / d.perCard
+    // A finger drags the cards up to about one card either way (the swipe then lands on it).
+    offset.set(d.touch ? Math.max(d.from - 1.15, Math.min(d.from + 1.15, next)) : next)
   }
 
   const onPointerEnd = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -211,6 +256,13 @@ export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
     if (!d.active) return
     hold.current.drag = false
     pause()
+    // A swipe: exactly the next or previous card, as in a phone's own carousels.
+    if (d.touch) {
+      const dx = e.clientX - d.x0
+      const base = Math.round(d.from)
+      glide(Math.abs(dx) > SWIPE_MIN ? base + (dx < 0 ? 1 : -1) : base)
+      return
+    }
     // Fling: carry on for a fifth of a second at the release speed, then settle on a card
     const velocity = e.timeStamp - d.t < 80 ? (-d.v * 1000) / d.perCard : 0
     const fling = Math.max(-3, Math.min(3, velocity * 0.2))
@@ -260,7 +312,7 @@ export function QixHeroArc({ covers }: { covers: StoryCover[] }) {
       onBlur={() => {
         hold.current.focus = false
       }}
-      className="group relative mt-4 h-[26em] cursor-grab touch-pan-y outline-none select-none text-[length:min(1rem,calc(100vw_/_50))] active:cursor-grabbing md:text-[length:min(1rem,calc(100vw_/_64))] lg:absolute lg:inset-x-0 lg:top-[15em] lg:mt-0 lg:h-[47.5em] lg:text-[length:1em]"
+      className="group relative mt-4 h-[26em] cursor-grab [touch-action:pan-y_pinch-zoom] outline-none select-none text-[length:min(1rem,calc(100vw_/_50))] active:cursor-grabbing md:text-[length:min(1rem,calc(100vw_/_64))] lg:absolute lg:inset-x-0 lg:top-[15em] lg:mt-0 lg:h-[47.5em] lg:text-[length:1em]"
     >
       <p className="sr-only">
         {ring[center % count]?.alt}. Drag, or use the left and right arrow keys, to move through the stories;

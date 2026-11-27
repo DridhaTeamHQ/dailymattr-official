@@ -6,10 +6,13 @@ export function AnnouncementBar() {
     // NIA pins its root to 16px; zoom by the laptop ratio there so the bar matches other pages.
     <div className="flex h-9 items-center justify-center bg-primary px-4 text-sm font-medium text-primary-foreground [.nia-layout_&]:lg:[zoom:var(--site-scale-auto,1)]">
       <Sparkles className="mr-1.5 size-3.5 shrink-0" />
-      <span className="truncate">Read, watch and listen to what matters today.</span>
+      <span className="truncate">
+        <span className="sm:hidden">What matters today.</span>
+        <span className="hidden sm:inline">Read, watch and listen to what matters today.</span>
+      </span>
       <Link
         href="/news/"
-        className="ml-1.5 inline-flex shrink-0 items-center gap-1 font-normal text-primary-foreground/85 hover:text-primary-foreground"
+        className="ml-1.5 inline-flex shrink-0 items-center gap-1 self-stretch font-normal text-primary-foreground/85 hover:text-primary-foreground"
       >
         Read more
         <ArrowRight className="size-3.5" />

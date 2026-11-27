@@ -16,12 +16,12 @@ import { isMediaImage, storiesFor, storyHref, type Story, type StoryBody } from 
 // section. No reveal animations. The story and its neighbours come from the Pix database
 // (lib/news.ts).
 
-const label = "text-[0.6875rem] leading-4 font-semibold tracking-[0.08em] text-[#6b6b73] uppercase"
+const label = "text-xs leading-4 font-semibold tracking-[0.08em] text-[#6b6b73] uppercase"
 
 /** Dark "get the app" strip with the store badges, as on the old story page. */
 function AppBanner() {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl bg-[#141417] p-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-4 rounded-2xl bg-[#141417] p-4 sm:flex-row sm:items-center sm:justify-between md:flex-col md:items-stretch xl:flex-row xl:items-center">
       <div className="flex items-center gap-3">
         <Image src={logoMark} alt="" className="size-10 shrink-0 rounded-xl" />
         <div className="flex flex-col gap-0.5">
@@ -137,16 +137,16 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
           </ol>
         </nav>
 
-        <div className="grid grid-cols-1 gap-8 pt-6 lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:gap-[3.6rem] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
-          <div className="lg:self-start">
+        <div className="grid grid-cols-1 gap-8 pt-6 md:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] lg:grid-cols-[minmax(0,25rem)_minmax(0,1fr)] lg:gap-[3.6rem] xl:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
+          <div className="mx-auto w-full max-w-[26rem] md:mx-0 md:max-w-none lg:self-start">
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-[#ececf0] lg:aspect-[923/1704]">
-              <StoryImage src={story.image} preload sizes="(min-width: 1280px) 28rem, (min-width: 1024px) 25rem, 100vw" />
+              <StoryImage src={story.image} preload sizes="(min-width: 1280px) 28rem, (min-width: 1024px) 25rem, (min-width: 768px) 16rem, 26rem" />
             </div>
           </div>
 
           {/* Fills the column on laptops; capped on wide screens so the points stay readable. */}
           <div className="flex min-w-0 max-w-[56rem] flex-col">
-            <h1 className="text-[1.75rem] leading-[1.18] font-bold tracking-[-0.02em] text-[#141417] sm:text-[2.375rem]">
+            <h1 className="text-[1.75rem] leading-[1.18] font-bold tracking-[-0.02em] text-[#141417] sm:text-[2.375rem] md:text-[2rem] lg:text-[2.375rem]">
               {story.headline}
             </h1>
 
@@ -241,7 +241,7 @@ export function StoryPageView({ story, body, stories }: { story: Story; body: St
               See all news →
             </Link>
           </div>
-          <ul className="grid grid-cols-1 gap-x-[1.375rem] gap-y-[1.625rem] pt-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 [&>li:nth-child(5)]:hidden 2xl:[&>li:nth-child(5)]:block">
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-6 pt-6 sm:gap-x-[1.375rem] sm:gap-y-[1.625rem] md:grid-cols-4 2xl:grid-cols-5 [&>li:nth-child(5)]:hidden 2xl:[&>li:nth-child(5)]:block">
             {more.map((s) => (
               <li key={s.id}>
                 <NewsCard story={s} headingLevel="h3" />

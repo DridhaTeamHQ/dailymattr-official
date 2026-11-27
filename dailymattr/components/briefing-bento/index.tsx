@@ -2,7 +2,7 @@ import Image, { type StaticImageData } from "next/image"
 
 import { cn } from "@/lib/utils"
 import { SectionHeading } from "@/components/shared/section-heading"
-import { BentoReveal, RevealTile } from "./reveal"
+import { BentoReveal, RevealTile, StackEntrance } from "./reveal"
 import formatListen from "@/public/home/bento/format-listen.svg"
 import formatRead from "@/public/home/bento/format-read.svg"
 import formatUnderstand from "@/public/home/bento/format-understand.svg"
@@ -52,9 +52,9 @@ import xplaindHaze from "@/public/home/bento/xplaind-haze.svg"
 // Figma position and `revealAt` its turn, in the mixed order of the reference video.
 
 /** Bento gap, 15.31 of the 1799.22 tile area, as cqw of the bento container. */
-const gap = "md:gap-[0.851cqw]"
+const gap = "lg:gap-[0.851cqw]"
 /** A nested grid from md, invisible (its children join the parent grid) on phones. */
-const group = cn("contents min-h-0 min-w-0 md:grid", gap)
+const group = cn("contents min-h-0 min-w-0 lg:grid", gap)
 
 // Type, in Figma px of the tile.
 const fs = {
@@ -118,7 +118,7 @@ function Tile({
   style?: React.CSSProperties
   children: React.ReactNode
 }) {
-  const outer = cn("@container min-h-0 min-w-0 aspect-(--tile-ratio) md:aspect-auto", wide && "max-md:col-span-2")
+  const outer = cn("@container min-h-0 min-w-0 aspect-(--tile-ratio) lg:aspect-auto", wide && "max-lg:col-span-2")
   const vars = { "--tile-ratio": `${w} / ${h}`, "--spacing": `calc(100cqw / ${w})` } as React.CSSProperties
   const inner = (
     <div
@@ -131,9 +131,9 @@ function Tile({
 
   if (!at || revealAt === undefined) {
     return (
-      <div className={outer} style={vars}>
+      <StackEntrance className={outer} style={vars}>
         {inner}
-      </div>
+      </StackEntrance>
     )
   }
   return (
@@ -638,29 +638,29 @@ export function BriefingBentoSection() {
         />
 
         <div className="mt-10 lg:mt-[4.2rem]">
-          <BentoReveal className={cn("grid grid-flow-dense grid-cols-2 gap-3 md:aspect-[1799.22/995.31] md:grid-cols-[436.406fr_1347.5fr]", gap)}>
+          <BentoReveal className={cn("grid grid-flow-dense grid-cols-2 gap-3 lg:aspect-[1799.22/995.31] lg:grid-cols-[436.406fr_1347.5fr]", gap)}>
             {/* Left column */}
-            <div className={cn(group, "md:grid-rows-[405.781fr_153.125fr_405.781fr]")}>
+            <div className={cn(group, "lg:grid-rows-[405.781fr_153.125fr_405.781fr]")}>
               <AskNiaTile />
               <VoteTile />
               <WatchTile />
             </div>
 
             {/* Everything right of it: the upper block, then the bottom row */}
-            <div className={cn(group, "md:grid-rows-[742.656fr_237.344fr]")}>
-              <div className={cn(group, "md:grid-cols-[895.781fr_436.406fr]")}>
-                <div className={cn(group, "md:grid-rows-[237.344fr_490fr]")}>
-                  <div className={cn(group, "md:grid-cols-[256.484fr_352.188fr_256.484fr]")}>
+            <div className={cn(group, "lg:grid-rows-[742.656fr_237.344fr]")}>
+              <div className={cn(group, "lg:grid-cols-[895.781fr_436.406fr]")}>
+                <div className={cn(group, "lg:grid-rows-[237.344fr_490fr]")}>
+                  <div className={cn(group, "lg:grid-cols-[256.484fr_352.188fr_256.484fr]")}>
                     <PlaceToStopTile />
                     <LightDarkTile />
                     <MakeItYoursTile />
                   </div>
                   <HundredTile />
                 </div>
-                <div className={cn(group, "md:grid-rows-3")}>
+                <div className={cn(group, "lg:grid-rows-3")}>
                   <ListenTile />
                   <XplaindTile />
-                  <div className={cn(group, "md:grid-cols-2")}>
+                  <div className={cn(group, "lg:grid-cols-2")}>
                     <IconTile at={[1362.81, 505.31]} revealAt={0.61} glow={blueGlow} icon={iconBookmark} iconClassName="top-46 left-70.75 size-69">
                       Save a story
                       <br />
@@ -674,7 +674,7 @@ export function BriefingBentoSection() {
                   </div>
                 </div>
               </div>
-              <div className={cn(group, "md:grid-cols-[436.406fr_528.281fr_352.188fr]")}>
+              <div className={cn(group, "lg:grid-cols-[436.406fr_528.281fr_352.188fr]")}>
                 <WaysInTile />
                 <OneSpaceTile />
                 <LessScrollingTile />

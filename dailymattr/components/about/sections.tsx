@@ -95,7 +95,7 @@ const mediaPhotoOverlay = [
 export function AboutMedia() {
   return (
     // data-full-bleed: the footer adds Figma's 97px top gap after a page-ending photo.
-    <section data-full-bleed className="relative isolate flex px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-0 lg:pt-0 lg:pb-[5.25rem] lg:pl-[12.9375rem]">
+    <section data-full-bleed className="relative isolate flex px-4 pt-48 pb-6 sm:px-6 sm:pt-64 sm:pb-10 lg:h-[46.6875rem] lg:items-end lg:px-16 lg:pt-0 lg:pb-[5.25rem] xl:px-0 xl:pl-[12.9375rem]">
       {/* Framed as Figma crops it (9144:290): the photo is 141.63% of the frame's height,
           bottom-aligned, so the top of the tower runs off the frame and the blue logo sits a
           third of the way down, above the card. Figma also stretches it about 1.3× sideways;
@@ -123,12 +123,12 @@ export function AboutMedia() {
           frost 15 → blur(7.5px) (Figma radius ≈ 2σ) and depth → a faint 11px inner glow.
           No white light rim on the edge, only the faint blue border.
         */}
-        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-0 lg:p-20">
+        <div className="flex flex-col items-start gap-8 overflow-hidden rounded-3xl border border-[rgba(57,121,255,0.12)] bg-white/20 p-6 shadow-[inset_0_0_11px_rgba(255,255,255,0.08)] backdrop-blur-[7.5px] backdrop-saturate-[1.15] sm:p-12 lg:h-[18.125rem] lg:flex-row lg:gap-8 xl:gap-0 xl:p-20">
           <div className="flex flex-col gap-4 lg:w-[37.0625rem]">
             <h2 className="text-xl leading-[1.15] font-bold tracking-[-0.0625rem] text-white sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
               {media.title}
             </h2>
-            <p className="max-w-[40rem] text-lg leading-[1.875rem] tracking-[-0.0188rem] text-white lg:w-[40rem] lg:text-xl">
+            <p className="max-w-[40rem] text-lg leading-[1.875rem] tracking-[-0.0188rem] text-white xl:w-[40rem] lg:text-xl">
               {media.bodyLines[0]} <br className="hidden lg:block" />
               {media.bodyLines[1]}
             </p>
