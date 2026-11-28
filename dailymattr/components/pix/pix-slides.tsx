@@ -13,8 +13,9 @@ export type PixCardSlide = { url: string; width: number; height: number; alt: st
 /**
  * One real Pix in the "Real stories" row: its rendered slides (the cover with the headline,
  * then the key points), swiped sideways like in the app, with arrows and dots. The slides
- * carry the story, so the card is only the Pix, with a "Read the story" button on it styled
- * like the navbar's "Get the app" (components/navbar/download-button.tsx).
+ * carry the story, so the card is only the Pix, with a bottom bar: "Read the story" on the left
+ * (styled like the navbar's "Get the app", components/navbar/download-button.tsx) and the
+ * previous / next arrows on the right.
  */
 export function PixSlideCard({
   slides,
@@ -67,51 +68,56 @@ export function PixSlideCard({
         ))}
       </div>
 
-      {slides.length > 1 && (
-        <>
-          <SlideArrow side="left" hidden={index === 0} onClick={() => go(index - 1)} />
-          <SlideArrow side="right" hidden={index === slides.length - 1} onClick={() => go(index + 1)} />
-          {/* At the top, like story progress marks, leaving the bottom to the button. */}
-          <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center gap-1.5" aria-hidden>
+      {/* Bottom: the slide marks centred under the headline, then a bar with "Read the story"
+          on the left and previous / next on the right. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex flex-col gap-3 px-3 sm:bottom-4 sm:px-4">
+        {slides.length > 1 && (
+          <div className="flex justify-center gap-1.5" aria-hidden>
             {slides.map((slide, i) => (
-              <span key={slide.url} className={cn("h-1.5 rounded-full bg-white", i === index ? "w-4" : "w-1.5 opacity-50")} />
+              <span
+                key={slide.url}
+                className={cn(
+                  "h-1.5 rounded-full bg-white transition-[width,opacity] duration-300",
+                  i === index ? "w-4" : "w-1.5 opacity-50",
+                )}
+              />
             ))}
           </div>
-        </>
-      )}
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center px-2 sm:bottom-4">
-        <Button
-          nativeButton={false}
-          render={<Link href={href} />}
-          className="pointer-events-auto h-8 gap-2 rounded-lg bg-[#141417] pr-1.5 pl-3 text-sm font-medium text-white hover:bg-[#141417]/85"
-        >
-          Read the story
-          <span className="sr-only">: {headline}</span>
-          <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-white/15">
-            <ArrowUpRight className="size-3" aria-hidden />
-          </span>
-        </Button>
+        )}
+        <div className="flex items-center justify-between gap-2">
+          <Button
+            nativeButton={false}
+            render={<Link href={href} />}
+            className="pointer-events-auto h-8 gap-2 rounded-lg bg-[#141417] pr-1.5 pl-3 text-sm font-medium text-white hover:bg-[#141417]/85"
+          >
+            Read the story
+            <span className="sr-only">: {headline}</span>
+            <span className="flex size-5 items-center justify-center rounded-[0.3125rem] bg-white/15">
+              <ArrowUpRight className="size-3" aria-hidden />
+            </span>
+          </Button>
+          {slides.length > 1 && (
+            <div className="pointer-events-auto flex shrink-0 gap-1.5">
+              <SlideArrow side="left" disabled={index === 0} onClick={() => go(index - 1)} />
+              <SlideArrow side="right" disabled={index === slides.length - 1} onClick={() => go(index + 1)} />
+            </div>
+          )}
+        </div>
       </div>
     </article>
   )
 }
 
-/** Round previous / next button over the slides; shows on hover or keyboard focus. */
-function SlideArrow({ side, hidden, onClick }: { side: "left" | "right"; hidden: boolean; onClick: () => void }) {
+/** Round previous / next button in the card's bottom bar; dims at the first / last slide. */
+function SlideArrow({ side, disabled, onClick }: { side: "left" | "right"; disabled: boolean; onClick: () => void }) {
   const Icon = side === "left" ? ChevronLeft : ChevronRight
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-label={side === "left" ? "Previous slide" : "Next slide"}
-      tabIndex={hidden ? -1 : 0}
-      className={cn(
-        "absolute top-1/2 z-10 grid size-9 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white text-[#141417] shadow-[0_4px_16px_rgba(16,24,40,0.18)]",
-        "opacity-0 group-hover/slides:opacity-100 focus-visible:opacity-100 max-lg:opacity-90",
-        side === "left" ? "left-2.5" : "right-2.5",
-        hidden && "pointer-events-none !opacity-0",
-      )}
+      className="grid size-8 cursor-pointer place-items-center rounded-full bg-white text-[#141417] shadow-[0_4px_16px_rgba(16,24,40,0.18)] transition-opacity outline-none hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white/70 disabled:cursor-default disabled:opacity-40"
     >
       <Icon className="size-4" aria-hidden />
     </button>
