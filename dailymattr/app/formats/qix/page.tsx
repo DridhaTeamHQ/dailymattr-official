@@ -2,7 +2,7 @@ import { getQixContent } from "@/lib/formats"
 import { seoMetadata } from "@/lib/seo"
 import { SeoJsonLd } from "@/components/shared/seo-json-ld"
 
-import { QixExperience, QixGetStarted, QixHero } from "@/components/qix"
+import { QixExperience, QixGetStarted, QixHero, QixShowcase } from "@/components/qix"
 
 export const generateMetadata = () => seoMetadata("/formats/qix")
 
@@ -12,6 +12,7 @@ export default async function QixPage() {
   return (
     <main className="flex-1 bg-white">
       <SeoJsonLd path="/formats/qix" />
+      <QixShowcase />
       <QixHero covers={qix.heroCovers} />
       <QixExperience frames={qix.frames} />
       <QixGetStarted />
