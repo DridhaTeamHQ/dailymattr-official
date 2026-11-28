@@ -6,6 +6,7 @@ import Link from "next/link"
 
 import { SiteVideo } from "@/components/shared/site-video"
 import { cn } from "@/lib/utils"
+import type { VideoAsset } from "@/lib/videos"
 import { showcase, type QixShowcaseCard } from "./content"
 
 const ICONS = "/qix/showcase"
@@ -127,23 +128,20 @@ function layout(el: HTMLElement) {
 /**
  * The page change. The cards travel as one row, one after another: going forward the
  * leftmost card sets off first and each card to its right follows a beat later, so they never
- * overlap or stack. Each card runs a little past its place and springs back, like the bounce
- * at the end of a scroll on a OnePlus phone. Going back is the mirror image. A swipe keeps the
+ * overlap or stack. Going back is the mirror image. A swipe keeps the
  * plain native scroll.
  *
  * How: the row's scroll jumps straight to the new page (snapping paused), then each card is
  * drawn back to where it was with a transform and eased to its new place on the GPU with the
  * Web Animations API. Every card follows the same path shape, only later, so the gaps between
  * them can only widen. When it ends the transforms are dropped, leaving the cards in place.
+ * Each card eases straight into its place: no overshoot, so nothing wobbles as they settle.
  */
 /** Gap between one card setting off and the next. */
 const CARD_STAGGER = 80
 const CARD_MS = 820
-/** How far a card runs past its place before springing back (px), and the rebound. */
-const OVERSHOOT = 16
-const REBOUND = 5
-const EASE_TRAVEL = "cubic-bezier(0.5, 0, 0.25, 1)"
-const EASE_SPRING = "cubic-bezier(0.45, 0, 0.55, 1)"
+/** Gentle start, long soft landing. */
+const EASE_TRAVEL = "cubic-bezier(0.45, 0, 0.15, 1)"
 
 type Slide = { anims: Animation[]; done: () => void }
 const slides = new WeakMap<HTMLElement, Slide>()
@@ -175,11 +173,6 @@ function glide(el: HTMLElement, left: number) {
 
   el.style.scrollSnapType = "none"
   el.scrollLeft = left
-  const sign = forward ? 1 : -1
-  // Kept under the gap between cards, so a bouncing card never touches its neighbour.
-  const gap = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft - cards[0].offsetWidth : OVERSHOOT
-  const overshoot = Math.min(OVERSHOOT, gap * 0.7)
-  const rebound = overshoot * (REBOUND / OVERSHOOT)
   const shift = (x: number, offset?: number, easing?: string): Keyframe => ({
     transform: `translate3d(${x}px,0,0)`,
     ...(offset !== undefined ? { offset } : {}),
@@ -190,8 +183,6 @@ function glide(el: HTMLElement, left: number) {
     cards[i].animate(
       [
         shift(distance, 0, EASE_TRAVEL),
-        shift(-sign * overshoot, 0.66, EASE_SPRING),
-        shift(sign * rebound, 0.85, EASE_SPRING),
         shift(0, 1),
       ],
       { duration: CARD_MS, delay: Math.max(0, rank - firstShown) * CARD_STAGGER, fill: "both" }
@@ -223,6 +214,16 @@ function ShowcaseCard({
   playing: boolean
   onPlay: () => void
 }) {
+  // No video yet: Play shows a short note on the card instead, which fades away by itself.
+  const [notice, setNotice] = useState(false)
+  const noticeTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(noticeTimer.current), [])
+  function showNotice() {
+    setNotice(true)
+    clearTimeout(noticeTimer.current)
+    noticeTimer.current = setTimeout(() => setNotice(false), 2600)
+  }
+
   return (
     <article
       aria-label={card.alt}
@@ -236,14 +237,26 @@ function ShowcaseCard({
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 85vw"
         className="object-cover"
       />
-      {card.video && playing && (
-        <SiteVideo
-          video={card.video}
-          sound
-          priority
-          className="absolute inset-0 size-full object-cover"
-          aria-label={`${card.alt}, playing`}
-        />
+      {card.video && <CardVideo video={card.video} playing={playing} label={card.alt} />}
+
+      {!card.video && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="pointer-events-none absolute inset-x-0 top-[38%] z-10 flex justify-center px-5"
+        >
+          <span className="sr-only">{notice ? "Video not available yet" : ""}</span>
+          <p
+            aria-hidden
+            className={cn(
+              "flex items-center gap-2 rounded-full bg-black/70 px-4 py-2.5 text-sm font-semibold text-white shadow-lg ring-1 ring-white/15 backdrop-blur-md transition-[opacity,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:text-base",
+              notice ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+            )}
+          >
+            <VideoOffIcon />
+            Video not available yet
+          </p>
+        </div>
       )}
 
       {/* Figma scrim: clear for the top half, then darkening to 94% black at the foot */}
@@ -269,10 +282,10 @@ function ShowcaseCard({
               {playing ? "Pause" : "Play"}
             </button>
           ) : (
-            <Link href={showcase.moreInfoHref} className={PILL_LIGHT}>
+            <button type="button" onClick={showNotice} className={PILL_LIGHT}>
               <Image src={`${ICONS}/icon-play.svg`} alt="" width={20} height={20} className="size-4 sm:size-5" />
               Play
-            </Link>
+            </button>
           )}
           <Link href={showcase.moreInfoHref} className={PILL_GLASS} aria-label={`More info about ${card.alt}`}>
             {/* Figma's Icon / Info: a 17.5px glyph centred in a 20px box */}
@@ -287,10 +300,65 @@ function ShowcaseCard({
   )
 }
 
+/**
+ * The story video over the card, brought in gently rather than cut to: it loads unseen on the
+ * first Play, then, once frames are actually moving, fades up over the cover while easing from a
+ * slight zoom, and its sound swells in over the same time. Pause fades it back out to the
+ * cover (the frame it stopped on stays underneath, so playing again picks up from there).
+ */
+function CardVideo({ video, playing, label }: { video: VideoAsset; playing: boolean; label: string }) {
+  const [requested, setRequested] = useState(playing)
+  const [moving, setMoving] = useState(false)
+  if (playing && !requested) setRequested(true)
+  if (!requested) return null
+
+  const shown = playing && moving
+  return (
+    <SiteVideo
+      video={video}
+      sound
+      priority
+      playing={playing}
+      onPlaying={(e) => {
+        setMoving(true)
+        fadeInSound(e.currentTarget)
+      }}
+      className={cn(
+        "absolute inset-0 size-full object-cover transition-[opacity,scale] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+        shown ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
+      )}
+      aria-label={`${label}, ${playing ? "playing" : "paused"}`}
+    />
+  )
+}
+
+/** Raise the volume from silent to full over 0.7s, so the sound eases in with the picture. */
+function fadeInSound(el: HTMLVideoElement) {
+  const start = performance.now()
+  el.volume = 0
+  const step = (now: number) => {
+    const t = Math.min(1, (now - start) / 700)
+    el.volume = t * t
+    if (t < 1 && !el.paused) requestAnimationFrame(step)
+    else el.volume = 1
+  }
+  requestAnimationFrame(step)
+}
+
 const PILL =
   "inline-flex h-10 items-center gap-2 rounded-full pr-5 pl-4 text-sm leading-6 font-semibold whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-white/50 sm:h-11 sm:text-base lg:h-10 lg:text-sm xl:h-12 xl:text-base 2xl:h-13 2xl:gap-2.5 2xl:pr-7 2xl:pl-[1.375rem] 2xl:text-lg"
 const PILL_LIGHT = cn(PILL, "bg-white text-black hover:bg-white/90")
 const PILL_GLASS = cn(PILL, "bg-white/18 text-white backdrop-blur-[8px] hover:bg-white/26")
+
+function VideoOffIcon() {
+  return (
+    <svg aria-hidden viewBox="0 0 24 24" className="size-4 sm:size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.66 6H14a2 2 0 0 1 2 2v2.5l5.25-3.07a.5.5 0 0 1 .75.43v8.14" />
+      <path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2" />
+      <path d="m2 2 20 20" />
+    </svg>
+  )
+}
 
 function PauseIcon() {
   return (

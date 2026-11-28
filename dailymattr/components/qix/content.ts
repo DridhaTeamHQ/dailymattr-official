@@ -22,14 +22,15 @@ export type QixShowcaseCard = {
   series: string
   length: string
   line: string
-  /** Plays on the card when Play is pressed; null sends Play to the app download page. */
+  /** Plays on the card when Play is pressed; null shows "Video not available yet" instead. */
   video: VideoAsset | null
 }
 
 /**
  * Netflix-style cards at the top of the page, three to a page on desktop (Figma 9831:7101,
  * "Video hero · Netflix-style cards"; pages 9831:7103, 9831:7422, 9831:7705). In the Figma order.
- * Only Amaron, MRF, Nilkamal and Fevicol have their own story video; the rest open the app.
+ * Only Amaron, MRF, Nilkamal and Fevicol have their own story video; on the rest, Play says the
+ * video is not available yet. Set `video` on a card once its video exists.
  */
 export const showcase: { cards: QixShowcaseCard[]; moreInfoHref: string } = {
   moreInfoHref: "/download",
