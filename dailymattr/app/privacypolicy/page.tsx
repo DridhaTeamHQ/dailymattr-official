@@ -7,7 +7,7 @@ export const generateMetadata = () => seoMetadata("/privacypolicy")
 
 export default function PrivacyPage() {
   return (
-    <main className="flex-1 bg-white">
+    <main data-footer-divider className="flex-1 bg-white">
       <SeoJsonLd path="/privacypolicy" />
       <PrivacyHero />
       <PrivacyPolicy />

@@ -28,7 +28,8 @@ export function NewsPageView({
   const current = "text-[#141417]"
 
   return (
-    <main className="flex-1 bg-white">
+    // data-footer-divider: the footer keeps its top hairline on laptops and desktops too (footer/index.tsx)
+    <main data-footer-divider className="flex-1 bg-white">
       <section className={cn(NEWS_GUTTER, "pt-8 pb-20 sm:pt-10 lg:pb-28")}>
         <div className="w-full">
           <nav aria-label="Breadcrumb">

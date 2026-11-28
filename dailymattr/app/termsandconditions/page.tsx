@@ -7,7 +7,7 @@ export const generateMetadata = () => seoMetadata("/termsandconditions")
 
 export default function TermsPage() {
   return (
-    <main className="flex-1 bg-white">
+    <main data-footer-divider className="flex-1 bg-white">
       <SeoJsonLd path="/termsandconditions" />
       <TermsHero />
       <TermsArticle />
