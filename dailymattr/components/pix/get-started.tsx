@@ -1,31 +1,23 @@
-import { FadeIn } from "@/components/shared/fade-in"
+import { PhotoCta } from "@/components/shared/photo-cta"
 import { getStarted } from "./content"
 import { PixButton } from "./primitives"
 
-/** Closing CTA card. Figma 8632:2306. */
+/**
+ * Closing CTA as a full-bleed banner, the same layout as Trax and Qix (PhotoCta). The banner
+ * photo isn't made yet, so PhotoCta shows its placeholder: pass `image={...}` (a 1920 × 747
+ * static import) when it exists, and switch the heading to white from md (`md:text-white`)
+ * if the photo is dark behind the copy.
+ */
 export function PixGetStarted() {
   return (
-    <section className="bg-white px-4 pb-20 sm:px-6 lg:px-8 lg:pb-[10rem]">
-      <FadeIn className="mx-auto flex max-w-[75rem] flex-col gap-10 overflow-hidden rounded-[1.5rem] bg-[#f7f7f7] p-8 sm:p-12 lg:min-h-[20rem] lg:flex-row lg:items-center lg:justify-between lg:p-20">
-        <div className="flex min-w-0 flex-1 flex-col items-start gap-4">
-          <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
-            {getStarted.eyebrow}
-          </p>
-          <h2 className="max-w-[36.25rem] text-3xl leading-none font-bold tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display lg:text-5xl lg:leading-13 lg:tracking-[-0.0938rem]">
-            {getStarted.title}
-          </h2>
-          <div className="pt-4">
-            <PixButton href={getStarted.cta.href}>{getStarted.cta.label}</PixButton>
-          </div>
-        </div>
-
-        {/* Media slot in the frame (8632:2319): hidden until art is supplied, since an empty white
-            box looks broken. Put the art in it and remove `hidden` to show it. */}
-        <div
-          aria-hidden
-          className="hidden h-[13.75rem] w-full shrink-0 rounded-[1rem] bg-white sm:h-[18.75rem] lg:w-[22.6875rem]"
-        />
-      </FadeIn>
-    </section>
+    <PhotoCta phoneFocus="object-[72%_50%]">
+      <p className="text-sm leading-4 font-medium tracking-[0.0488rem] text-[#3979ff] uppercase lg:text-md">
+        {getStarted.eyebrow}
+      </p>
+      <h2 className="max-w-[8em] text-3xl leading-none font-bold tracking-[-0.0625rem] text-[#1c1c1e] sm:text-display xl:text-5xl xl:leading-13 xl:tracking-[-0.0938rem]">
+        {getStarted.title}
+      </h2>
+      <PixButton href={getStarted.cta.href}>{getStarted.cta.label}</PixButton>
+    </PhotoCta>
   )
 }

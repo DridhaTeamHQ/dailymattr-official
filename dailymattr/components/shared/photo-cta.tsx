@@ -1,4 +1,5 @@
 import Image, { type StaticImageData } from "next/image"
+import { ImageIcon } from "lucide-react"
 
 import { FadeIn } from "@/components/shared/fade-in"
 import { cn } from "@/lib/utils"
@@ -14,6 +15,10 @@ import { cn } from "@/lib/utils"
  * heading dark text there and white from md (`text-[#1c1c1e] md:text-white`).
  *
  * Only the copy fades up; the photo stays put behind it.
+ *
+ * No `image` yet: a placeholder fills the photo's place (a soft grey panel with a framed
+ * "Banner image 1920 × 747" where the subject goes), so the layout reads as it will with art.
+ * Pass the image to replace it.
  */
 export function PhotoCta({
   image,
@@ -22,8 +27,9 @@ export function PhotoCta({
   className,
   children,
 }: {
-  /** A static import, so replacing the file changes its URL and busts the image cache. */
-  image: StaticImageData
+  /** A static import, so replacing the file changes its URL and busts the image cache. Leave
+   *  it out until the banner exists: a placeholder shows instead. */
+  image?: StaticImageData
   /**
    * Object-position class for the phone crop (4:3), e.g. "object-[72%_50%]", chosen to keep
    * the photo's subject in frame. From md up the crop is fixed at 25% across.
@@ -41,13 +47,26 @@ export function PhotoCta({
           a min-width, which pushed the box wider than the screen on tablets. */}
       <div className="relative flex flex-col md:h-[max(25rem,38.90625cqw)] md:justify-center">
         <div className="relative order-last aspect-[4/3] w-full md:absolute md:inset-0 md:aspect-auto">
-          <Image
-            src={image}
-            alt=""
-            fill
-            sizes="100vw"
-            className={cn("object-cover", phoneFocus, "md:object-[25%_50%]")}
-          />
+          {image ? (
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="100vw"
+              className={cn("object-cover", phoneFocus, "md:object-[25%_50%]")}
+            />
+          ) : (
+            <div aria-hidden className="absolute inset-0 overflow-hidden bg-[#eceef2]">
+              <div className="absolute inset-0 bg-linear-to-r from-[#f5f6f8] via-[#eceef2] to-[#e1e4ea] motion-safe:animate-pulse" />
+              <div className="absolute inset-0 flex items-center justify-center md:justify-end md:pr-[14%]">
+                <div className="flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-[#c5cad3] bg-white/40 px-8 py-6 text-center text-[#8b94a3]">
+                  <ImageIcon className="size-10" strokeWidth={1.5} />
+                  <span className="text-sm font-semibold">Banner image</span>
+                  <span className="text-xs">1920 × 747</span>
+                </div>
+              </div>
+            </div>
+          )}
           {overlay && (
             <div aria-hidden className="absolute inset-0 hidden md:block" style={{ backgroundImage: overlay }} />
           )}
