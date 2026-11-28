@@ -86,8 +86,8 @@ export function QixShowcase() {
         ))}
       </div>
 
-      {/* Figma 9831:7410: pager on the left, arrows on the right, 32px under the cards */}
-      <div className="mt-6 flex items-center justify-between sm:mt-8">
+      {/* Figma 9831:7410: pager on the left, arrows on the right; raised to 16px under the cards */}
+      <div className="mt-3 flex items-center justify-between sm:mt-4">
         <div className="flex items-center gap-2" role="group" aria-label="Choose a page">
           {Array.from({ length: pages }, (_, n) => (
             <button
