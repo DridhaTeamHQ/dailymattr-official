@@ -125,23 +125,25 @@ function layout(el: HTMLElement) {
 }
 
 /**
- * The page change, like the recent-apps switcher in Samsung One UI. Going forward:
- *  1. the cards on screen draw together into an overlapping stack on the left, shrinking a
- *     little, and the stack slides away off the left edge as it fades;
- *  2. the next cards arrive from the right already stacked, settle at the right-hand slot,
- *     then fan out, one after another, into their places at full size.
- * Going back is the mirror image. A swipe keeps the plain native scroll.
+ * The page change. The cards travel as one row, one after another: going forward the
+ * leftmost card sets off first and each card to its right follows a beat later, so they never
+ * overlap or stack. Each card runs a little past its place and springs back, like the bounce
+ * at the end of a scroll on a OnePlus phone. Going back is the mirror image. A swipe keeps the
+ * plain native scroll.
  *
  * How: the row's scroll jumps straight to the new page (snapping paused), then each card is
- * drawn back to where it should appear with a transform, animated on the GPU with the Web
- * Animations API. When it ends the transforms are dropped, leaving the cards in their places.
+ * drawn back to where it was with a transform and eased to its new place on the GPU with the
+ * Web Animations API. Every card follows the same path shape, only later, so the gaps between
+ * them can only widen. When it ends the transforms are dropped, leaving the cards in place.
  */
-const STACK_MS = 1000
-/** How much of each stacked card peeks out from under the next one. */
-const STACK_PEEK = 28
-const STACK_SCALE = 0.86
-const EASE_GATHER = "cubic-bezier(0.4, 0, 0.2, 1)"
-const EASE_SETTLE = "cubic-bezier(0.22, 1, 0.36, 1)"
+/** Gap between one card setting off and the next. */
+const CARD_STAGGER = 80
+const CARD_MS = 820
+/** How far a card runs past its place before springing back (px), and the rebound. */
+const OVERSHOOT = 16
+const REBOUND = 5
+const EASE_TRAVEL = "cubic-bezier(0.5, 0, 0.25, 1)"
+const EASE_SPRING = "cubic-bezier(0.45, 0, 0.55, 1)"
 
 type Slide = { anims: Animation[]; done: () => void }
 const slides = new WeakMap<HTMLElement, Slide>()
@@ -156,84 +158,51 @@ function glide(el: HTMLElement, left: number) {
 
   const cards = Array.from(el.children) as HTMLElement[]
   const from = el.scrollLeft
-  if (Math.abs(left - from) < 1) return
+  const distance = left - from
+  if (Math.abs(distance) < 1) return
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     el.scrollLeft = left
     return
   }
 
-  const forward = left > from
+  const forward = distance > 0
   const view = el.getBoundingClientRect()
-  const onScreen = (r: DOMRect) => r.left >= view.left - 2 && r.right <= view.right + 2
-  const before = cards.map((c) => c.getBoundingClientRect())
-  const leaving = cards.filter((_, i) => onScreen(before[i]))
+  const before = cards.map((c) => c.getBoundingClientRect().left)
+  // The leading card goes first: leftmost going forward, rightmost going back. Cards already
+  // past the leading edge (off screen that side) just go with the first.
+  const order = cards.map((_, i) => i).sort((p, q) => (before[p] - before[q]) * (forward ? 1 : -1))
+  const firstShown = order.findIndex((i) => before[i] + cards[i].offsetWidth > view.left + 2 && before[i] < view.right - 2)
 
   el.style.scrollSnapType = "none"
   el.scrollLeft = left
-  const after = cards.map((c) => c.getBoundingClientRect())
-  const arriving = cards.filter((c, i) => onScreen(after[i]) && !leaving.includes(c))
-  const width = after[0]?.width ?? view.width
-
-  const anims: Animation[] = []
-  // x: where the card's left edge should appear on screen; turned into a shift from its place.
-  const frame = (i: number, x: number, scale: number, opacity: number, offset: number, easing?: string): Keyframe => ({
-    transform: `translate3d(${x - after[i].left}px,0,0) scale(${scale})`,
-    opacity,
-    offset,
+  const sign = forward ? 1 : -1
+  // Kept under the gap between cards, so a bouncing card never touches its neighbour.
+  const gap = cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft - cards[0].offsetWidth : OVERSHOOT
+  const overshoot = Math.min(OVERSHOOT, gap * 0.7)
+  const rebound = overshoot * (REBOUND / OVERSHOOT)
+  const shift = (x: number, offset?: number, easing?: string): Keyframe => ({
+    transform: `translate3d(${x}px,0,0)`,
+    ...(offset !== undefined ? { offset } : {}),
     ...(easing ? { easing } : {}),
   })
 
-  // 1. Leaving: gather into a stack on the side they move towards, then slide off and fade.
-  const lefts = leaving.map((c) => before[cards.indexOf(c)].left)
-  const gatherAt = forward ? Math.min(...lefts) : Math.max(...lefts)
-  leaving.forEach((c, k) => {
-    const i = cards.indexOf(c)
-    const n = leaving.length
-    const stackX = forward ? gatherAt + k * STACK_PEEK : gatherAt - (n - 1 - k) * STACK_PEEK
-    const exitX = forward ? view.left - width * 1.05 + k * STACK_PEEK : view.right + width * 0.05 + k * STACK_PEEK
-    c.style.zIndex = String(forward ? 10 + k : 10 + n - k)
-    anims.push(
-      c.animate(
-        [
-          frame(i, before[i].left, 1, 1, 0, EASE_GATHER),
-          frame(i, stackX, STACK_SCALE, 1, 0.42, EASE_GATHER),
-          frame(i, exitX, STACK_SCALE * 0.94, 0, 0.78),
-          frame(i, exitX, STACK_SCALE * 0.94, 0, 1),
-        ],
-        { duration: STACK_MS, delay: (forward ? n - 1 - k : k) * 30, fill: "both" }
-      )
+  const anims = order.map((i, rank) =>
+    cards[i].animate(
+      [
+        shift(distance, 0, EASE_TRAVEL),
+        shift(-sign * overshoot, 0.66, EASE_SPRING),
+        shift(sign * rebound, 0.85, EASE_SPRING),
+        shift(0, 1),
+      ],
+      { duration: CARD_MS, delay: Math.max(0, rank - firstShown) * CARD_STAGGER, fill: "both" }
     )
-  })
-
-  // 2. Arriving: come in stacked from the far side, rest at the near slot, then fan out.
-  const slots = arriving.map((c) => after[cards.indexOf(c)].left)
-  const restAt = forward ? Math.max(...slots) : Math.min(...slots)
-  arriving.forEach((c, k) => {
-    const i = cards.indexOf(c)
-    const n = arriving.length
-    const stackX = forward ? restAt - (n - 1 - k) * STACK_PEEK : restAt + k * STACK_PEEK
-    const enterX = forward ? view.right + k * STACK_PEEK : view.left - width - (n - 1 - k) * STACK_PEEK
-    c.style.zIndex = String(forward ? 20 + k : 20 + n - k)
-    anims.push(
-      c.animate(
-        [
-          frame(i, enterX, STACK_SCALE, 0, 0, EASE_GATHER),
-          frame(i, enterX, STACK_SCALE, 0, 0.2, EASE_GATHER),
-          frame(i, stackX, STACK_SCALE, 1, 0.5, EASE_SETTLE),
-          frame(i, after[i].left, 1, 1, 1),
-        ],
-        // the card that ends nearest the stack opens first
-        { duration: STACK_MS, delay: (forward ? n - 1 - k : k) * 60, fill: "both" }
-      )
-    )
-  })
+  )
 
   let finished = false
   const done = () => {
     if (finished) return
     finished = true
     anims.forEach((a) => a.cancel())
-    for (const c of [...leaving, ...arriving]) c.style.zIndex = ""
     el.style.scrollSnapType = ""
     slides.delete(el)
     // Settle the pager on where the change ended.
