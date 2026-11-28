@@ -124,47 +124,123 @@ function layout(el: HTMLElement) {
   return { perPage: Math.max(1, Math.floor((el.clientWidth - width) / step + 1.01)), step }
 }
 
-/** The page slide: long and soft, easing out so the cards settle rather than stop. */
-const GLIDE_MS = 800
-const GLIDE_EASE = "cubic-bezier(0.25, 1, 0.5, 1)"
-
 /**
- * Slide the row to `left`, smoothly. Stepping scrollLeft frame by frame moves in whole pixels
- * and stutters, so this jumps the scroll to the end position at once, offsets the cards back
- * to where they were with a transform, and lets the GPU ease that transform to zero. A press
- * mid-slide starts from wherever the cards are on screen at that moment, so it never jumps.
- * Snapping is paused while it runs.
+ * The page change, like the recent-apps switcher in Samsung One UI. Going forward:
+ *  1. the cards on screen draw together into an overlapping stack on the left, shrinking a
+ *     little, and the stack slides away off the left edge as it fades;
+ *  2. the next cards arrive from the right already stacked, settle at the right-hand slot,
+ *     then fan out, one after another, into their places at full size.
+ * Going back is the mirror image. A swipe keeps the plain native scroll.
+ *
+ * How: the row's scroll jumps straight to the new page (snapping paused), then each card is
+ * drawn back to where it should appear with a transform, animated on the GPU with the Web
+ * Animations API. When it ends the transforms are dropped, leaving the cards in their places.
  */
-const glides = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>()
+const STACK_MS = 1000
+/** How much of each stacked card peeks out from under the next one. */
+const STACK_PEEK = 28
+const STACK_SCALE = 0.86
+const EASE_GATHER = "cubic-bezier(0.4, 0, 0.2, 1)"
+const EASE_SETTLE = "cubic-bezier(0.22, 1, 0.36, 1)"
+
+type Slide = { anims: Animation[]; done: () => void }
+const slides = new WeakMap<HTMLElement, Slide>()
+
 function glide(el: HTMLElement, left: number) {
+  // A press mid-change: jump the running one to its end first, then start from there.
+  const running = slides.get(el)
+  if (running) {
+    running.anims.forEach((a) => a.finish())
+    running.done()
+  }
+
   const cards = Array.from(el.children) as HTMLElement[]
-  // Where the cards appear now: the scroll position less any slide still in flight.
-  const shift = cards[0] ? new DOMMatrixReadOnly(getComputedStyle(cards[0]).transform).m41 : 0
-  const from = el.scrollLeft - shift
-  const distance = left - from
-  clearTimeout(glides.get(el))
-  if (Math.abs(distance) < 1 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    for (const c of cards) Object.assign(c.style, { transition: "", transform: "" })
+  const from = el.scrollLeft
+  if (Math.abs(left - from) < 1) return
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     el.scrollLeft = left
     return
   }
 
+  const forward = left > from
+  const view = el.getBoundingClientRect()
+  const onScreen = (r: DOMRect) => r.left >= view.left - 2 && r.right <= view.right + 2
+  const before = cards.map((c) => c.getBoundingClientRect())
+  const leaving = cards.filter((_, i) => onScreen(before[i]))
+
   el.style.scrollSnapType = "none"
   el.scrollLeft = left
-  for (const c of cards) Object.assign(c.style, { transition: "none", transform: `translate3d(${distance}px,0,0)` })
-  void el.offsetWidth // commit the offset before easing it away
-  for (const c of cards) {
-    c.style.transition = `transform ${GLIDE_MS}ms ${GLIDE_EASE}`
-    c.style.transform = "translate3d(0,0,0)"
+  const after = cards.map((c) => c.getBoundingClientRect())
+  const arriving = cards.filter((c, i) => onScreen(after[i]) && !leaving.includes(c))
+  const width = after[0]?.width ?? view.width
+
+  const anims: Animation[] = []
+  // x: where the card's left edge should appear on screen; turned into a shift from its place.
+  const frame = (i: number, x: number, scale: number, opacity: number, offset: number, easing?: string): Keyframe => ({
+    transform: `translate3d(${x - after[i].left}px,0,0) scale(${scale})`,
+    opacity,
+    offset,
+    ...(easing ? { easing } : {}),
+  })
+
+  // 1. Leaving: gather into a stack on the side they move towards, then slide off and fade.
+  const lefts = leaving.map((c) => before[cards.indexOf(c)].left)
+  const gatherAt = forward ? Math.min(...lefts) : Math.max(...lefts)
+  leaving.forEach((c, k) => {
+    const i = cards.indexOf(c)
+    const n = leaving.length
+    const stackX = forward ? gatherAt + k * STACK_PEEK : gatherAt - (n - 1 - k) * STACK_PEEK
+    const exitX = forward ? view.left - width * 1.05 + k * STACK_PEEK : view.right + width * 0.05 + k * STACK_PEEK
+    c.style.zIndex = String(forward ? 10 + k : 10 + n - k)
+    anims.push(
+      c.animate(
+        [
+          frame(i, before[i].left, 1, 1, 0, EASE_GATHER),
+          frame(i, stackX, STACK_SCALE, 1, 0.42, EASE_GATHER),
+          frame(i, exitX, STACK_SCALE * 0.94, 0, 0.78),
+          frame(i, exitX, STACK_SCALE * 0.94, 0, 1),
+        ],
+        { duration: STACK_MS, delay: (forward ? n - 1 - k : k) * 30, fill: "both" }
+      )
+    )
+  })
+
+  // 2. Arriving: come in stacked from the far side, rest at the near slot, then fan out.
+  const slots = arriving.map((c) => after[cards.indexOf(c)].left)
+  const restAt = forward ? Math.max(...slots) : Math.min(...slots)
+  arriving.forEach((c, k) => {
+    const i = cards.indexOf(c)
+    const n = arriving.length
+    const stackX = forward ? restAt - (n - 1 - k) * STACK_PEEK : restAt + k * STACK_PEEK
+    const enterX = forward ? view.right + k * STACK_PEEK : view.left - width - (n - 1 - k) * STACK_PEEK
+    c.style.zIndex = String(forward ? 20 + k : 20 + n - k)
+    anims.push(
+      c.animate(
+        [
+          frame(i, enterX, STACK_SCALE, 0, 0, EASE_GATHER),
+          frame(i, enterX, STACK_SCALE, 0, 0.2, EASE_GATHER),
+          frame(i, stackX, STACK_SCALE, 1, 0.5, EASE_SETTLE),
+          frame(i, after[i].left, 1, 1, 1),
+        ],
+        // the card that ends nearest the stack opens first
+        { duration: STACK_MS, delay: (forward ? n - 1 - k : k) * 60, fill: "both" }
+      )
+    )
+  })
+
+  let finished = false
+  const done = () => {
+    if (finished) return
+    finished = true
+    anims.forEach((a) => a.cancel())
+    for (const c of [...leaving, ...arriving]) c.style.zIndex = ""
+    el.style.scrollSnapType = ""
+    slides.delete(el)
+    // Settle the pager on where the change ended.
+    el.dispatchEvent(new Event("scroll"))
   }
-  glides.set(
-    el,
-    setTimeout(() => {
-      for (const c of cards) Object.assign(c.style, { transition: "", transform: "" })
-      el.style.scrollSnapType = ""
-      el.dispatchEvent(new Event("scroll"))
-    }, GLIDE_MS + 40)
-  )
+  slides.set(el, { anims, done })
+  Promise.all(anims.map((a) => a.finished)).then(done, () => {})
 }
 
 function ShowcaseCard({
@@ -181,7 +257,7 @@ function ShowcaseCard({
   return (
     <article
       aria-label={card.alt}
-      className="relative flex aspect-[584/730] shrink-0 will-change-transform basis-[85%] snap-start flex-col justify-end overflow-hidden rounded-3xl bg-[#111] p-5 sm:basis-[calc((100%_-_1.5rem)/2)] sm:p-6 lg:basis-[calc((100%_-_3rem)/3)] xl:p-8 2xl:p-10"
+      className="relative flex aspect-[584/730] shrink-0 basis-[85%] snap-start flex-col justify-end overflow-hidden rounded-3xl bg-[#111] p-5 sm:basis-[calc((100%_-_1.5rem)/2)] sm:p-6 lg:basis-[calc((100%_-_3rem)/3)] xl:p-8 2xl:p-10"
     >
       <Image
         src={card.image}
