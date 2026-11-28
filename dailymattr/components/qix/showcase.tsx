@@ -7,7 +7,27 @@ import Link from "next/link"
 import { SiteVideo } from "@/components/shared/site-video"
 import { cn } from "@/lib/utils"
 import type { VideoAsset } from "@/lib/videos"
-import { showcase, type QixShowcaseCard } from "./content"
+import type { StoryCover } from "@/components/stories/covers"
+import { showcase } from "./content"
+
+/** A top card: a CMS story's cover and video, with its copy. */
+type ShownCard = {
+  id: string
+  image: StoryCover["src"]
+  alt: string
+  series: string
+  length?: string
+  line: string
+  video: VideoAsset | null
+}
+
+function toCard(cover: StoryCover): ShownCard {
+  const title = cover.alt.toLowerCase()
+  const key = Object.keys(showcase.copy).find((k) => title.startsWith(k))
+  const [name, ...rest] = cover.alt.split(" - ")
+  const copy = key ? showcase.copy[key] : { series: rest.join(" - ") || "Qix", line: name }
+  return { id: cover.id, image: cover.src, alt: cover.alt, video: cover.video, ...copy }
+}
 
 const ICONS = "/qix/showcase"
 
@@ -20,7 +40,8 @@ const ICONS = "/qix/showcase"
  * padding, 52px buttons. Smaller screens scale the card padding, type and buttons down so the
  * two buttons still sit side by side on a narrower card.
  */
-export function QixShowcase() {
+export function QixShowcase({ covers }: { covers: StoryCover[] }) {
+  const cards = covers.map(toCard)
   const trackRef = useRef<HTMLDivElement>(null)
   const [page, setPage] = useState(0)
   const [pages, setPages] = useState(1)
@@ -76,7 +97,7 @@ export function QixShowcase() {
         ref={trackRef}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain [scrollbar-width:none] sm:gap-6 [&::-webkit-scrollbar]:hidden"
       >
-        {showcase.cards.map((card, i) => (
+        {cards.map((card, i) => (
           <ShowcaseCard
             key={card.id}
             card={card}
@@ -209,7 +230,7 @@ function ShowcaseCard({
   playing,
   onPlay,
 }: {
-  card: QixShowcaseCard
+  card: ShownCard
   priority: boolean
   playing: boolean
   onPlay: () => void
@@ -235,7 +256,8 @@ function ShowcaseCard({
         fill
         priority={priority}
         sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 85vw"
-        className="object-cover"
+        // Story thumbnails are 9:16; keep their top (the title art) in the 4:5 card.
+        className="object-cover object-top"
       />
       {card.video && <CardVideo video={card.video} playing={playing} label={card.alt} />}
 
@@ -269,8 +291,12 @@ function ShowcaseCard({
         <div className="flex flex-col gap-1.5 2xl:gap-2">
           <p className="flex items-center gap-2 text-xs leading-5 font-medium text-white/72 sm:text-sm">
             <span className="tracking-[0.08em] uppercase">{card.series}</span>
-            <span aria-hidden>·</span>
-            <span className="tracking-[0.08em] uppercase">{card.length}</span>
+            {card.length && (
+              <>
+                <span aria-hidden>·</span>
+                <span className="tracking-[0.08em] uppercase">{card.length}</span>
+              </>
+            )}
           </p>
           <p className="text-base leading-6 text-white/86 sm:text-lg sm:leading-7 lg:text-base lg:leading-6 xl:text-lg xl:leading-7 2xl:text-xl">{card.line}</p>
         </div>

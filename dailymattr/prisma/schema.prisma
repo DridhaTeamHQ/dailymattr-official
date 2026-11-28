@@ -85,8 +85,9 @@ model NewsVisibility {
 // URL (uploads go to the public "cms-media" storage bucket). Lists show in sort_order; rows with
 // published = false stay in the CMS but not on the website.
 
-/// A Qix story: a 9:16 cover with the video that plays on it. Shown in the top carousel of the
-/// Qix page (inHero), the story row on the Qix page (inGallery) and the one on the home page (inHome).
+/// A Qix story: a 9:16 cover with the video that plays on it. Shown in the 3D carousel of the
+/// Qix page (inHero), the top cards on the Qix page (inGallery: once its story row, now the
+/// Netflix-style cards at the top; the column keeps its name) and the home page row (inHome).
 model QixStory {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   /// What the story is, e.g. "MRF - Made in India". Also the cover's alt text.

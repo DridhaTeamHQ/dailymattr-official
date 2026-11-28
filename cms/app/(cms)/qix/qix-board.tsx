@@ -82,7 +82,7 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
     <div className="flex flex-col gap-4">
       <PanelIntro
         title="Stories"
-        text="Each story is a 9:16 cover with a video that plays on it. Top carousel: the 3D carousel under “See the bigger picture” on the Qix page. Qix row: the scrolling row under “A world of stories” on the Qix page. Home: the scrolling row under “One place to catch up” on the home page. Click a pill to switch a place on or off. The order here is the order on the website: drag a card to move it."
+        text="Each story is a 9:16 cover with a video that plays on it. Top cards: the big cards with Play at the very top of the Qix page, three at a time. Carousel: the 3D carousel under “See the bigger picture” on the Qix page. Home: the scrolling row under “One place to catch up” on the home page. Click a pill to switch a place on or off. The order here is the order on the website: drag a card to move it."
         action={
           <Button onClick={() => setEditing("new")}>
             <Plus data-icon="inline-start" />
@@ -142,8 +142,8 @@ function StoriesPanel({ stories, websiteUrl, uploads }: { stories: QixStoryItem[
                 <CardContent className="flex flex-1 flex-col gap-2.5 p-3">
                   <p className="line-clamp-2 text-sm leading-snug font-semibold">{story.title}</p>
                   <div className="flex flex-wrap gap-1">
-                    <PlaceToggle on={story.inHero} icon={Clapperboard} label="Top carousel" disabled={busy} onClick={() => flag(story, { inHero: !story.inHero })} />
-                    <PlaceToggle on={story.inGallery} icon={GalleryHorizontal} label="Qix row" disabled={busy} onClick={() => flag(story, { inGallery: !story.inGallery })} />
+                    <PlaceToggle on={story.inGallery} icon={GalleryHorizontal} label="Top cards" disabled={busy} onClick={() => flag(story, { inGallery: !story.inGallery })} />
+                    <PlaceToggle on={story.inHero} icon={Clapperboard} label="Carousel" disabled={busy} onClick={() => flag(story, { inHero: !story.inHero })} />
                     <PlaceToggle on={story.inHome} icon={House} label="Home" disabled={busy} onClick={() => flag(story, { inHome: !story.inHome })} />
                   </div>
                   <div className="mt-auto flex items-center justify-between gap-2">

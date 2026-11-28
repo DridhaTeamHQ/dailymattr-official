@@ -12,7 +12,7 @@ export default async function QixPage() {
   return (
     <main className="flex-1 bg-white">
       <SeoJsonLd path="/formats/qix" />
-      <QixShowcase />
+      <QixShowcase covers={qix.showcaseCovers} />
       <QixHero covers={qix.heroCovers} />
       <QixExperience frames={qix.frames} />
       <QixGetStarted />

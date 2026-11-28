@@ -17,8 +17,9 @@ import { QixBoard } from "./qix-board"
 export const metadata: Metadata = { title: "Qix" }
 
 /**
- * The website's Qix videos: the stories in the top carousel ("See the bigger picture"), the
- * Qix page's story row ("A world of stories") and the home page's ("One place to catch up"),
+ * The website's Qix videos: the stories in the top cards (the big cards with Play at the top of
+ * the Qix page), the 3D carousel ("See the bigger picture") and the home page's row ("One
+ * place to catch up"),
  * and the numbered clips in "The experience". Add, replace, reorder, hide.
  */
 export default function QixPage() {
@@ -77,18 +78,18 @@ async function QixContent() {
           footer={<span>of {data.stories.length} in the CMS</span>}
         />
         <StatCard
-          label="In the top carousel"
+          label="In the top cards"
+          value={live.filter((s) => s.inGallery).length}
+          icon={GalleryHorizontal}
+          tone="green"
+          footer={<span>Big cards at the top of the Qix page</span>}
+        />
+        <StatCard
+          label="In the carousel"
           value={live.filter((s) => s.inHero).length}
           icon={Clapperboard}
           tone="violet"
           footer={<span>“See the bigger picture”, Qix page</span>}
-        />
-        <StatCard
-          label="In the Qix row"
-          value={live.filter((s) => s.inGallery).length}
-          icon={GalleryHorizontal}
-          tone="green"
-          footer={<span>“A world of stories”</span>}
         />
         <StatCard
           label="On the home page"

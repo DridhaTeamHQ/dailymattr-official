@@ -1,50 +1,32 @@
 /** Copy and data for the Qix page. Figma frame: "Qix · DailyMattr" (8646:2608). */
 
-import type { StaticImageData } from "next/image"
-
-import { localVideo, storyVideos, type VideoAsset } from "@/lib/videos"
+import { localVideo } from "@/lib/videos"
 import getStartedPhoto from "@/public/qix/hero/qix.png"
-import amaron from "@/public/qix/showcase/amaron.webp"
-import cricket from "@/public/qix/showcase/cricket.webp"
-import fevicol from "@/public/qix/showcase/fevicol.webp"
-import investingDecoded from "@/public/qix/showcase/investing-decoded.webp"
-import jetAirways from "@/public/qix/showcase/jet-airways.webp"
-import mrf from "@/public/qix/showcase/mrf.webp"
-import newAgeInvesting from "@/public/qix/showcase/new-age-investing.webp"
-import nilkamal from "@/public/qix/showcase/nilkamal.webp"
-import selfDrivingCars from "@/public/qix/showcase/self-driving-cars.png"
 
-export type QixShowcaseCard = {
-  id: string
-  /** 584×730 art, exported from the card in Figma. */
-  image: StaticImageData
-  alt: string
-  series: string
-  length: string
-  line: string
-  /** Plays on the card when Play is pressed; null shows "Video not available yet" instead. */
-  video: VideoAsset | null
-}
+/** Words on a top card: a series label, a length and one line. */
+export type QixShowcaseCopy = { series: string; length?: string; line: string }
 
 /**
- * Netflix-style cards at the top of the page, three to a page on desktop (Figma 9831:7101,
- * "Video hero · Netflix-style cards"; pages 9831:7103, 9831:7422, 9831:7705). In the Figma order.
- * Only Amaron, MRF, Nilkamal and Fevicol have their own story video; on the rest, Play says the
- * video is not available yet. Set `video` on a card once its video exists.
+ * The big Netflix-style cards at the top of the page (Figma 9831:7101, "Video hero ·
+ * Netflix-style cards"), three to a page on desktop. Which stories show, in what order, and
+ * their thumbnails and videos all come from the CMS: the stories with "Top cards" switched on
+ * (lib/formats.ts, showcaseCovers). The Figma copy for each card is kept here, matched to a
+ * story whose title starts with the key (any case); a story with no copy here shows the part of
+ * its title after " - " as the series (e.g. "Made in India") and the part before as the line.
  */
-export const showcase: { cards: QixShowcaseCard[]; moreInfoHref: string } = {
+export const showcase: { copy: Record<string, QixShowcaseCopy>; moreInfoHref: string } = {
   moreInfoHref: "/download",
-  cards: [
-    { id: "amaron", image: amaron, alt: "Amaron - Made in India", series: "Made in India", length: "2 min", line: "The battery brand built in Tirupati.", video: storyVideos.amaron },
-    { id: "self-driving-cars", image: selfDrivingCars, alt: "Self Driving Cars - Before It's Big", series: "Tech", length: "2 min", line: "Who is really at the wheel?", video: null },
-    { id: "cricket", image: cricket, alt: "Cricket - Origin of Sports", series: "Origin of sports", length: "2 min", line: "From village greens to a billion fans.", video: null },
-    { id: "jet-airways", image: jetAirways, alt: "Jet Airways - Made in India", series: "Rise and fall", length: "2 min", line: "India’s favourite airline, and how it fell.", video: null },
-    { id: "investing-decoded", image: investingDecoded, alt: "Investing Decoded - Finance Xplaind", series: "Money", length: "2 min", line: "Where to start, minus the jargon.", video: null },
-    { id: "fevicol", image: fevicol, alt: "Fevicol - Made in India", series: "Made in India", length: "2 min", line: "The glue that holds India together.", video: storyVideos.fevicol },
-    { id: "mrf", image: mrf, alt: "MRF - Made in India", series: "Made in India", length: "2 min", line: "From toy balloons to racing tyres.", video: storyVideos.mrf },
-    { id: "new-age-investing", image: newAgeInvesting, alt: "New Age Investing - Finance Xplaind", series: "Money", length: "2 min", line: "ETFs, gold and apps: how India invests now.", video: null },
-    { id: "nilkamal", image: nilkamal, alt: "Nilkamal - Made in India", series: "Made in India", length: "2 min", line: "The chair in every Indian home.", video: storyVideos.nilkamal },
-  ],
+  copy: {
+    amaron: { series: "Made in India", length: "2 min", line: "The battery brand built in Tirupati." },
+    "self driving cars": { series: "Tech", length: "2 min", line: "Who is really at the wheel?" },
+    cricket: { series: "Origin of sports", length: "2 min", line: "From village greens to a billion fans." },
+    "jet airways": { series: "Rise and fall", length: "2 min", line: "India’s favourite airline, and how it fell." },
+    "investing decoded": { series: "Money", length: "2 min", line: "Where to start, minus the jargon." },
+    fevicol: { series: "Made in India", length: "2 min", line: "The glue that holds India together." },
+    mrf: { series: "Made in India", length: "2 min", line: "From toy balloons to racing tyres." },
+    "new age investing": { series: "Money", length: "2 min", line: "ETFs, gold and apps: how India invests now." },
+    nilkamal: { series: "Made in India", length: "2 min", line: "The chair in every Indian home." },
+  },
 }
 
 /** Hero copy. Figma 9278:984 breaks the title after "bigger". */
@@ -91,12 +73,6 @@ export const pillars = {
         "Discover the connections, people, and events that make the world more interesting.",
     },
   ] satisfies QixPillar[],
-}
-
-/** Gallery heading; the cards are the home page's story row (components/stories/covers.ts). */
-export const gallery = {
-  eyebrow: "Content gallery",
-  title: "A world of stories, frame by frame.",
 }
 
 export const getStarted = {

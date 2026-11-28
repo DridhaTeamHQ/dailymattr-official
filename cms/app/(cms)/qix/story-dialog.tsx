@@ -130,7 +130,7 @@ export function StoryDialog({
           </div>
           <p className="text-xs text-muted-foreground">
             {form.published
-              ? [form.inHero && "Top carousel", form.inGallery && "Qix story row", form.inHome && "Home page row"]
+              ? [form.inGallery && "Top cards", form.inHero && "Carousel", form.inHome && "Home page row"]
                   .filter(Boolean)
                   .join(" · ") || "Not placed anywhere yet"
               : "Hidden from the website"}
@@ -198,17 +198,17 @@ export function StoryDialog({
           onCheckedChange={(published) => set({ published })}
         />
         <SwitchRow
-          label="Top carousel"
-          description="“See the bigger picture” at the top of the Qix page"
-          checked={form.inHero}
-          onCheckedChange={(inHero) => set({ inHero })}
+          label="Top cards"
+          description="The big cards with Play at the very top of the Qix page"
+          checked={form.inGallery}
+          onCheckedChange={(inGallery) => set({ inGallery })}
           disabled={!form.published}
         />
         <SwitchRow
-          label="Qix story row"
-          description="“A world of stories” on the Qix page"
-          checked={form.inGallery}
-          onCheckedChange={(inGallery) => set({ inGallery })}
+          label="Carousel"
+          description="The 3D carousel under “See the bigger picture” on the Qix page"
+          checked={form.inHero}
+          onCheckedChange={(inHero) => set({ inHero })}
           disabled={!form.published}
         />
         <SwitchRow

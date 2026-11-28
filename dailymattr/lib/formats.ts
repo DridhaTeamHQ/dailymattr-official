@@ -26,8 +26,9 @@ export const CMS_FORMATS_TAG = "cms-formats"
 export type QixContent = {
   /** The arc at the top of the Qix page. */
   heroCovers: StoryCover[]
-  /** The story row on the Qix page ("A world of stories"). */
-  galleryCovers: StoryCover[]
+  /** The Netflix-style cards at the top of the Qix page: stories with "Top cards" on in the
+   *  CMS (the in_gallery column, which held the old "A world of stories" row). */
+  showcaseCovers: StoryCover[]
   /** The story row on the home page ("One place to catch up"). */
   homeCovers: StoryCover[]
   /** "The experience" steps (start / end: the part of a shared video a step plays). */
@@ -47,7 +48,7 @@ export type TraxContent = {
 
 const defaultQix: QixContent = {
   heroCovers: storyCovers,
-  galleryCovers: storyCovers,
+  showcaseCovers: storyCovers,
   homeCovers: storyCovers,
   frames: experience.frames,
 }
@@ -87,7 +88,7 @@ export async function getQixContent(): Promise<QixContent> {
       }))
     lastQix = {
       heroCovers: stories.length ? covers(live.filter((s) => s.inHero)) : defaultQix.heroCovers,
-      galleryCovers: stories.length ? covers(live.filter((s) => s.inGallery)) : defaultQix.galleryCovers,
+      showcaseCovers: stories.length ? covers(live.filter((s) => s.inGallery)) : defaultQix.showcaseCovers,
       homeCovers: stories.length ? covers(live.filter((s) => s.inHome)) : defaultQix.homeCovers,
       frames: steps.length
         ? steps

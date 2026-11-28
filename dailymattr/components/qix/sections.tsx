@@ -1,11 +1,9 @@
 import { FadeIn } from "@/components/shared/fade-in"
 import { PhotoCta } from "@/components/shared/photo-cta"
-import type { StoryCover } from "@/components/stories/covers"
-import { StoryCarousel } from "@/components/stories/story-carousel"
 import type { QixContent } from "@/lib/formats"
 import { cn } from "@/lib/utils"
 import { QixExperienceSequence } from "./experience-sequence"
-import { experience, gallery, getStarted } from "./content"
+import { experience, getStarted } from "./content"
 import { QIX_H2, QixButton, QixEyebrow } from "./primitives"
 
 /** Copy beside four numbered frames on a shared baseline, each playing one beat of the same explainer. Figma 8646:2760. */
@@ -38,28 +36,8 @@ export function QixExperience({ frames }: { frames: QixContent["frames"] }) {
 }
 
 /**
- * The home page's story row (StoryCarousel): the same story covers and videos, scrolling on its
- * own in a loop. Hovering a card pauses the row and plays that card's video; tap on phones.
- */
-export function QixGallery({ covers }: { covers: StoryCover[] }) {
-  return (
-    <section id="gallery" className="scroll-mt-24 bg-white py-20 lg:py-[10rem]">
-      <FadeIn className="flex flex-col items-center gap-3 px-4 text-center lg:gap-4">
-        <QixEyebrow>{gallery.eyebrow}</QixEyebrow>
-        <h2 className={QIX_H2}>{gallery.title}</h2>
-      </FadeIn>
-
-      {/* Kept inside the centred 1200px column (Figma 8646:2798); cards scroll within its edges. */}
-      <FadeIn delay={0.4} className="mx-auto mt-10 max-w-[75rem] px-4 sm:px-6 lg:mt-16 lg:box-content lg:px-8">
-        {covers.length > 0 && <StoryCarousel covers={covers} />}
-      </FadeIn>
-    </section>
-  )
-}
-
-/**
  * Closing CTA over a full-bleed photo. Figma 9344:7440. No top padding of its own: the
- * gallery's 160px bottom padding is the gap above the photo.
+ * experience section's 160px bottom padding is the gap above the photo.
  */
 export function QixGetStarted() {
   return (
