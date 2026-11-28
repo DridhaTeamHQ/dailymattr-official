@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, type ComponentProps } from "react"
+import { useRef, type ComponentProps } from "react"
 import { motionValue, useMotionValueEvent, type MotionValue } from "motion/react"
 
 import type { VideoAsset } from "@/lib/videos"
@@ -18,40 +18,32 @@ type ScrubVideoProps = Omit<
 const fallback = motionValue(0)
 
 /**
- * How quickly the shown frame catches up with the scroll position: the share of the gap closed
- * per 60 Hz frame (scaled by the real frame time, so 120 Hz screens glide at the same pace).
- * Lower is a softer, longer glide.
+ * Half a frame of a 60 fps clip. A scroll step that moves the clip by less than this lands on
+ * the frame already showing, so it isn't worth a seek.
  */
-const FOLLOW = 0.1
+const HALF_FRAME = 1 / 120
 
 /**
- * A video that never plays on its own: its frame follows `progress`, so it moves while the
- * page scrolls, stops when scrolling stops, and runs backwards when scrolling back up. The
- * frame eases towards the scroll position rather than jumping, so it reads as animation.
- * Encode the file with `scrub: true` in scripts/encode-videos.mjs (dense keyframes) so every
- * seek is instant.
+ * A video that never plays on its own: its frame is locked to `progress`, so it moves exactly
+ * as far as the page scrolls, stops the moment scrolling stops, and runs backwards when
+ * scrolling back up. The frame is not eased on top of the scroll: the page's smooth scrolling
+ * (Lenis) already glides, and a second glide here made the video trail the page and keep
+ * playing after it had stopped. Encode the file with `scrub: true` in
+ * scripts/encode-videos.mjs (dense keyframes) so every seek is quick.
  */
 export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: ScrubVideoProps) {
   const ref = useRef<HTMLVideoElement>(null)
   const target = useRef(0) // seconds the scroll position asks for
-  const shown = useRef(0) // seconds currently on screen (eased)
-  const raf = useRef(0)
-  const last = useRef(0) // timestamp of the previous tick, 0 when idle
 
-  const tick = (now: number) => {
-    raf.current = 0
+  /**
+   * Shows the frame the scroll asks for. While the decoder is still busy with the last seek it
+   * waits rather than queueing; `onSeeked` calls this again when that seek lands, so the frame
+   * always catches up with the latest scroll position, including the one scrolling stopped on.
+   */
+  const show = () => {
     const el = ref.current
-    if (!el || !el.duration) return
-    // Frames elapsed at 60 Hz since the last tick (capped, so a stalled tab doesn't jump).
-    const frames = last.current ? Math.min((now - last.current) / (1000 / 60), 4) : 1
-    last.current = now
-    const diff = target.current - shown.current
-    const step = 1 - (1 - FOLLOW) ** frames
-    shown.current = Math.abs(diff) < 0.005 ? target.current : shown.current + diff * step
-    // Skip a frame while the decoder is still busy with the last seek, rather than queueing.
-    if (!el.seeking) el.currentTime = shown.current
-    if (shown.current !== target.current) raf.current = requestAnimationFrame(tick)
-    else last.current = 0
+    if (!el || !el.duration || el.seeking) return
+    if (Math.abs(el.currentTime - target.current) >= HALF_FRAME) el.currentTime = target.current
   }
 
   const seekTo = (p: number) => {
@@ -59,11 +51,10 @@ export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: Scru
     if (!el || !el.duration) return
     // Stop just short of the end: some browsers show a blank frame at exactly `duration`.
     target.current = Math.min(Math.max(p, 0), 1) * (el.duration - 0.05)
-    if (!raf.current) raf.current = requestAnimationFrame(tick)
+    show()
   }
 
   useMotionValueEvent(progress ?? fallback, "change", seekTo)
-  useEffect(() => () => cancelAnimationFrame(raf.current), [])
 
   return (
     <video
@@ -73,15 +64,19 @@ export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: Scru
       playsInline
       preload="auto"
       disablePictureInPicture
-      // Once the length is known, jump straight to wherever the page already is (e.g. reload
-      // halfway down), without easing through the frames before it.
       {...props}
+      onSeeked={(e) => {
+        props.onSeeked?.(e)
+        show()
+      }}
+      // Once the length is known, jump straight to wherever the page already is (e.g. reload
+      // halfway down).
       onLoadedMetadata={(e) => {
         onLoadedMetadata?.(e)
         if (!progress) return
         const el = e.currentTarget
-        shown.current = target.current = Math.min(Math.max(progress.get(), 0), 1) * (el.duration - 0.05)
-        el.currentTime = shown.current
+        target.current = Math.min(Math.max(progress.get(), 0), 1) * (el.duration - 0.05)
+        el.currentTime = target.current
         // Phones (iOS Safari above all) may not draw a seeked frame of a video that has never
         // played, leaving the poster up while the page scrolls. A muted play-and-pause wakes
         // the decoder; if it's refused (e.g. Low Power Mode), seeking still works once it can.
@@ -89,7 +84,7 @@ export function ScrubVideo({ video, progress, onLoadedMetadata, ...props }: Scru
           el.play()
             .then(() => {
               el.pause()
-              el.currentTime = shown.current
+              el.currentTime = target.current
             })
             .catch(() => {})
         }
